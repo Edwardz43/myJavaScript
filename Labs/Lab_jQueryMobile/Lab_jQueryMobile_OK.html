@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Lab</title>
+
+<link rel="stylesheet"
+	href="jquery.mobile-1.3.2/jquery.mobile-1.3.2.min.css" />
+<script src="jquery-1.9.1.min.js"></script>
+<script src="jquery.mobile-1.3.2/jquery.mobile-1.3.2.min.js"></script>
+
+</head>
+<body>
+
+	<div data-role="page" id="homePage" data-theme="c">
+
+		<div data-role="header" data-position="fixed">
+			<h1>容易記憶的安全密碼</h1>
+			<a href="#aboutPage" data-role="button" data-icon="info"
+				data-iconpos="notext" class="ui-btn-right" data-rel="dialog"></a>
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#homePage" data-icon="home" data-theme="b">Home</a></li>
+					<li><a href="#testPage" data-icon="star" data-theme="b">Test</a></li>
+					<li><a href="#howPage" data-icon="gear" data-theme="b">How</a></li>
+					<li><a href="#aboutPage" data-icon="info" data-rel="dialog" data-theme="b">About</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<div data-role="content">
+			<h2>密碼的兩難…</h2>
+			<p>好密碼的條件：愈長、愈亂、愈與個人資料無關，並且要經常更換。</p>
+			<p>問題是，這樣子的密碼會不會就愈記不住？</p>
+			<h2>兩全其美？</h2>
+			<p>有沒有既好記、又不容易被人猜中的密碼？</p>
+			<p>可以，但得從人類「如何記憶」以及駭客「如何破解密碼」兩方面著手。</p>
+			<a href="#testPage" data-transition="slide">繼續閱讀...</a>
+		</div>
+
+		<div data-role="footer" data-position="fixed" data-theme="d">
+			<h2>by wolfgang.chien@gmail.com</h2>
+		</div>
+	</div>
+
+
+	<div data-role="page" id="testPage" data-theme="c">
+
+		<div data-role="header" data-position="fixed">
+			<h1>容易記憶的安全密碼</h1>
+			<a href="#aboutPage" data-role="button" data-icon="info"
+				data-iconpos="notext" class="ui-btn-right" data-rel="dialog"></a>
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#homePage" data-icon="home" data-theme="b">Home</a></li>
+					<li><a href="#testPage" data-icon="star" data-theme="b">Test</a></li>
+					<li><a href="#howPage" data-icon="gear" data-theme="b">How</a></li>
+					<li><a href="#aboutPage" data-icon="info" data-rel="dialog" data-theme="b">About</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<div data-role="content">
+			<div data-role="collapsible-set">
+				<div data-role="collapsible">
+					<h2>記憶力測驗（一）</h2>
+					<p>請仔細觀看並依序記憶下列數字， 時間二十秒：</p>
+					<p>81523-79684-69284-23894</p>
+					<p>時間到，請閉上眼睛並且回憶您記得多少？ 如果沒有受過訓練，一般人通常只能記住六到八個。</p>
+				</div>
+				<div data-role="collapsible">
+					<h2>記憶力測驗（二）</h2>
+					<p>同樣地，請仔細觀看並依序記憶下列數字，時間也是二十秒：</p>
+					<p>800010005000200030007</p>
+					<p>請問您這次記得幾個數字？ 有沒有比上一個測驗進步？</p>
+				</div>
+			</div>
+		</div>
+
+		<div data-role="footer" data-position="fixed" data-theme="d">
+			<h2>by wolfgang.chien@gmail.com</h2>
+		</div>
+	</div>
+	<!------------ testPage ------------>
+
+
+	<div data-role="page" id="howPage" data-theme="c">
+
+		<div data-role="header" data-position="fixed">
+			<h1>容易記憶的安全密碼</h1>
+			<a href="#aboutPage" data-role="button" data-icon="info"
+				data-iconpos="notext" class="ui-btn-right" data-rel="dialog"></a>
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#homePage" data-icon="home" data-theme="b">Home</a></li>
+					<li><a href="#testPage" data-icon="star" data-theme="b">Test</a></li>
+					<li><a href="#howPage" data-icon="gear" data-theme="b">How</a></li>
+					<li><a href="#aboutPage" data-icon="info" data-rel="dialog" data-theme="b">About</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<div data-role="content">
+			<h2>讓密碼好記卻不好猜</h2>
+			<ol data-role="listview">
+				<li><a href="#">找一個您記得住的單字，例如：apple。</a></li>
+				<li><a href="#">在這個單字混入數字與大寫字母各一，例如：ap9Fple</a></li>
+				<li><a href="#">各個英數之間塞入一些填充物，例如：a..p..9..F..p..l..e</a></li>
+			</ol>
+			<p>好了，這樣子的密碼純用暴力法應該得猜上好一陣子。</p>
+		</div>
+
+		<div data-role="footer" data-position="fixed" data-theme="d">
+			<h2>by wolfgang.chien@gmail.com</h2>
+		</div>
+	</div>
+	<!------------ howPage ------------>
+
+
+
+	<div data-role="page" id="aboutPage">
+		<div data-role="header">
+			<h1>About</h1>
+		</div>
+		<div data-role="content">
+			<p>文章作者 :錢達智(wolfgang.chien@gmail.com)。</p>
+		</div>
+	</div>
+	<!------------ aboutPage ------------>
+
+
+</body>
+</html>

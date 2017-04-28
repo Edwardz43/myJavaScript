@@ -1,0 +1,39 @@
+HTML:
+	    <a href="#testPage" data-transition="slide" data-icon="gear"  data-role="button" data-inline="true">Ä~Äò¾\Åª...</a> | 
+            <a href="http://www.hinet.net" target="_blank" rel="external">Hinet</a>
+            <input type="button" id="btnGoAhead" value="Go Ahead" data-icon="align-center" />
+            <input type="button" id="btnGoAhead2" value="Go Ahead 2" />
+
+
+JavaScript
+
+
+    <script>
+        $("#btnGoAhead").click(function () {
+            $.mobile.changePage("#testPage", { transition: 'slide' });
+        });
+
+        $("#homePage").on("pagecreate", function () {
+            console.log("homePage page-create");
+        });
+
+        $("#testPage").on("pagecreate", function () {
+            console.log("testPage page-create");
+        });
+
+        $("#homePage").on("pageshow", function () {
+            console.log("homePage page-show");
+        });
+
+        $("#testPage").on("pageshow", function () {
+            console.log("testPage page-show");
+        });
+
+        $("#btnGoAhead2").click(function () {
+            // window.location.href = "#testPage";
+            // window.location.href = "http://www.hinet.net";
+            window.open("http://www.hinet.net", "_blank");
+        });
+
+    </script>
+

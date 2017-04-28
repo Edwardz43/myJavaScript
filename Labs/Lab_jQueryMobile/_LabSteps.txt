@@ -1,0 +1,287 @@
+﻿1.	安裝/引用 jQuery Mobile
+1.1	新建一個 HTML 文件，檔名: Lab_jQueryMobile.html
+1.2	在 <head> 區塊貼入下列宣告:
+
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
+
+-- 或者 --
+
+<link rel="stylesheet" href="jquery.mobile-1.3.2/jquery.mobile-1.3.2.min.css" />
+<script src="jquery-1.9.1.min.js"></script>
+<script src="jquery.mobile-1.3.2/jquery.mobile-1.3.2.min.js"></script>
+
+
+
+
+2.	套用 jQuery Mobile 的頁面格局
+2.1	在 <body> 區塊貼入下列內容，完成後，在瀏覽器檢視文件:
+
+<body>
+
+	<div>
+		<div>
+			<h1>容易記憶的安全密碼</h1>
+		</div>
+
+		<div>
+			<h2>密碼的兩難…</h2>
+			<p>好密碼的條件：愈長、愈亂、愈與個人資料無關，並且要經常更換。</p>
+			<p>問題是，這樣子的密碼會不會就愈記不住？</p>
+		</div>
+
+		<div>
+			<p>by wolfgang.chien@gmail.com</p>
+		</div>
+	</div>
+
+</body>
+
+
+2.2	在上述網頁的各個 <div> 參照下列內容分別加入 data-role 屬性，
+	完成後，在瀏覽器檢視文件有何變化:
+
+	<div data-role="page">
+		<div data-role="header">
+			<h1>容易記憶的安全密碼</h1>
+		</div>
+
+		<div data-role="content">
+			<h2>密碼的兩難…</h2>
+			<p>好密碼的條件：愈長、愈亂、愈與個人資料無關，並且要經常更換。</p>
+			<p>問題是，這樣子的密碼會不會就愈記不住？</p>
+		</div>
+
+		<div data-role="footer">
+			<h2>by wolfgang.chien@gmail.com</h2>
+		</div>
+	</div>
+
+
+2.3	故意在 content 那個 div 加進一堆 .<br>.<br>.<br> 以模擬長文件的情況，
+	完成後，在瀏覽器檢視文件，頁尾應該會隨捲軸上下移動。
+
+2.4	繼續加入 data-position="fixed" 到 header 與 footer，
+	完成後，在瀏覽器測試文件效果。
+	
+	<div data-role="page">
+		<div data-role="header" data-position="fixed">
+			<h1>容易記憶的安全密碼</h1>
+		</div>
+
+		<div data-role="content">
+			<h2>密碼的兩難…</h2>
+			<p>好密碼的條件：愈長、愈亂、愈與個人資料無關，並且要經常更換。</p>
+			<p>問題是，這樣子的密碼會不會就愈記不住？</p>
+		</div>
+
+		<div data-role="footer" data-position="fixed">
+			<h2>by wolfgang.chien@gmail.com</h2>
+		</div>
+	</div>
+
+
+
+
+
+3.	在同一個 HTML 文件置入兩個（以上）的 jQuery Mobile Page
+
+3.1	將上述的 .<br>.<br> 去掉，改成下列這行:
+	<a href="#testPage">繼續閱讀...</a>
+
+
+3.2	在 </body> 前一行貼入下列內容:
+	完成後，在瀏覽器檢視文件。
+	（請觀察一下：這段的結構與前一個 jQuery Mobile Page 的結構是一樣的。）
+
+	<div data-role="page" id="testPage">
+		<div data-role="header" data-position="fixed">
+			<h1>容易記憶的安全密碼</h1>
+		</div>
+
+		<div data-role="content">
+			<div>
+				<h2>記憶力測驗（一）</h2>
+				<p>請仔細觀看並依序記憶下列數字， 時間二十秒：</p>
+				<p>81523-79684-69284-23894</p>
+				<p>時間到，請閉上眼睛並且回憶您記得多少？ 如果沒有受過訓練，一般人通常只能記住六到八個。</p>
+			</div>
+			<div>
+				<h2>記憶力測驗（二）</h2>
+				<p>同樣地，請仔細觀看並依序記憶下列數字，時間也是二十秒：</p>
+				<p>800010005000200030007</p>
+				<p>請問您這次記得幾個數字？ 有沒有比上一個測驗進步？</p>
+			</div>
+		</div>
+
+		<div data-role="footer" data-position="fixed">
+			<h2>by wolfgang.chien@gmail.com</h2>
+		</div>
+	</div>
+	<!------------ testPage ------------>
+
+
+3.3	將步驟 3.1 的那個超連結改成這樣: （多了一個data-transition屬性。）
+	完成後，在瀏覽器檢視文件，測試看看換頁的效果。
+	<a href="#testPage" data-transition="slide">繼續閱讀</a> 
+
+
+
+4.	製作工具列按鈕。
+
+
+4.1	找到第一個 <div data-role="page"> 這行，幫它加個 id="homePage" 屬性，像這樣:
+	<div data-role="page" id="homePage">
+
+
+4.2	分別找出兩個 data-role="header" 的 <div>，
+	找到後，在「<h1>容易記憶的安全密碼</h1>」的前一行加入超連結: 
+	<a href="#homePage" data-role="button">Home</a>
+	(Note: 跟之前學的 <a> 相比，多了一個 data-role="button")
+	完成後，在瀏覽器測試文件效果。
+	
+
+4.2	在上述超連結再多加一個 data-icon="home" 屬性: 
+	<a href="#homePage" data-role="button">Home</a>
+	完成後，在瀏覽器檢視文件 -- 按鈕出現一間房子的圖案。
+
+
+4.3	在「<h1>容易記憶的安全密碼</h1>」的後面也加上一個按鈕，如下:
+	<div data-role="header" data-position="fixed">
+		<a href="#homePage" data-role="button" data-icon="home">Home</a>
+		<h1>容易記憶的安全密碼</h1>
+		<a href="#aboutPage" data-role="button" data-icon="info" data-iconpos="notext"></a>
+	</div>
+
+	完成後，在瀏覽器測試文件效果。
+	(data-iconpos 的屬性值還有: top, right, bottom, left，請針對 Home 按鈕試用看看。)
+
+
+
+5.	應用 collapsible 折疊特效
+
+5.1	testPage 那頁的 content 有兩個 div，請分別幫它們加上 data-role="collapsible" 屬性（如下），
+	完成後，在瀏覽器測試文件效果。(兩段「記憶力測驗」可獨立開闔。)
+
+		<div data-role="content">
+			<div data-role="collapsible">
+				<h2>記憶力測驗（一）</h2>
+				<p>請仔細觀看並依序記憶下列數字， 時間二十秒：</p>
+				<p>81523-79684-69284-23894</p>
+				<p>時間到，請閉上眼睛並且回憶您記得多少？ 如果沒有受過訓練，一般人通常只能記住六到八個。</p>
+			</div>
+			<div data-role="collapsible">
+				<h2>記憶力測驗（二）</h2>
+				<p>同樣地，請仔細觀看並依序記憶下列數字，時間也是二十秒：</p>
+				<p>800010005000200030007</p>
+				<p>請問您這次記得幾個數字？ 有沒有比上一個測驗進步？</p>
+			</div>
+		</div>
+
+5.2	在這兩個 div 包進另一個 新的div，幫這個包裝 div 加訂 data-role="collapsible-set" 屬性，如下:
+	完成後，在瀏覽器測試文件效果。(兩段「記憶力測驗」，同時只能展開其中一段。)
+	<div data-role="content">
+		<div data-role="collapsible-set">
+			<div data-role="collapsible">
+				<h2>記憶力測驗（一）</h2>
+				<p>請仔細觀看並依序記憶下列數字， 時間二十秒：</p>
+				<p>81523-79684-69284-23894</p>
+				<p>時間到，請閉上眼睛並且回憶您記得多少？ 如果沒有受過訓練，一般人通常只能記住六到八個。</p>
+			</div>
+			<div data-role="collapsible">
+				<h2>記憶力測驗（二）</h2>
+				<p>同樣地，請仔細觀看並依序記憶下列數字，時間也是二十秒：</p>
+				<p>800010005000200030007</p>
+				<p>請問您這次記得幾個數字？ 有沒有比上一個測驗進步？</p>
+			</div>
+		</div>
+	</div>
+
+
+
+6.	製作導覽列。
+6.1	分別找出兩個 data-role="header" 的 <div>，在 </div> 前一行，輸入下列內容:
+			<div>
+				<ul>
+					<li><a href="#homePage" data-icon="home">Home</a></li>
+					<li><a href="#testPage" data-icon="star">Test</a></li>
+					<li><a href="#howPage" data-icon="gear">How</a></li>
+					<li><a href="#aboutPage" data-icon="info">About</a></li>
+				</ul>
+			</div>
+
+	(結構很簡單：用一個 div 包住四個超連結清單。) 
+	(完成後，在瀏覽器測試文件效果。)
+
+
+
+6.2	為新加入的 div 標註 data-role="navbar"，這?，就變成導覽列:
+	(完成後，在瀏覽器測試文件效果。)
+			<div data-role="navbar">
+				<ul>
+					<li><a href="#homePage" data-icon="home">Home</a></li>
+					<li><a href="#testPage" data-icon="star">Test</a></li>
+					<li><a href="#howPage" data-icon="gear">How</a></li>
+					<li><a href="#aboutPage" data-icon="info">About</a></li>
+				</ul>
+			</div>
+
+
+
+7.	製作 howPage。（這個步驟沒有細部內容，請回顧一下剛才所學的內容。）
+7.1	howPage 的內容如下，請仿照 homePage 與 testPage 的結構，製作 howPage
+
+			<h2>讓密碼好記卻不好猜</h2>
+			<ol data-role="listview">
+				<li><a href="#">找一個您記得住的單字，例如：apple。</a></li>
+				<li><a href="#">在這個單字混入數字與大寫字母各一，例如：ap9Fple</a></li>
+				<li><a href="#">各個英數之間塞入一些填充物，例如：a..p..9..F..p..l..e</a></li>
+			</ol>
+			<p>好了，這樣子的密碼純用暴力法應該得猜上好一陣子。</p>
+
+
+7.2	完成 howPage 之後，
+	試一下導覽連結，
+	此外，也請試一下 <ol data-role="listview"> 如果不加 data-role 屬性的效果。
+
+
+
+8.	jQuery Mobile 的 page 也可以當成對話盒使用。
+8.1	在 </body> 前一行貼入 aboutPage 的內容:
+
+	<div data-role="page" id="aboutPage">
+		<div data-role="header">
+			<h1>About</h1>
+		</div>
+		<div data-role="content">
+			<p>文章作者 :錢達智(wolfgang.chien@gmail.com)。</p>
+		</div>
+	</div>
+	<!------------ aboutPage ------------>
+
+
+
+8.2	搜尋有「#aboutPage」字樣的元素，每找到一個，就加入 data-rel="dialog" 屬性，例如:
+	<a href="#aboutPage" data-role="button" data-icon="info"
+		data-iconpos="notext" data-rel="dialog"></a>
+	<li><a href="#aboutPage" data-icon="info" data-rel="dialog">About</a></li>
+
+(完成後，在瀏覽器測試文件效果。)
+
+
+
+9.	套用主題配色（a:黑 | b:藍 | c:灰 | d:白 | e:橙）
+9.1	針對 data-role="page" 的 <div> 都套用 c 配色主題，像這樣:
+	<div data-role="page" id="homePage" data-theme="c">
+
+9.2	footer 則套用 data-theme="d"
+	<div data-role="footer" data-position="fixed" data-theme="d">
+	
+9.3	所有的按鈕，套用 data-theme="b"
+
+
+
+10.	連結下列網址，瀏覽一遍 jQuery Mobile 的資料屬性清單:
+http://www.w3schools.com/jquerymobile/jquerymobile_ref_data.asp
+

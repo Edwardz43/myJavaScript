@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Tulips</title>
+        <link rel="stylesheet" href="mystyle_tulips.css">
+        <link rel="stylesheet" href="responsive.css">
+        <style type="text/css">
+            .testTransform {
+                position: relative;
+                width: 80px;
+                height: 80px;
+                background-image: url('images/640.jpg' );
+                /*border: 1px solid Gray;*/
+                margin: 30px;
+                padding: 10px;
+                transition: transform 5s linear;
+                animation: rush 10s ease infinite;
+            }
+
+            .testTransform:hover {
+                transform: rotate(720deg);
+            }
+            
+            @-webkit-keyframes rush {
+                 0% { left: 10%; top: 0px;}
+                 25% {left: 83%; top: 0px;}
+                 50% {left: 83%; top: 800px;}
+                 75% {left: 10%; top: 800px;}
+                 100% {left: 10%; top: 0px;}
+            }   
+            
+            
+        </style>
+    </head>
+    <body>
+        <h1> 
+        <a href ="https://en.wikipedia.org/wiki/Tulips" target="_blank">Tulips</a> : 鬱金香</h1>
+        <div class="testTransform" ></div>
+        <div id="tulips">
+		    <div id="tulipsImage"></div>
+		    <div id="tulipsText">Tulips</div>
+	    </div>
+        <!--<img src="../images/Tulips.jpg" />-->
+        
+        <p>鬱金香在植物分類學上，是一類屬於百合科鬱金香屬（學名：Tulipa）的具鱗莖草本植物，又稱洋荷花、旱荷花、草麝香、鬱香（《太平御覽》）、紅藍花</p>
+        <p>、紫述香（《本草綱目》），原產地從南歐、西亞一直到東亞的中國東北一帶，為人熟知的外銷大國荷蘭初次引進鬱金香是在16世紀末，因生長地區緯度不</p>
+        <p>同而花期各異，普遍在3月下旬至5月上旬。雖然全世界約有2,000多個鬱金香品種，但大量生產者大約只有150種。被歐洲人稱為「<strong>魔幻之花</strong>」的鬱金香，自</p>
+        <p>古以來就有一種莫名的魔力使園藝學家熱衷於品種改良，甚至有人傾家蕩產只為了它那稀有的球根。</p>
+        <p>鬱金香是<a href="https://zh.wikipedia.org/wiki/%E8%8D%B7%E5%85%B0"target="_blank">荷蘭</a>的國花。</p>
+        
+        <hr>
+        <audio controls>
+	    	<source src="
+	    	../audio/Spring_In_My_Step.mp3" type="audio/mpeg">
+	    </audio>
+    </body>
+</html>
