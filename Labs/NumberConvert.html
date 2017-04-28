@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>支票金額轉換</title>
+    
+</head>
+
+<body>
+輸入金額:
+<input type="text" id="txt1" name="輸入金額" value="" PlaceHolder="輸入0~9數字" size="40">
+<br><br>    
+<button type="button" id="Button1" onclick="Button1_onclick()">轉換</button>
+<br><br>
+轉換結果:
+<input type="text" id="txt2" name="轉換結果" value=""  size="40">
+
+<script>
+function Button1_onclick(){
+    var inputNum = "" + txt1.value ;
+    var chNumber = ["零","壹","貳","参","肆","伍","陸","柒","捌","玖"];
+    var decimal = ["圓","拾","佰","仟","萬","拾","佰","仟","億","拾","佰","仟","兆","拾","佰","仟"]
+    var convert = "";
+    
+    for(var i = 0; i < inputNum.length; i++){
+        var d = inputNum.length - i - 1;
+        convert += chNumber[inputNum.charAt(i)] + decimal[d];
+    }
+    
+    var result = convert;
+    
+	result = result.replace(/零拾/g, "零"); 
+	result = result.replace(/零佰/g, "零");
+	result = result.replace(/零仟/g, "零");
+	result = result.replace(/零零零零/g,"");  
+    result = result.replace(/零零零/g,"零");  
+    result = result.replace(/零零/g,"零");  
+    result = result.replace(/零萬/g,"萬");  
+    result = result.replace(/零圓/g,"圓");
+    result = result.replace(/億萬/g,"億零");
+    result = result.replace(/零億/g,"億");
+
+    txt2.value = result+"正";
+}
+
+</script>
+</body>
+
+</html>

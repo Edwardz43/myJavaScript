@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<button  onclick="demo(event)"  type="button" style="float:left;">Create</button>
+<canvas  id="myCanvas" width="800" height="600" style="background: orange; border:1px solid #d3d3d3;position:absolute;left:100px;top:150px;"></canvas>
+<p id="showValue" tyle="float:left; margin-left:5%;"></p>
+
+<script>
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+    
+    //設一個球的起始點
+    var x = -c.width/4;
+    var y = -c.height/4;
+    
+    //將畫布的正中心設為(0, 0)  方便後面的作畫
+    ctx.translate(c.width/2, c.height/2);
+    
+    var dx = 4;
+    var dy = 5;
+    var r = 50;
+    var angleX;
+    
+    // 按下按鈕  開始畫圖
+    function demo(e){
+        setInterval(drawing, 20);
+    }
+    //先清除圖面 然後再畫新的上去
+    function drawing(){
+        ctx.clearRect(-c.width, -c.height, c.width*2, c.height*2);
+        drawBall();
+        drawLine();
+    }
+    //畫球
+    function drawBall() {
+        if(x - r < -c.width/2 || x + r > c.width/2)dx *= -1;
+        if(y - r < -c.height/2 || y + r > c.height/2)dy *= -1;
+        x += dx;
+        y += dy;
+        
+        //設定漸層效果
+        var grd = ctx.createRadialGradient(x, y, 5, x, y, r);
+        grd.addColorStop(0, "black");
+        grd.addColorStop(0.5, "red");
+        grd.addColorStop(1, "white");
+        
+        //畫上去
+        ctx.fillStyle = grd;
+        ctx.beginPath();
+        ctx.arc(x, y, r*0.9, 0, 2*Math.PI);
+        ctx.fill();
+    }
+    
+    //畫線
+    function drawLine(){
+        //三角函數  餘弦定理  用來求棍子和球的夾角
+        var lenA = 200;
+        var lenB = Math.pow(Math.pow(x,2)+Math.pow(y,2),0.5);
+        var lenC = Math.pow(Math.pow(x,2)+Math.pow(y+200,2),0.5);
+        angleX = Math.acos((Math.pow(lenA, 2)+Math.pow(lenB, 2)-Math.pow(lenC, 2)) / (2*lenA*lenB));
+        
+        //當球跑到第三和第四項限  需要另外處理
+        if((x < 0 && y > 0)||(x < 0 && y < 0)){
+            angleX = 2*Math.PI - angleX ; 
+        }else if(x < 0 && y ==0){
+            angleX = 1.5*Math.PI;
+        }
+        
+        ctx.beginPath();
+        //設定棍子的顏色和粗細
+        ctx.lineWidth=5;
+        ctx.strokeStyle="green";
+        
+        //設定旋轉角度
+        ctx.rotate(angleX);
+        
+        //設定線的兩端點
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, -lenA);
+        //連起來
+        ctx.stroke();
+        
+        //畫完記得轉回來
+        ctx.rotate(-angleX)
+    }
+    
+    //輔助資訊
+    window.onload=function show(){
+        var getX = x;
+        var getY = y;
+        var getAngle = angleX;
+        var message = "x : "+x+", y : "+y+", angle : "+angleX;
+        document.getElementById("showValue").innerHTML = message;
+        setTimeout(show,20);
+    }
+    
+</script>
+</body>
+</html>
