@@ -19,6 +19,19 @@
             var score = 0;
             var loseBall = 0;
             
+            //設置音樂與音效
+            var bouncingSound = new Audio("bounce.mp3");
+            var breakingSound = new Audio("break.ogg");
+            var dropingSound = new Audio("drop.mp3");
+            var BGM = new Audio("Greenery.mp3");
+            var WinningBGM = new Audio("trumpet1.mp3");
+            bouncingSound.volume = 0.5;
+            breakingSound.volume = 0.5;
+            dropingSound.volume = 0.5;
+            WinningBGM.volume = 0.6;
+            BGM.volume = 0.1;
+            BGM.loop = true;
+            
             //打包物件:paddle 增加: 生命值(Life)
             var paddle = {
                 X : 200,
@@ -73,11 +86,12 @@
                         // or if ball collides in Y direction with bricks
                         || collisionYWithBricks(ball)){
                         ball.DeltaY *= -1;
-                        // bouncingSound.play();
+                        bouncingSound.play();
                     }
                     // If the bottom of the ball touches the bottom of the screen then end the game
                     if (ball.Y + ball.DeltaY + ball.Radius > canvas.height){
                         delete balls[ball.number];
+                        dropingSound.play();
                         loseBall++;
                     }
                     // If side of ball touches either side of the wall then reverse X direction
@@ -89,7 +103,7 @@
                     || collisionXWithBricks(ball)
                     ){  
                         ball.DeltaX *= -1;
-                        //bouncingSound.play();
+                        bouncingSound.play();
                     }
                     // if bottom of ball reaches the top of paddle,
                     if ((ball.Y + ball.DeltaY + ball.Radius >= paddle.Y)){//||(ball.Y + ball.DeltaY + ball.Radius < paddle.Y)
@@ -97,7 +111,7 @@
                         if (ball.X + ball.DeltaX >= paddle.X && 
                             ball.X + ball.DeltaX <= paddle.X + paddle.Width){
                             ball.DeltaY *= -1;
-                            //bouncingSound.play();
+                            bouncingSound.play();
                         }
                     }
                     // Move the ball
@@ -127,37 +141,40 @@
                     context.restore();
                 }
             }
-            
-            
-            var bricksPerRow = 8;
+        
+            var bricksPerRow = 5;
             var brickHeight = 20;
             var brickWidth = canvas.width / bricksPerRow;
     
             // Brick Layout: 1 is orange, 2 is green, 3 is gray, 0 means no brick 
             var bricks = [
-                            [0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0,0,0,0]
+                            // [0,0,0,0,0,0,0,0],
+                            // [0,0,0,0,0,0,0,0],
+                            // [0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0],
+                            [0,0,0,0,0],
+                            [0,0,0,0,0],
+                            [0,0,0,0,0],
+                            [0,0,0,0,0],
+                            [0,0,0,0,0]
                         ];
-            
+             var brickOut = 0;
+             var brickNum = 0;
             //隨機產生磚塊種類             
             for (var i = 0; i < bricks.length; i++) {
                 for (var j = 0; j < bricks[i].length; j++) {
                     bricks[i][j] = Math.floor(Math.random()*4);
+                    brickNum++;
+                    if(bricks[i][j] == 0) brickOut++;
                 }
             }
-            
+           
             // iterate through the bricks array and draw each brick using drawBrick()
             function createBricks() {
                 for (var i = 0; i < bricks.length; i++) {
                     for (var j = 0; j < bricks[i].length; j++) {
                         drawBrick(j, i, bricks[i][j]);
+                        if(brickOut == brickNum) winGame();
                     }
                 }
             }
@@ -204,6 +221,8 @@
             }
            
             function animate() {
+                //$("#debug").text("out" + brickOut + ": num" + brickNum); 測試用
+                
                 context.clearRect(0,0,canvas.width,canvas.height);
                 createBricks();
                 displayScoreBoard();
@@ -229,7 +248,8 @@
                 } else {
                     // give player an extra point when the brick disappears
                     score += 2;     
-                    //breakingSound.play();
+                    breakingSound.play();
+                    brickOut++;
                 }
             }
             
@@ -295,7 +315,11 @@
             function startGame(){
                 if(!isPlaying){
                     isPlaying = true;
-                    balls = [new Ball(0, 300, 300, 10, +4, -3),new Ball(1, 300, 300, 10, +3, -4)];
+                    BGM.play();
+                    balls = [   
+                                new Ball(0, 300, 300, 10, +6, -5),
+                                new Ball(1, 300, 300, 10, -5, -6)
+                            ];
                     paddle.Move = 'NONE';
                     paddle.DeltaX = 0;
                     //score = 0;
@@ -319,48 +343,82 @@
                     }); 
                 }
             }
-    
+            
+            //設置破關 基本上和endgame差不多
+            function winGame(){
+                isPlaying = false;
+                clearInterval(gameLoop);
+                context.save();
+                //破關訊息加上漸層  比較有感覺
+                var grd=context.createLinearGradient(
+                        0, canvas.height / 2,
+                        0, canvas.height / 2 + 27
+                    );
+                grd.addColorStop(0,"#F0D942");
+                grd.addColorStop(1,"white");
+                context.fillStyle = grd;
+                context.font = "24px Arial italic";
+                context.textBaseline = "top";
+                context.textAlign = "center";
+                context.fillText('Stage Complete ! Your Record : '+ score, 
+                    canvas.width / 2, canvas.height / 2);
+                context.restore();
+                
+                var s = $("#hist").text();
+                s = s.substr(5,99999);
+                $("#hist").text("TOP :" + Math.max(s,score));
+                BGM.pause();
+                BGM.load();
+                WinningBGM.play();
+                isPlaying = false;
+            }
+            
             function endGame() {
                 isPlaying = false;
                 paddle.Life--;
                 clearInterval(gameLoop);
+                context.save();
                 context.fillStyle = '#5CADAD';
                 context.textBaseline = "top";
                 context.textAlign = "center";
                 context.fillText('One More Chance !', canvas.width / 2, canvas.height / 2);
-                
+                context.restore();
                 if(paddle.Life >= 0){
                     setTimeout(startGame, 1000)
                 }else{
+                    context.save();
                     context.clearRect(
-                        canvas.width / 2 - 80, canvas.height / 2, canvas.width, 30)
+                        canvas.width / 2 - 80, canvas.height / 2,
+                            canvas.width, 30)
                     context.fillStyle = "#FA7770";
                     context.textBaseline = "top";
                     context.textAlign = "center";
-                    context.fillText('Game Over ! Your Record : '+ score, canvas.width / 2, canvas.height / 2);
+                    context.fillText('Game Over ! Your Record : '+ score,
+                                        canvas.width / 2, canvas.height / 2);
+                    context.restore();
+                    
+                    //GG 最高分記下來  和歷史高分作比較  留下高的  Math.max()會取數字大的那個
                     var s = $("#hist").text();
-                    s = s.substr(5,999);
+                    s = s.substr(5,99999);
                     $("#hist").text("TOP :" + Math.max(s,score));
+                    BGM.pause();
+                    BGM.load();
                     isPlaying = false;
                 }
             }
-    
             startGame();
-            
     	});
-        
     });
 </script>
 
 <style type="text/css">
-canvas {
-	border: 1px solid black;
-}
+    canvas {
+    	border: 1px solid black;
+    }
 </style>
 
 </head>
 <body>
-
 	<h1>Breakout</h1>
 	<h2 id="hist">TOP :</h2>
 	<canvas id="canvas" width="400" height="500" style="background: url('BG02.jpg')";></canvas>
