@@ -3,20 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>支票金額轉換</title>
-    
+    <style>
+        .input{
+            width: 20em;
+            height: 2em;
+        }
+    </style>
 </head>
 
 <body>
 輸入金額:
-<input type="text" id="txt1" name="輸入金額" value="" PlaceHolder="輸入0~9數字" size="40">
-<br><br>    
-<button type="button" id="Button1" onclick="Button1_onclick()">轉換</button>
+<input class="input" type="text" id="txt1" name="輸入金額" value="" PlaceHolder="輸入0~9數字" size="40" >
+<br><br>
+<input type="submit" value="轉換" onclick="numberToChinese()">
 <br><br>
 轉換結果:
-<input type="text" id="txt2" name="轉換結果" value=""  size="40">
+<input class="input" type="text" id="txt2" name="轉換結果" value=""  size="40">
 
 <script>
-function Button1_onclick(){
+function numberToChinese(){
     var inputNum = "" + txt1.value ;
     var chNumber = ["零","壹","貳","参","肆","伍","陸","柒","捌","玖"];
     var decimal = ["圓","拾","佰","仟","萬","拾","佰","仟","億","拾","佰","仟","兆","拾","佰","仟"]
@@ -40,7 +45,7 @@ function Button1_onclick(){
     result = result.replace(/億萬/g,"億零");
     result = result.replace(/零億/g,"億");
 
-    txt2.value = result+"正";
+    txt2.value = result + "正";
 }
 
 </script>

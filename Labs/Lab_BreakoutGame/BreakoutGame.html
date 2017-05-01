@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Breakout Game</title>
+<script type="text/javascript" src="jquery.js"></script>
+<script>
+    $(document).ready(function () {
+        //增加一個 "遊戲中"的狀態 
+        var isPlaying = false;
+        
+        //按下開始扭才開始遊戲
+        $("#btnStart").click(function() {
+    		// coding here
+    		var canvas = $('#canvas')[0];
+            // different browsers support different contexts. All support 2d
+            var context = canvas.getContext('2d');
+            var gameLoop;
+            var score = 0;
+            var loseBall = 0;
+            
+            //打包物件:paddle 增加: 生命值(Life)
+            var paddle = {
+                X : 200,
+                Y : 460,
+                Width : 100,
+                Height : 15,
+                DeltaX : 0,
+                DeltaY : 0,
+                SpeedX : 10,
+                Life : 2,
+                Move : "none"
+            }
+             
+            function movePaddle(){
+                if (paddle.Move == 'LEFT'){
+                    paddle.DeltaX = -paddle.SpeedX;
+                } else if (paddle.Move == 'RIGHT'){
+                    paddle.DeltaX = paddle.SpeedX;
+                } else {
+                    paddle.DeltaX = 0;
+                }
+                // If paddle reaches the ends, then don't let it move 
+                if (paddle.X + paddle.DeltaX < 0 || paddle.X + paddle.DeltaX +paddle.Width >canvas.width){
+                    paddle.DeltaX = 0; 
+                }
+                paddle.X = paddle.X + paddle.DeltaX;
+            }
+            
+            function drawPaddle() {
+            	context.save();
+            	context.fillStyle="#804040";
+                context.fillRect(paddle.X, paddle.Y, paddle.Width, paddle.Height);
+                context.restore();
+            }
+            
+            //打包成function: 產生新的Ball
+            function Ball(number, X, Y, Radius, DeltaX, DeltaY){
+                this.number = number;
+                this.X = X;
+                this.Y = Y;
+                this.Radius = Radius;     
+                this.DeltaX = DeltaX; 
+                this.DeltaY = DeltaY; 
+            }
+            
+            function moveBall(ballI){
+                var ball = ballI;
+                // First check if we will bump into something
+                // If top of the ball touches the top then reverse Y direction
+                if(ball != null){
+                    if (ball.Y + ball.DeltaY - ball.Radius < 0 
+                        // or if ball collides in Y direction with bricks
+                        || collisionYWithBricks(ball)){
+                        ball.DeltaY *= -1;
+                        // bouncingSound.play();
+                    }
+                    // If the bottom of the ball touches the bottom of the screen then end the game
+                    if (ball.Y + ball.DeltaY + ball.Radius > canvas.height){
+                        delete balls[ball.number];
+                        loseBall++;
+                    }
+                    // If side of ball touches either side of the wall then reverse X direction
+                        //left of ball moves too far left
+                    if ((ball.X + ball.DeltaX - ball.Radius < 0) ||
+                        //or right side of ball moves too far right
+                    (ball.X + ball.DeltaX + ball.Radius > canvas.width)
+                    // or if ball collides in Y direction with bricks
+                    || collisionXWithBricks(ball)
+                    ){  
+                        ball.DeltaX *= -1;
+                        //bouncingSound.play();
+                    }
+                    // if bottom of ball reaches the top of paddle,
+                    if ((ball.Y + ball.DeltaY + ball.Radius >= paddle.Y)){//||(ball.Y + ball.DeltaY + ball.Radius < paddle.Y)
+                        // and it is positioned between the two ends of the paddle (is on top)
+                        if (ball.X + ball.DeltaX >= paddle.X && 
+                            ball.X + ball.DeltaX <= paddle.X + paddle.Width){
+                            ball.DeltaY *= -1;
+                            //bouncingSound.play();
+                        }
+                    }
+                    // Move the ball
+                    ball.X += ball.DeltaX;
+                    ball.Y += ball.DeltaY;
+                }
+            }
+            
+            function drawBall(ballI) {
+                //如果球被刪除了  就=null 那就不必畫了
+                if(ballI != null){
+                    var ball = ballI;
+                	context.save();
+                    //把球加個漸層效果 看起來像立體的
+                    var grd = context.createRadialGradient(
+                        ball.X, ball.Y, ball.Radius, ball.X - 4, ball.Y - 4, 0);
+                    grd.addColorStop(0, "red");
+                    grd.addColorStop(1, "white");
+                    context.fillStyle = grd;
+                    // Context.beginPath when you draw primitive shapes
+                    context.beginPath();
+                    // Draw arc at center ballX, ballY with radius ballRadius, 
+                    // From 0 to 2xPI radians (full circle)
+                    context.arc(ball.X, ball.Y, ball.Radius, 0, Math.PI * 2, true);
+                    // Fill up the path that you just drew
+                    context.fill();
+                    context.restore();
+                }
+            }
+            
+            
+            var bricksPerRow = 8;
+            var brickHeight = 20;
+            var brickWidth = canvas.width / bricksPerRow;
+    
+            // Brick Layout: 1 is orange, 2 is green, 3 is gray, 0 means no brick 
+            var bricks = [
+                            [0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0],
+                            [0,0,0,0,0,0,0,0]
+                        ];
+            
+            //隨機產生磚塊種類             
+            for (var i = 0; i < bricks.length; i++) {
+                for (var j = 0; j < bricks[i].length; j++) {
+                    bricks[i][j] = Math.floor(Math.random()*4);
+                }
+            }
+            
+            // iterate through the bricks array and draw each brick using drawBrick()
+            function createBricks() {
+                for (var i = 0; i < bricks.length; i++) {
+                    for (var j = 0; j < bricks[i].length; j++) {
+                        drawBrick(j, i, bricks[i][j]);
+                    }
+                }
+            }
+            // draw a single brick
+            function drawBrick(x, y, type) {
+                switch (type) { // if brick is still visible; three colors for three types of bricks
+                case 1:
+                    context.fillStyle = 'orange';
+                    break;
+                case 2:
+                    context.fillStyle = 'rgb(100,200,100)';
+                    break;
+                case 3:
+                    context.fillStyle = 'rgba(50,100,50,.5)';
+                    break;
+                default:
+                    context.clearRect(x * brickWidth, y * brickHeight, brickWidth,
+                            brickHeight);
+                    break;
+    
+                }
+                if (type) {
+                    //Draw rectangle with fillStyle color selected earlier
+                    context.fillRect(x * brickWidth, y * brickHeight, brickWidth,
+                            brickHeight);
+                    // Also draw blackish border around the brick
+                    context.strokeRect(x * brickWidth + 1, y * brickHeight + 1,
+                            brickWidth - 2, brickHeight - 2);
+                }
+            }
+            
+            function displayScoreBoard() {
+                //Set the text font and color
+                
+                context.fillStyle = '#5CADAD';
+                context.font = "20px Times New Roman";
+    
+                //Clear the bottom 30 pixels of the canvas
+                context.clearRect(0, canvas.height - 30, canvas.width, 30);
+                // Write Text 5 pixels from the bottom of the canvas
+                context.textBaseline = "bottom";
+                context.textAlign = "left";
+                context.fillText('Score: ' + score + ' Life: '+ paddle.Life , 10, canvas.height - 5);
+            }
+           
+            function animate() {
+                context.clearRect(0,0,canvas.width,canvas.height);
+                createBricks();
+                displayScoreBoard();
+                movePaddle();
+                drawPaddle();
+                if(loseBall == balls.length){
+                    loseBall = 0;
+                    endGame();
+                }
+                for(var i=0; i<balls.length; i++){
+                    moveBall(balls[i]);  
+                    drawBall(balls[i]);
+               }
+            }
+            
+            function explodeBrick(i,j){
+                // First weaken the brick (0 means brick has gone)
+                bricks[i][j] --;
+    
+                if (bricks[i][j]>0){ 
+                    // The brick is weakened but still around. Give a single point.
+                    score++;
+                } else {
+                    // give player an extra point when the brick disappears
+                    score += 2;     
+                    //breakingSound.play();
+                }
+            }
+            
+            function collisionXWithBricks(balls){
+                var ball = balls;
+                var bumpedX = false;    
+                for (var i=0; i < bricks.length; i++) {
+                    for (var j=0; j < bricks[i].length; j++) {
+                        if (bricks[i][j]){ // if brick is still visible
+                            var brickX = j * brickWidth;
+                            var brickY = i * brickHeight;
+                            if (
+                            // barely touching from left
+                            ((ball.X + ball.DeltaX + ball.Radius >= brickX) &&
+                            (ball.X + ball.Radius <= brickX))
+                            ||
+                            // barely touching from right
+                            ((ball.X + ball.DeltaX - ball.Radius<= brickX + brickWidth)&&
+                            (ball.X - ball.Radius >= brickX + brickWidth))
+                            ){      
+                                if ((ball.Y + ball.DeltaY - ball.Radius<= brickY + brickHeight) &&
+                                    (ball.Y + ball.DeltaY + ball.Radius >= brickY)){                                                   
+                                    // weaken brick and increase score
+                                    explodeBrick(i,j);
+                                    bumpedX = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                    return bumpedX;
+            }               
+    
+            function collisionYWithBricks(balls){
+                var ball = balls
+                var bumpedY = false;
+                for (var i=0; i < bricks.length; i++) {
+                    for (var j=0; j < bricks[i].length; j++) {
+                        if (bricks[i][j]){ // if brick is still visible
+                            var brickX = j * brickWidth;
+                            var brickY = i * brickHeight;
+                            if (
+                                // barely touching from below
+                            ((ball.Y + ball.DeltaY - ball.Radius <= brickY + brickHeight) && 
+                            (ball.Y - ball.Radius >= brickY + brickHeight))
+                            ||
+                            // barely touching from above
+                            ((ball.Y + ball.DeltaY + ball.Radius >= brickY) &&
+                            (ball.Y + ball.Radius <= brickY ))){
+                                if (ball.X + ball.DeltaX + ball.Radius >= brickX && 
+                                    ball.X + ball.DeltaX - ball.Radius<= brickX + brickWidth){                                     
+                                    // weaken brick and increase score
+                                    explodeBrick(i,j);                          
+                                    bumpedY = true;
+                                }                       
+                            }
+                        }
+                    }
+                }
+                return bumpedY;
+            }
+            
+            function startGame(){
+                if(!isPlaying){
+                    isPlaying = true;
+                    balls = [new Ball(0, 300, 300, 10, +4, -3),new Ball(1, 300, 300, 10, +3, -4)];
+                    paddle.Move = 'NONE';
+                    paddle.DeltaX = 0;
+                    //score = 0;
+                    // call the animate() function every 200ms until clearInterval(gameLoop) is called
+                    gameLoop = setInterval(animate,20);
+                    // Start Tracking Keystokes
+                    $(document).keydown(function(evt) {
+                        if (evt.keyCode == 39) {
+                            paddle.Move = 'RIGHT';
+                        } else if (evt.keyCode == 37){
+                            paddle.Move = 'LEFT';
+                        }
+                    });         
+        
+                    $(document).keyup(function(evt) {
+                        if (evt.keyCode == 39) {
+                            paddle.Move = 'NONE';
+                        } else if (evt.keyCode == 37){
+                            paddle.Move = 'NONE';
+                        }
+                    }); 
+                }
+            }
+    
+            function endGame() {
+                isPlaying = false;
+                paddle.Life--;
+                clearInterval(gameLoop);
+                context.fillStyle = '#5CADAD';
+                context.textBaseline = "top";
+                context.textAlign = "center";
+                context.fillText('One More Chance !', canvas.width / 2, canvas.height / 2);
+                
+                if(paddle.Life >= 0){
+                    setTimeout(startGame, 1000)
+                }else{
+                    context.clearRect(
+                        canvas.width / 2 - 80, canvas.height / 2, canvas.width, 30)
+                    context.fillStyle = "#FA7770";
+                    context.textBaseline = "top";
+                    context.textAlign = "center";
+                    context.fillText('Game Over ! Your Record : '+ score, canvas.width / 2, canvas.height / 2);
+                    var s = $("#hist").text();
+                    s = s.substr(5,999);
+                    $("#hist").text("TOP :" + Math.max(s,score));
+                    isPlaying = false;
+                }
+            }
+    
+            startGame();
+            
+    	});
+        
+    });
+</script>
+
+<style type="text/css">
+canvas {
+	border: 1px solid black;
+}
+</style>
+
+</head>
+<body>
+
+	<h1>Breakout</h1>
+	<h2 id="hist">TOP :</h2>
+	<canvas id="canvas" width="400" height="500" style="background: url('BG02.jpg')";></canvas>
+	<br><br>
+	<button type="button" id="btnStart">Start Game</button>
+    <br><br>
+    <p id="debug"></p>
+</body>
+</html>
