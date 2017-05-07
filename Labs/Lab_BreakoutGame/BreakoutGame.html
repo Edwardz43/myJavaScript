@@ -3,12 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <title>Breakout Game</title>
+<style type="text/css">
+    .fieldset { 
+    display: block;
+    margin-left: 2px;
+    margin-right: 2px;
+    padding-top: 0.35em;
+    padding-bottom: 0.625em;
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+    /*border: 2px groove (internal value);*/
+}
+</style>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.12.4.js"></script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="jquery.js"></script>
 <script>
     $(document).ready(function () {
         //增加一個 "遊戲中"的狀態 
         var isPlaying = false;
-        
         //按下開始扭才開始遊戲
         $("#btnStart").click(function() {
     		// coding here
@@ -18,7 +32,11 @@
             var gameLoop;
             var score = 0;
             var loseBall = 0;
-            
+            var Brick;
+            var balls;
+            //增加 難度設定
+            var difficulty = $("input[name='radio-1']:checked").data("num");
+                
             //設置音樂與音效
             var bouncingSound = new Audio("bounce.mp3");
             var breakingSound = new Audio("break.ogg");
@@ -29,14 +47,17 @@
             breakingSound.volume = 0.5;
             dropingSound.volume = 0.5;
             WinningBGM.volume = 0.6;
-            BGM.volume = 0.1;
+            BGM.volume = 0.2;
             BGM.loop = true;
             
             //打包物件:paddle 增加: 生命值(Life)
             var paddle = {
                 X : 200,
                 Y : 460,
-                Width : 100,
+                //板子的長度隨難度增加而減少
+                Width : 150 - difficulty * 12,
+                // X : 0,
+                // Width : canvas.width,
                 Height : 15,
                 DeltaX : 0,
                 DeltaY : 0,
@@ -141,40 +162,67 @@
                     context.restore();
                 }
             }
+            
+            function initBricks(PerRow, Height) {
+                this.PerRow = PerRow;
+                this.Height = Height;
+                this.Width = canvas.width / this.PerRow;
         
-            var bricksPerRow = 5;
-            var brickHeight = 20;
-            var brickWidth = canvas.width / bricksPerRow;
-    
-            // Brick Layout: 1 is orange, 2 is green, 3 is gray, 0 means no brick 
-            var bricks = [
-                            // [0,0,0,0,0,0,0,0],
-                            // [0,0,0,0,0,0,0,0],
-                            // [0,0,0,0,0,0,0,0],
-                            [0,0,0,0,0],
-                            [0,0,0,0,0],
-                            [0,0,0,0,0],
-                            [0,0,0,0,0],
-                            [0,0,0,0,0],
-                            [0,0,0,0,0]
-                        ];
-             var brickOut = 0;
-             var brickNum = 0;
-            //隨機產生磚塊種類             
-            for (var i = 0; i < bricks.length; i++) {
-                for (var j = 0; j < bricks[i].length; j++) {
-                    bricks[i][j] = Math.floor(Math.random()*4);
-                    brickNum++;
-                    if(bricks[i][j] == 0) brickOut++;
+                // Brick Layout: 1 is orange, 2 is green, 3 is gray, 0 means no brick 
+                switch(difficulty){
+                    case 5:
+                        this.bricks = [
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0]
+                                    ];
+                        break;
+                        
+                    case 4:
+                        this.bricks = [
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0]
+                                    ];
+                        break;
+                        
+                    default:
+                         this.bricks = [
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0],
+                                        [0,0,0,0,0]
+                                    ];
                 }
+                this.brickOut = 0;
+                this.brickNum = 0;
+                //隨機產生磚塊種類
+                this.setBricks = function () {
+                    for (var i = 0; i < this.bricks.length; i++) {
+                        for (var j = 0; j < this.bricks[i].length; j++) {
+                            this.bricks[i][j] = Math.floor(Math.random()*4);
+                            this.brickNum++;
+                            if(this.bricks[i][j] == 0) this.brickOut++;
+                        }
+                    }
+                }    
             }
-           
+            
             // iterate through the bricks array and draw each brick using drawBrick()
             function createBricks() {
-                for (var i = 0; i < bricks.length; i++) {
-                    for (var j = 0; j < bricks[i].length; j++) {
-                        drawBrick(j, i, bricks[i][j]);
-                        if(brickOut == brickNum) winGame();
+                for (var i = 0; i < Brick.bricks.length; i++) {
+                    for (var j = 0; j < Brick.bricks[i].length; j++) {
+                        drawBrick(j, i, Brick.bricks[i][j]);
+                        if(Brick.brickOut == Brick.brickNum) winGame();
                     }
                 }
             }
@@ -191,18 +239,18 @@
                     context.fillStyle = 'rgba(50,100,50,.5)';
                     break;
                 default:
-                    context.clearRect(x * brickWidth, y * brickHeight, brickWidth,
-                            brickHeight);
+                    context.clearRect(x * Brick.Width, y * Brick.Height,
+                        Brick.kWidth, Brick.kHeight);
                     break;
     
                 }
                 if (type) {
                     //Draw rectangle with fillStyle color selected earlier
-                    context.fillRect(x * brickWidth, y * brickHeight, brickWidth,
-                            brickHeight);
+                    context.fillRect(x * Brick.Width, y * Brick.Height,
+                        Brick.Width, Brick.Height);
                     // Also draw blackish border around the brick
-                    context.strokeRect(x * brickWidth + 1, y * brickHeight + 1,
-                            brickWidth - 2, brickHeight - 2);
+                    context.strokeRect(x * Brick.Width + 1, y * Brick.Height + 1,
+                            Brick.Width - 2, Brick.Height - 2);
                 }
             }
             
@@ -221,7 +269,14 @@
             }
            
             function animate() {
-                //$("#debug").text("out" + brickOut + ": num" + brickNum); 測試用
+                //$("#debug").text("difficulty : " + d + " balls.length : " + balls.length); //測試用
+                //"out" + Brick.brickOut + ": num" + Brick.brickNum
+                
+                
+                if(Brick.brickOut > Brick.brickNum * 2 / 3){
+                    
+                    $("#canvas").css({"background": "url('BG01.jpg')"});
+                }
                 
                 context.clearRect(0,0,canvas.width,canvas.height);
                 createBricks();
@@ -240,37 +295,37 @@
             
             function explodeBrick(i,j){
                 // First weaken the brick (0 means brick has gone)
-                bricks[i][j] --;
+                Brick.bricks[i][j] --;
     
-                if (bricks[i][j]>0){ 
+                if (Brick.bricks[i][j]>0){ 
                     // The brick is weakened but still around. Give a single point.
                     score++;
                 } else {
                     // give player an extra point when the brick disappears
                     score += 2;     
                     breakingSound.play();
-                    brickOut++;
+                    Brick.brickOut++;
                 }
             }
             
             function collisionXWithBricks(balls){
                 var ball = balls;
                 var bumpedX = false;    
-                for (var i=0; i < bricks.length; i++) {
-                    for (var j=0; j < bricks[i].length; j++) {
-                        if (bricks[i][j]){ // if brick is still visible
-                            var brickX = j * brickWidth;
-                            var brickY = i * brickHeight;
+                for (var i=0; i < Brick.bricks.length; i++) {
+                    for (var j=0; j < Brick.bricks[i].length; j++) {
+                        if (Brick.bricks[i][j]){ // if brick is still visible
+                            var brickX = j * Brick.Width;
+                            var brickY = i * Brick.Height;
                             if (
                             // barely touching from left
                             ((ball.X + ball.DeltaX + ball.Radius >= brickX) &&
                             (ball.X + ball.Radius <= brickX))
                             ||
                             // barely touching from right
-                            ((ball.X + ball.DeltaX - ball.Radius<= brickX + brickWidth)&&
-                            (ball.X - ball.Radius >= brickX + brickWidth))
+                            ((ball.X + ball.DeltaX - ball.Radius<= brickX + Brick.Width)&&
+                            (ball.X - ball.Radius >= brickX + Brick.Width))
                             ){      
-                                if ((ball.Y + ball.DeltaY - ball.Radius<= brickY + brickHeight) &&
+                                if ((ball.Y + ball.DeltaY - ball.Radius<= brickY + Brick.Height) &&
                                     (ball.Y + ball.DeltaY + ball.Radius >= brickY)){                                                   
                                     // weaken brick and increase score
                                     explodeBrick(i,j);
@@ -286,21 +341,21 @@
             function collisionYWithBricks(balls){
                 var ball = balls
                 var bumpedY = false;
-                for (var i=0; i < bricks.length; i++) {
-                    for (var j=0; j < bricks[i].length; j++) {
-                        if (bricks[i][j]){ // if brick is still visible
-                            var brickX = j * brickWidth;
-                            var brickY = i * brickHeight;
+                for (var i=0; i < Brick.bricks.length; i++) {
+                    for (var j=0; j < Brick.bricks[i].length; j++) {
+                        if (Brick.bricks[i][j]){ // if brick is still visible
+                            var brickX = j * Brick.Width;
+                            var brickY = i * Brick.Height;
                             if (
                                 // barely touching from below
-                            ((ball.Y + ball.DeltaY - ball.Radius <= brickY + brickHeight) && 
-                            (ball.Y - ball.Radius >= brickY + brickHeight))
+                            ((ball.Y + ball.DeltaY - ball.Radius <= brickY + Brick.Height) && 
+                            (ball.Y - ball.Radius >= brickY + Brick.Height))
                             ||
                             // barely touching from above
                             ((ball.Y + ball.DeltaY + ball.Radius >= brickY) &&
                             (ball.Y + ball.Radius <= brickY ))){
                                 if (ball.X + ball.DeltaX + ball.Radius >= brickX && 
-                                    ball.X + ball.DeltaX - ball.Radius<= brickX + brickWidth){                                     
+                                    ball.X + ball.DeltaX - ball.Radius<= brickX + Brick.Width){                                     
                                     // weaken brick and increase score
                                     explodeBrick(i,j);                          
                                     bumpedY = true;
@@ -315,16 +370,36 @@
             function startGame(){
                 if(!isPlaying){
                     isPlaying = true;
+                    if(isPlaying){
+                        for(var i = 1; i <= 3; i++){
+                            $("#radio"+ i).prop("disabled", "true");
+                        }
+                    }
                     BGM.play();
-                    balls = [   
-                                new Ball(0, 300, 300, 10, +6, -5),
-                                new Ball(1, 300, 300, 10, -5, -6)
-                            ];
+                    
+                    //bug抓到了
+                    var d = difficulty * 0.6;
+                    switch (difficulty) {
+                        case 4: case 5:
+                            balls = [   
+                                        new Ball(0, 200, 250, 10, +(6 + d), -(5 + d)),
+                                        new Ball(1, 200, 250, 10, +(5 + d), -(6 + d)),
+                                        new Ball(2, 200, 250, 10, +(4 + d), -(6 + d))
+                                    ];
+                            break;
+            
+                        default:
+                            balls = [   
+                                        new Ball(0, 200, 250, 10, +(6 + d), -(5 + d)),
+                                        new Ball(1, 200, 250, 10, +(5 + d), -(6 + d))
+                                    ];
+                    }
+                
+                   
                     paddle.Move = 'NONE';
                     paddle.DeltaX = 0;
-                    //score = 0;
                     // call the animate() function every 200ms until clearInterval(gameLoop) is called
-                    gameLoop = setInterval(animate,20);
+                    gameLoop = setInterval(animate, 20);
                     // Start Tracking Keystokes
                     $(document).keydown(function(evt) {
                         if (evt.keyCode == 39) {
@@ -371,19 +446,22 @@
                 BGM.load();
                 WinningBGM.play();
                 isPlaying = false;
+                for(var i = 1; i <= 3; i++){
+                    $("#radio"+ i).prop("disabled", "");
+                }
             }
             
             function endGame() {
                 isPlaying = false;
                 paddle.Life--;
                 clearInterval(gameLoop);
-                context.save();
-                context.fillStyle = '#5CADAD';
-                context.textBaseline = "top";
-                context.textAlign = "center";
-                context.fillText('One More Chance !', canvas.width / 2, canvas.height / 2);
-                context.restore();
                 if(paddle.Life >= 0){
+                    context.save();
+                    context.fillStyle = '#5CADAD';
+                    context.textBaseline = "top";
+                    context.textAlign = "center";
+                    context.fillText('One More Chance !', canvas.width / 2, canvas.height / 2);
+                    context.restore();
                     setTimeout(startGame, 1000)
                 }else{
                     context.save();
@@ -404,8 +482,15 @@
                     BGM.pause();
                     BGM.load();
                     isPlaying = false;
+                    for(var i = 1; i <= 3; i++){
+                        $("#radio"+ i).prop("disabled", "");
+                    }
                 }
             }
+            
+            
+            Brick = new initBricks(5, 20);
+            Brick.setBricks();
             startGame();
     	});
     });
@@ -422,9 +507,26 @@
 	<h1>Breakout</h1>
 	<h2 id="hist">TOP :</h2>
 	<canvas id="canvas" width="400" height="500" style="background: url('BG02.jpg')";></canvas>
-	<br><br>
-	<button type="button" id="btnStart">Start Game</button>
-    <br><br>
+	<br>
+    <!--<div id="diff">-->
+    <!--    Difficulty :-->
+    <!--    <input type="radio" name="radio-1" id="radio1" value="1" data-num="1" checked="checked"/> 1-->
+    <!--    <input type="radio" name="radio-1" id="radio2" value="2" data-num="2"/> 2-->
+    <!--    <input type="radio" name="radio-1" id="radio3" value="3" data-num="3"/> 3-->
+    <!--    <input type="radio" name="radio-1" id="radio4" value="4" data-num="4"/> 4-->
+    <!--    <input type="radio" name="radio-1" id="radio5" value="5" data-num="5"/> 5-->
+    <!--</div>-->
+    
+    <fieldset>
+        <legend>Select a Difficulty: </legend>
+        <input type="radio" name="radio-1" id="radio1" value="1" data-num="1" checked="checked"/>
+        <label for="radio-1">Easy</label>
+        <input type="radio" name="radio-1" id="radio2" value="2" data-num="3"/>
+        <label for="radio-2">Normal</label>
+        <input type="radio" name="radio-1" id="radio3" value="3" data-num="5"/>
+        <label for="radio-3">Hard</label>
+    	<button type="button" id="btnStart" style="margin-left: 2em">Start Game</button>
+    </fieldset>
     <p id="debug"></p>
 </body>
 </html>
