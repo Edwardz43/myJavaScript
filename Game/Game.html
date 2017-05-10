@@ -9,12 +9,12 @@
     position: absolute;
     top: 0;
     left: 0;
-    width : 1440px; 
+    width : 1280px; 
     height : 600px;
 }
 #myBG {
 	position: relative;
-	width: 1440px;
+	width: 1280px;
 	height: 600px;
 	margin: 0;
 	overflow: hidden;
@@ -57,19 +57,23 @@
         var balls = [];
         var dImg = new Image();
         var eImg = new Image();
+        var vImag = new Image();
         var enermys = [];
         
         var dragon = {
-            level : 8,
-            hP : 200,
+            level : 1,
+            exp : 0,
+            maxHp : 200,
+            hp : 2000000,
             X : 100,
             Y : 100,
-            Dx :0,
-            Dy :0,
+            dx :0,
+            dy :0,
             speed : 2,
-            width : 30,
+            width : 35,
             height : 30,
             Move : "none",
+            beHit : false,
             shot : function (){
                 balls.push(new Ball(dragon.X + 25, dragon.Y + 15 -dragon.level, 3));
                 var fireSound = new Audio('BGM/wing1.mp3');
@@ -79,89 +83,135 @@
         }
         
         function moveDragon(){
-            switch(dragon.Move) {
-                case 'LEFT':
-                    dragon.Dx = -dragon.speed;
-                    break;
-                case 'UP':
-                    dragon.Dy = -dragon.speed;
-                    break;    
-                case 'RIGHT':
-                    dragon.Dx = dragon.speed;
-                    break;
-                case 'DOWN':
-                    dragon.Dy = dragon.speed;
-                    break;    
-                case 'l-NONE':
-                case 'r-NONE':
-                    dragon.Dx = 0;
-                    break;
-                case 'u-NONE':
-                case 'd-NONE':
-                    dragon.Dy = 0;
-                    break;
+            if(dragon.hp > 0){
+                switch(dragon.Move) {
+                    case 'LEFT':
+                        dragon.dx = -dragon.speed;
+                        break;
+                    case 'UP':
+                        dragon.dy = -dragon.speed;
+                        break;    
+                    case 'RIGHT':
+                        dragon.dx = dragon.speed;
+                        break;
+                    case 'DOWN':
+                        dragon.dy = dragon.speed;
+                        break;    
+                    case 'l-NONE':
+                    case 'r-NONE':
+                        dragon.dx = 0;
+                        break;
+                    case 'u-NONE':
+                    case 'd-NONE':
+                        dragon.dy = 0;
+                        break;
+                }
+                //bug
+                if (dragon.X + dragon.dx < 0 || dragon.X + dragon.dx + dragon.width >= canvas.width){
+                    dragon.dx = 0; 
+                }
+                if (dragon.Y + dragon.dy < 0 || dragon.Y + dragon.dy +dragon.height > canvas.height){
+                    dragon.dy = 0; 
+                }
+                dragon.X = dragon.X + dragon.dx;
+                dragon.Y = dragon.Y + dragon.dy;
             }
-            //bug
-            if (dragon.X + dragon.Dx < 0 || dragon.X + dragon.Dx + dragon.width >= canvas.width){
-                dragon.Dx = 0; 
-            }
-            if (dragon.Y + dragon.Dy < 0 || dragon.Y + dragon.Dy +dragon.height > canvas.height){
-                dragon.Dy = 0; 
-            }
-            dragon.X = dragon.X + dragon.Dx;
-            dragon.Y = dragon.Y + dragon.Dy;
         }
         
-        var count = 1;
+        var drawCount = 1;
+        var hitCount = 0;
         function drawDragon(){
-            if (count >= 24) count = 1;
-            ctx.save();
-            dImg.src = 'images/dR0' + Math.floor(count / 6 + 1) + '.png',
-            ctx.drawImage(dImg, dragon.X, dragon.Y, dragon.width , dragon.height );
-            ctx.restore();   
-            count++;
+            if(!dragon.beHit){
+                if (drawCount >= 24) drawCount = 1;
+                ctx.save();
+                dImg.src = 'images/dR0' + Math.floor(drawCount / 6 + 1) + '.png',
+                ctx.drawImage(dImg, dragon.X, dragon.Y, dragon.width , dragon.height );
+                ctx.restore();   
+                drawCount++;
+            }else{
+                if(drawCount >= 24)drawCount = 1;
+                if (drawCount % 4 == 0 && hitCount <= 50) {
+                    ctx.save();
+                    dImg.src = 'images/dR0' + Math.floor(drawCount / 6 + 1) + '.png',
+                    ctx.drawImage(dImg, dragon.X, dragon.Y, dragon.width , dragon.height );
+                    ctx.restore();
+                }else if(hitCount > 50){
+                    dragon.beHit = false;
+                    hitCount =0;
+                }
+                hitCount++
+                drawCount++;
+            }
         }
         
         
         var enermy = function () {
             this.level = 1;
             this.hp = 20;
-            this.X = 200;
-            this.Y = 80;
-            this.Dx = 0;
-            this.Dy = 1;
-            this.speed = 1;
-            this.width = 30;
-            this.height = 30;
+            this.X = 320;
+            this.Y = 90 + Math.random()* 20;
+            this.dx = -0.5;
+            this.dy = 0;
+            this.width = 40;
+            this.height = 40;
+            this.exp = 10;
+            this.power = 10;
+            
             
             this.shot = function (){
-                balls.push(new Ball(this.X - 25, this.Y + 15 -this.level, -3));
-                var fireSound = new Audio('BGM/wing1.mp3');
-                fireSound.volume = 0.3;
-                fireSound.play();
-            }
-            
-            this.moveEnermy = function (){
-                
-                if(this.Y + this.height >= canvas.height ||
-                    this.Y - this.height <= 0 ) {this.Dy *= -1;}
-                this.X += this.Dx;
-                this.Y += this.Dy;    
-            }
-            var c = 1
-            this.drawEnermy = function() {
-                if(this.hp >= 0){
-                    if(c >= 24) c = 1;
-                    eImg.src = 'images/dR0'+ Math.floor(c / 6 + 1) +'_burned.png';
-                    //ctx.clearRect(0,0,canvas.width,canvas.height);
-                    ctx.drawImage(eImg, this.X, this.Y, this.width, this.height);
-                    // ctx.rotate(Math.PI);
-                    c++;
-                }else{
-                    enermys.splice(enermys.indexOf(this),1);
+                if(this.hp > 0){
+                    balls.push(new Ball(this.X - 25, this.Y + 15 -this.level, -3));
+                    var fireSound = new Audio('BGM/wing1.mp3');
+                    fireSound.volume = 0.3;
+                    fireSound.play();
                 }
             }
             
+            this.moveEnermy = function (){
+                if(this.hp > 0){
+                    //判斷是否撞到
+                    if(!dragon.beHit){
+                        if(this.X - this.width*0.7 <= dragon.X  &&
+                            this.X + this.width*0.7 >= dragon.X  &&
+                            this.Y - this.height*0.7 <= dragon.Y  &&
+                            this.Y + this.height*0.7 >= dragon.Y){
+                                dragon.hp -= this.power;
+                                dragon.beHit = true;
+                        }
+                    }
+                    
+                    if(this.Y + this.height >= canvas.height ||
+                        this.Y - this.height <= 0 ) {this.dy *= -1;}
+                    this.X += this.dx;
+                    this.Y += this.dy;
+                    
+                     //走出銀幕就刪掉怪物
+                    if(this.X  <= 0 ) {
+                            enermys.splice(enermys.indexOf(this), 1);
+                    }
+                }
+            }
+            var cLive = 1;
+            var cDead = 1;
+            this.drawEnermy = function() {
+                if(this.hp > 0){
+                    if(cLive >= 40) cLive = 1;
+                    eImg.src = 'images/shadow0'+ Math.floor(cLive / 10 + 1) +'.png';
+                    ctx.drawImage(eImg, this.X, this.Y, this.width, this.height);
+                    cLive++;
+                }else{
+                    if (cDead < 23){
+                        vImag.src = 'images/boom'+ Math.floor(cDead / 4 + 1) +'.png';
+                        ctx.drawImage(vImag, this.X, this.Y, this.width, this.height);
+                        cDead++;    
+                    }else{
+                        dragon.exp += this.exp;
+                        enermys.splice(enermys.indexOf(this),1);
+                        cDead = 1; 
+                    }
+                    
+                }
+            }
         }
         
         
@@ -172,46 +222,40 @@
             this.width = 18 + dragon.level;   
             this.height = 9 + dragon.level;
             this.deltaX = deltaX;
-            this.power = dragon.level * 2;
+            this.power = dragon.level * 5;
             this.hit = false;
         }
             
-        function moveBall(ballI){
-            var ball = ballI;
-            if(ball != null){
-                if (ball.X + ball.deltaX + ball.Radius > canvas.width){
+        function moveBall(ball){
+                //攻擊命中
+                for(var i=0; i < enermys.length; i++){
+                    if (enermys[i].hp > 0) {
+                        if ((ball.X + ball.deltaX -ball.width - 10 >= enermys[i].X - enermys[i].width && 
+                            ball.X - ball.deltaX  <= enermys[i].X + enermys[i].width &&
+                            ball.Y  >= enermys[i].Y && 
+                            ball.Y  <= enermys[i].Y + enermys[i].height )){
+                            var hitSound = new Audio('BGM/fireworks2.mp3');
+                            hitSound.volume = 1;
+                            hitSound.play();
+                            ball.hit = true;
+                            enermys[i].hp -= ball.power;
+                        }
+                    }
+                }
+                
+                //火球飛超過銀幕 就從陣列中移除火球
+                if (ball.X + ball.deltaX + ball.width > canvas.width){
+                    //alert("ok");
                     balls.splice(balls.indexOf(ball), 1);
                 }
                 
-                //攻擊命中
-                for(var i=0; i < enermys.length; i++){
-                    if ((ball.X + ball.deltaX - 18 >= enermys[i].X - enermys[i].width && 
-                        ball.Y  >= enermys[i].Y - enermys[i].height * 0.5 && 
-                        ball.Y  <= enermys[i].Y + enermys[i].height * 0.5)){
-                        var hitSound = new Audio('BGM/fireworks2.mp3');
-                        hitSound.volume = 1;
-                        hitSound.play();
-                        ball.hit = true;
-                        enermys[i].hp -= ball.power;
-                    }
-                }
-                // {//||(ball.Y + ball.DeltaY + ball.Radius < paddle.Y)
-                //     // and it is positioned between the two ends of the paddle (is on top)
-                //     if (ball.X + ball.deltaX >= paddle.X && 
-                //         ball.X + ball.deltaX <= paddle.X + paddle.Width){
-                //         ball.DeltaY *= -1;
-                //         bouncingSound.play();
-                //     }
-                // }
-                // Move the ball
                 ball.X += ball.deltaX;
-            }
+            
         }
         
-        function drawBall(ballI) {
+        function drawBall(ball) {
             //如果球被刪除了  就=null 那就不必畫了
-            if(ballI != null){
-                var ball = ballI;
+            if(ball != null){
                 if(ball.hit != true){
                 	ctx.save();
                 	var fire = document.getElementById('fireBall');
@@ -223,28 +267,50 @@
                 }
             }
         }
-    
+        
+        var icon = new Image();
+        icon.src = 'images/dR01.png';
+        
+        function drawState(){
+            ctx.save();
+            var hpLength = 
+            ctx.drawImage(icon, 3, 3, 21, 15);
+            ctx.fillStyle="#842B00";
+            ctx.strokeRect(24,7,102,12);
+            ctx.fillStyle="#EA0000";
+            ctx.fillRect(25,8, 100, 10);
+            ctx.fillStyle="#FFD306";
+            ctx.fillRect(25,8, 100, 10);
+            ctx.restore();
+        }
+        
         function animate(){
             
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             moveDragon();
             drawDragon();
+            if(dragon.exp >= dragon.level*100){
+                dragon.level++;
+                dragon.exp = 0;
+            }
             
-            if(enermys.length <= 0) enermys.push(new enermy());
+            // if(enermys.length <= 0) enermys.push(new enermy());
             for(var i = 0; i < enermys.length; i++){
                 enermys[i].moveEnermy();
-                enermys[i].drawEnermy();
+                if(enermys[i] != null){
+                    enermys[i].drawEnermy();
+                }
             }
             for(var i=0; i<balls.length; i++){
-                //ctx.clearRect(balls[i].X, balls[i].Y, 20, 10)
                 moveBall(balls[i]);  
                 drawBall(balls[i]);
             }
+            drawState();
             
             var s = "X :" + dragon.X + ", Y :"+dragon.Y + 
             ", c.width :" + canvas.width+ ", c.height :" + canvas.height +
-            "dImg : " + dImg.src;
+            ", level : " + dragon.level +", HP :"+ dragon.hp + ", beHit :" + dragon.beHit;
             $("#report").text(s);
         }
         
@@ -254,6 +320,9 @@
             
             $(document).keydown(function(evt) {
                 switch (evt.keyCode) {
+                    case 13:
+                        enermys.push(new enermy());
+                        break;
                     case 32:
                         dragon.shot();
                         break;
@@ -294,6 +363,7 @@
                 }
             }); 
         }
+
         startGame();
 
     });
