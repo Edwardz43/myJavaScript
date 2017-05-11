@@ -63,12 +63,13 @@
         var dragon = {
             level : 1,
             exp : 0,
+            lupExp : 100,
             maxHp : 200,
-            hp : 2000000,
+            hp : 200,
             X : 100,
             Y : 100,
-            dx :0,
-            dy :0,
+            dx : 0,
+            dy : 0,
             speed : 2,
             width : 35,
             height : 30,
@@ -175,7 +176,7 @@
                             this.X + this.width*0.7 >= dragon.X  &&
                             this.Y - this.height*0.7 <= dragon.Y  &&
                             this.Y + this.height*0.7 >= dragon.Y){
-                                dragon.hp -= this.power;
+                                reduceHp(this.power);
                                 dragon.beHit = true;
                         }
                     }
@@ -273,14 +274,24 @@
         
         function drawState(){
             ctx.save();
-            var hpLength = 
+            var hpLength = (dragon.hp <= 0)?0:(dragon.hp / dragon.maxHp) * 100;
+            var expBar = (dragon.exp / dragon.lupExp) * 98
+            //dragon icon
             ctx.drawImage(icon, 3, 3, 21, 15);
+            
+            //dragon HP
             ctx.fillStyle="#842B00";
             ctx.strokeRect(24,7,102,12);
             ctx.fillStyle="#EA0000";
             ctx.fillRect(25,8, 100, 10);
             ctx.fillStyle="#FFD306";
-            ctx.fillRect(25,8, 100, 10);
+            ctx.fillRect(25,8, hpLength, 10);
+            
+            //dragon EXP
+            ctx.fillStyle="#842B00";
+            ctx.strokeRect(25,20,100,3);
+            ctx.fillStyle="#28FF28";
+            ctx.fillRect(26,21, expBar, 2);
             ctx.restore();
         }
         
@@ -292,6 +303,9 @@
             drawDragon();
             if(dragon.exp >= dragon.level*100){
                 dragon.level++;
+                dragon.lupExp += dragon.level * 100; 
+                dragon.maxHp += dragon.level * 50;
+                recoverHp();
                 dragon.exp = 0;
             }
             
@@ -313,6 +327,27 @@
             ", level : " + dragon.level +", HP :"+ dragon.hp + ", beHit :" + dragon.beHit;
             $("#report").text(s);
         }
+        
+        function reduceHp(x){
+            var hpMinus = x; 
+            var timer = setInterval(function(){
+                dragon.hp--;
+                hpMinus--;
+                if(hpMinus == 0){
+                    clearInterval(timer);
+                }
+            },50);
+        }
+        
+        function recoverHp(){
+            var timer = setInterval(function(){
+                dragon.hp++;
+                if(dragon.hp == dragon.maxHp){
+                    clearInterval(timer);
+                }
+            },5);
+        }
+        
         
         function startGame(){
 

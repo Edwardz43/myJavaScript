@@ -5,19 +5,19 @@
 <title>密碼產生器</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+<!--JQuery UI-->
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.12.4.js"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+<!--boostrap-->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+<!--JQuery&randomseed-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="js/jquery.js"></script>
 <script src="js/seedrandom.js"></script>
-
+<!--My css-->
 <link href="style.css" rel="stylesheet">
 
 <h1 id="h1">密碼產生器</h1>
@@ -26,15 +26,18 @@
 <!--BG Image : http://wallpaper-gallery.net-->
 
 <div class="container">
+	<!--水平排列-->
 	<form class="form-horizontal">
-	    <div class="form-group row">
-	    	<label class="col-sm-2 label label-warning" >
+		
+		<!--選擇密碼-->
+	    <div class=" row">
+	    	<label class="col-sm-2 label label-info" >
 	    		密碼類型：
 	        </label>
-	        <div id="selectType"  class="control-label col-sm-6">
-	       		<input type="radio" name="psType" value="1" data-select="1" checked > 數字
-				<input type="radio" name="psType" value="2" data-select="2"> 數字+小寫字母
-				<input type="radio" name="psType" value="3" data-select="3"> 數字+大小寫字母
+	        <div id="selectType"  class="btn-group-md col-sm-6">
+	       		<input type="button" class="btn btn-radio btn-warning" name="pswType" value="數字">
+				<input type="button" class="btn btn-radio btn-warning" name="pswType" value="數字+小寫字母" > 
+				<input type="button" class="btn btn-radio btn-warning" name="pswType" value="數字+大小寫字母" > 
 			</div>
 			<div id="arrow1" class="arrow_box col-sm-2" style="float:left" >
 				<p>在這邊點選你要的密碼類型</p>
@@ -43,53 +46,64 @@
 			
 	    </div>
 	    
-	    <div class="form-group row">
-	    	<label class="col-sm-2 label label-warning">
-	    		密碼長度：
+	    
+	    <!--設定亂數表長度-->
+	    <div class=" row">
+	    	<label class="col-sm-2 label label-info">
+	    		亂數表長度：
 	    		
 	        </label>
 	        <div class=" col-sm-6">
 	       		<input type="range" id ="sltLength" name="sltLength" value="5" min="1" max="10">
-				<label id="labelOfLen" for="sltLength" style="font-size:1.6em">5</label>
+				<label for="sltLength" style="font-size:1.6em"><span id="labOfLen" class="badge">5</span></label>
 			</div>
 			<div id="arrow2" class="arrow_box col-sm-2">在這邊點選你想要的長度</div>
 			<div class="col-sm-2"> </div>
 	    </div>
-
-		<div class="form-group row">
-			<label class="col-sm-2 label label-warning">
+		
+		<!--輸入亂數表編號-->
+		<div class=" row">
+			<label class="col-sm-2 label label-info">
 		            亂數表代號：
 		    </label>
-		    <div class="col-sm-6">
+		    <div class="col-sm-3">
 		       <input type="text" onfocus="whyNoEffect(this)" id="txtSeed" name="txtSeed" value=""  
 		    		  class="sltRandom" placeholder="輸入任意字元" />
 			</div>
-			<div id="arrow3" class="arrow_box col-sm-2" style="float:left" >
-				<p>輸入一組好記的代號</p>
+			
+			<div id="btnContainer" class="col-sm-2">
+				<input class="btn btn-danger" type="button" id="btnGo" value="產生亂數表" />
+		    </div>
+		    <div class="col-sm-5" style="float:left width:auto" >
+				<div id="arrow3" class="arrow_box">輸入一組好記的代號!</div>
 			</div>
 			
 	    </div>
 	    
-	    <div class="form-group row">
+	    <!--按下按鈕-->
+	    <div class="row">
 				
-			<div id="btnContainer" class="col-sm-2">
-				<input type="button" id="btnGo" value="產生亂數表" />
-		    </div>
-	    	
-		    <div id="arrow4" class="d_arrow_box col-sm-2">
-				 隨便點一個字試試看!
+			
+	    	<div class="col-sm-4"></div>
+		    <div class="col-sm-2">
+				 <div id="arrow4" class="d_arrow_box">隨便點一個字試試看!</div>
 			</div>
-	    	
+			<div class="col-sm-6"></div>
+	    
 	    </div>
 
 	</form>
 	
 	<div id="randomContainer">
-		
-		<div id="randomTable" class="col-sm-7 text-center row"></div>
-		<div id="textArea col-sm-5">
-			<div id="howTo">
+		<div class="row">
+			<div id="randomTable" class="col-sm-7">
+				<ul id="txtList" class="list-group"></ul>
+			</div>
+			
+			<div id="textArea" class="col-sm-4">
+				<div id="howTo"></div>
 				
+				<div id="showHist"></div>
 			</div>
 		</div>
 	
@@ -97,43 +111,51 @@
 </div>
 
 <script>
+	
+	var pswType = "數字";
 
 	$("#btnGo").click(function () {
 	    var result = "";
 		
-		var psType = $("input[name='psType']:checked").data("select");
 		var sPool;
-		switch (psType) {
+					
+		switch (pswType) {
 			// 純數字:
-			case 1:
+			case '數字':
 				sPool = "0123456789";
+				//alert(sPool);
 				break;
 				
 			// 數字+小寫字母: (去除 l, o)	
-			case 2:
+			case '數字+小寫字母':
 				sPool = "abcdefghijkmnpqrstuvwxyz0123456789";
+				//alert(sPool);
 				break;
 			
 		    // 數字+大小寫字母: (去除 I, O, l, o)	
-			case 3:
+			case '數字+大小寫字母':
 				sPool = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz0123456789";
+				//alert(sPool);
 				break;	
 		}
+
 		
-		var len = $("input[name='sltLength']").val();
+		var len = $("#sltLength").val();
+		//alert(len);
 	
-		// alert(""+psType+sltLength);
+		// alert(""+pswType+sltLength);
 		var psArray=[];
 		//var txtP=[];
-		$("#randomTable").html("");
+		$("#txtList").html("");
 	    Math.seedrandom($("#txtSeed").val()); // 設定亂數種子
 		var iRandom = 0; var ch = "?";
 		for (iRow = 1; iRow <= len; iRow++) {
 			var sLine = (iRow + 100).toString().substr(1, 2) + ": ";
 			
-			$("#randomTable").append(
-				"<div id=\u0022row"+ iRow +
-				"\u0022 class=\u0022col-sm-12\u0022><p style=\u0022float:left\u0022>"+  sLine +"</p></div>"
+			$("#txtList").append(
+				"<li id=\u0022li"+ iRow +
+				"\u0022 class=\u0022list-group-item list-group-item-success col-sm-6\u0022>"
+				+  sLine +"</li>"
 				);
 				
 			for (iCol = 1; iCol <= 10; iCol++) {
@@ -143,64 +165,105 @@
 				
 				psArray.push(sPool.substr(iRandom, 1));
 				var txt = 
-					"<p id=\u0022p"+ (psArray.length - 1) +
-					"\u0022 class=\u0022txtPs\u0022 style=\u0022float:left\u0022>" + ch + "&nbsp;</p>"
-				$("#row"+ iRow).append(txt);
-				if(psArray.length % 10 == 0) $("#randomTable").append("<br>");
+					"<span id=\u0022p"+ (psArray.length - 1) +
+					"\u0022 class=\u0022txtPs\u0022 >" + ch + "&nbsp;</span>"
+				$("#li"+ iRow).append(txt);
+				$('#howTo').text("");
+				$('#showHist').text("");
 			}
 		}
 		
 		$('[id^=arrow]').css("visibility", "hidden");
 		$('#arrow4').css("visibility", "visible");
 		
+		$('[id^=p]').hover(function(){
+			$(this).wrap("<mark></mark")	
+			},function(){
+				$(this).unwrap();
+			}
+		);
+		var hist ="";
+    	var pswSet = [];
+		
+		//選取密碼  獲得相關資訊以及說明
 		$('[id^=p]').click(function(e) {
+			$('[id^=arrow]').css("visibility", "hidden");
 			e.stopPropagation();
-			$('[id^=p]').css("color", "black");
+			$('[id^=p]').css("color", "");
 		    $(e.target).css("color", "red");
+	    
+	    	var relPassword = $(this).text();
 	    	var n = $(e.target).prop("id").substring(1);
-	    	var txt = "您所選取的數字為: 第<code>"+ (Math.floor(n / 10) +1)+"</code>行的第<code>"
-	    		+(n % 10 + 1)+"</code>個數字\u0022"+$(this).text()+
-	    		"\u0022 <br> 這組亂數會根據你輸入的內容而產生 <br> 只要輸入相同的編號,就會產生固定的亂數表 <br> 您可以利用位置座標(<code>"
-	    		+ (Math.floor(n / 10) +1)+"</code>,<code>"+(n % 10 + 1)+
-	    		"</code>) <span class=\u0022ui-icon ui-icon-arrowthick-1-e\u0022>=</span> \u0022"+$(this).text()+"\u0022來紀錄你想要的密碼!";
-	    	$('#howTo').text("");
-	    	$('#howTo').append(txt);
+	    	
+	    	//說明txt
+	    	var numR = (Math.floor(n / 10) +1);
+	    	var numC = (n % 10 + 1);
+
+	    	var txt = "您輸入的亂數碼編號為:【<code>"+ $("#txtSeed").val() +"</code>】,選取的數字為: 第<code>"+ numR +"</code>行的第<code>"
+	    		+ numC +"</code>個數字\u0022"+ relPassword +
+	    		"\u0022 <br> 這組亂數會根據你輸入的內容而產生 <br> 下次輸入相同的代號,就會產生固定的亂數表 <br> 您可以利用位置座標(<code>"
+	    		+ numR +"</code>,<code>"+ numC +
+	    		"</code>) <span class=\u0022ui-icon ui-icon-arrowthick-1-e\u0022>=</span> \u0022"+ relPassword +"\u0022來紀錄或尋找你想要的密碼!<br>";
+	    	
+	    	//選取記錄
+	    	var picHist = "(<code>"
+	    		+ numR +"</code>,<code>"+ numC +
+	    		"</code>) <span class=\u0022ui-icon ui-icon-arrowthick-1-e\u0022>=</span> \u0022"+
+	    		relPassword +"\u0022<br>";
+	    	//儲存點選的密碼
+	    	pswSet.push(relPassword);
+	    		
+	    	hist += picHist;
+	    	
+	    	$('#howTo').text("").append(txt);
+	    	$('#showHist').text("").append(hist);
 	    
 		})
 		
 	});
 	
+			
+	$(".btn-warning").click(function() {
+		$('[id^=arrow]').css("visibility", "hidden");
+		$('#arrow1').css("visibility", "visible");
+		$('.btn-radio').addClass("btn-warning");
+		$(this).toggleClass("btn-warning");
+	    pswType = $(this).val();
+	    //alert(pswType)
+	});
+
+	
 	$('#btnGo').hover(function(){
 		$(this).css("background-color", "#00DB00")	
 		},function(){
-			$(this).css("background-color", "#d0d0d0")
+			$(this).css("background-color", "")
 	});
-	
-	$("input[name='psType']").change(function(){
-		$('[id^=arrow]').css("visibility", "hidden");
-		$('#arrow1').css("visibility", "visible");
-		$('#howTo').text("");
-	});
-	
+
+
 	$("input[name='sltLength']").change(function(){
 		$('[id^=arrow]').css("visibility", "hidden");
 		$('#arrow2').css("visibility", "visible");
-		$('#labelOfLen').text($(this).val());
-		$('#howTo').text("");
+		$('#labOfLen').text($(this).val());
 	});
 	
 	function whyNoEffect() {
 		$('[id^=arrow]').css("visibility", "hidden");
 		$('#arrow3').css("visibility", "visible");
-		$('#howTo').text("");
 	}
 	
 	$('[id^=arrow]').click(function(){
 		$(this).css("visibility", "hidden");
 	})
 	
+	// $(document).ready(function(){
+	// 	$(window).resize(function(){
+	// 		myWidth = $(window).width();
+	// 		if(myWidth <= 500){
+	// 			$('.list-group-item-success').css("font-size","0.5em");
+	// 		}
+	// 	});
+	// })
 	
-
 
 </script>
 

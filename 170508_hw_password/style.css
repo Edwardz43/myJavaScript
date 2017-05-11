@@ -1,5 +1,5 @@
 #myBody{
-	background:url('BGI001.jpg');
+	background-color: rgba(209, 233, 255, 0.7);
 	background-repeat:no-repeat;
 }
 #h1{
@@ -17,72 +17,60 @@
 .container{
 	position: absolute;
 	height: 95%;
-	width :  90% ;
+	width :  95% ;
 	left : 2.5%;
 }
 
-
-
 .form-horizontal{
+	width: 100%;
 	padding-top: 1em;
 	padding-left: 0.5em;
-	background-color:#FFF4C1;
-	/*border-bottom-left-radius: 2em;*/
-	/*border-bottom-right-radius: 2em;*/
+	background-color: rgba(222, 150, 150, 0.8);
 	border-top-right-radius: 2em;
 	border-top-left-radius: 2em;
-}
-#randomContainer {
-	border-bottom-right-radius: 2em;
 	border-bottom-left-radius: 2em;
-    /*font-family: monospace;*/
-    /*font-size: 1.0em;*/
-    /*text-align: center;*/
-    background-color: rgba(209, 233, 255, 0.7);
-    height: 80%;
+	border-bottom-right-radius: 2em;
 }
 
 #randomTable {
+	margin-left: 2.5%;
+	margin-right: 2.5%;
  	font-family: monospace;
-    font-size: 2.0em;
     text-align: center;
+    z-index: 1;
+    
 }
 
 #textArea {
  	font-family: monospace;
-    font-size: 1.2em;
     text-align: left;
+
 }
 
-#howTo{
-	font-size: 1.6em;
+.txtPs{
+	font-size: 1em;	
 }
 
-#selectType{
-	text-align: left;
-	 font-size: 1.5em;
+#howTo, #showHist{
+	font-size: 1em;
 }
 
-#selectLength{
-	text-align: left;
-	 font-size: 2em;
-}
 
 #btnGo{
 	margin-left: 5%;
-	font-size: 2em;
+	font-size: 1em;
 }
 
 
 .label {
 	font-size: 1.5em;
     text-align: center;
-	border: 1px solid;
     padding: 2px;
     color:black;
 	border-bottom-right-radius: 1em;
 	border-top-right-radius: 1em;
 }
+
 
 /*箭頭*/
 .arrow_box {
@@ -96,7 +84,7 @@
 }
 @keyframes showArrow {
     0%   {left: 0px;}
-    50%  {left: 10px;}
+    50%  {left: 5px;}
     100% {left: 0px;}
 }
 
@@ -114,14 +102,14 @@
 .arrow_box:after {
 	border-color: rgba(82, 213, 62, 0);
 	border-right-color: #52d53e;
-	border-width: 30px;
-	margin-top: -30px;
+	border-width: 10px;
+	margin-top: -10px;
 }
 .arrow_box:before {
 	border-color: rgba(245, 234, 216, 0);
-	border-right-color: #f5ead8;
-	border-width: 36px;
-	margin-top: -36px;
+	/*border-right-color: #f5ead8;*/
+	border-width: 16px;
+	margin-top: -16px;
 }
 
 
@@ -131,6 +119,7 @@
 	visibility: hidden;
 	font-size: 1.5em;
 	border: 4px solid #ebf5e1;
+	 z-index: 2;
 	animation: showArrow2 2s infinite;
     animation-direction: alternate;
 }
@@ -148,72 +137,56 @@
 .d_arrow_box:after {
 	border-color: rgba(117, 213, 102, 0);
 	border-top-color: #75d566;
-	border-width: 30px;
-	margin-left: -30px;
+	border-width: 10px;
+	margin-left: -10px;
 }
 .d_arrow_box:before {
 	border-color: rgba(235, 245, 225, 0);
 	border-top-color: #ebf5e1;
-	border-width: 36px;
-	margin-left: -36px;
+	border-width: 16px;
+	margin-left: -16px;
 }
+/*箭頭*/
 
 
 
-
-@media screen and (max-width: 770px) {
+@media screen and (max-width: 760px) {
 	.arrow_box {
 		position: relative;
 		background: #2bd541;
 		border: 4px solid #f4f5e1;
 		font-size: 0.8em;
-		/*visibility: hidden;*/
+		top:10%;
+		right: 10%;
+		visibility: hidden;
 		animation: showArrow 2s infinite;
 	    animation-direction: alternate;
 	}
 	.arrow_box:after, .arrow_box:before {
-		bottom: 100%;
-		left: 50%;
 		border: solid transparent;
 		content: " ";
 		height: 0;
 		width: 0;
-		position: absolute;
+		position: relative;
 		pointer-events: none;
 	}
 	
 	.arrow_box:after {
 		border-color: rgba(43, 213, 65, 0);
 		border-bottom-color: #2bd541;
-		border-width: 30px;
-		margin-left: -30px;
+
 	}
 	.arrow_box:before {
 		border-color: rgba(244, 245, 225, 0);
-		border-bottom-color: #f4f5e1;
-		border-width: 36px;
-		margin-left: -36px;
 	}
-		
-	#randomTable {
-		width: 100%;
-		height: 65%;
-		margin-right: 0;
-		font-size: 1.6em;
-	}
-	#textArea {
-		width: 100%;
-		height: 35%;
-		margin-right: 0;
-	}
-	#howTo{
-		font-size: 1.2em;	
+	.btn-warning{
+		font-size: 0.7em;
 	}
 	
 }
 	
 @keyframes showArrow2 {
-    0%   {top: 0px;}
-    50%  {top: 5px;}
-    100% {top: 0px;}
+    0%   {bottom: 0px;}
+    50%  {bottom: 2px;}
+    100% {bottom: 0px;}
 }
