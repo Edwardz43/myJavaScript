@@ -105,10 +105,11 @@
 
 
 <script>
-	//說明功能ON/off
-	var actExplain = false;
+
 	var pswType;
-	
+	//說明功能ON/off		
+	var actExplain = false;
+	//說明功能  固定在右上角
 	$('#explain').click(function(e) {
 	    if(actExplain) {
 	    	actExplain = false;
@@ -123,22 +124,25 @@
 	   
 	    //alert(actExplain);
 	});
-	//dialog初始化
-	$("#dialog").dialog({ 
+	
+	//dialog初始化 dialog是JQuery提供的UI 效果是跳出一個對話框  可以當說明欄
+	$("#dialog").dialog({
+		title:"這是幹嘛的?",
         autoOpen: false, 
         show: "clip", 
         hide: "fade",
         height: 120,
         width: 250,
-        position: { my: "center top", at: "center right", of: window },
     });
-    $("#dialog2").dialog({ 
+    
+    $("#dialog2").dialog({
+    	title:"這個要怎麼使用?",
         autoOpen: false, 
         show: "clip", 
         hide: "fade",
         height: 200,
         width: 350,
-        position: { my: "center top", at: "center right", of: window },
+        position: { my: "center bottom", at: "center top", of: '#randomTable' },
     });
 	
 	//選擇密碼類型+說明dialog
@@ -146,10 +150,13 @@
 		$('.btn-radio').addClass("btn-warning");
 		$(this).toggleClass("btn-warning");
 	    pswType = $(this).val();
-	    //alert(pswType);
-	    $("#dialog").text("").text("在這邊點選你要的密碼類型");
-		//alert("ok");
+	    
 	    if(actExplain){
+	    	//切換dialog內容
+    		$("#dialog").text("").text("在這邊點選你要的密碼類型");
+    		//切換dialog位置
+    		$("#dialog").dialog( "option", "position", 
+    			{ my: "left top", at: "right bottom", of: ".btn-radio" } );
 		    $("#dialog").dialog("open");
 		    $("#dialog2").dialog("close");
 	       //return false;
@@ -160,9 +167,12 @@
 	//選擇亂數表長度
     $("input[name='sltLength']").change(function(){
 		$('#labOfLen').text($(this).val());
-		$("#dialog").text("").text("在這邊選擇你想要的亂數表長度,每行有10個字元");
-		//alert("ok2");
 		if(actExplain){
+			//切換dialog內容
+			$("#dialog").text("").text("在這邊選擇你想要的亂數表長度,每行有10個字元");
+			//切換dialog位置
+			$("#dialog").dialog( "option", "position", 
+				{ my: "center top", at: "center bottom", of: "#sltLength" } );
 		    $("#dialog").dialog("open");
 		    $("#dialog2").dialog("close");
 	        //return false;
@@ -171,9 +181,12 @@
 	
 	//輸入亂數表編號
 	$('#txtSeed').click(function() {
-		$("#dialog").text("").text("在這邊輸入一組好記的代號,數字文字或符號皆可");
-		//alert("ok3");
 		if(actExplain){
+			//切換dialog內容
+			$("#dialog").text("").text("在這邊輸入一組好記的代號,數字文字或符號皆可");
+			//切換dialog位置
+			$("#dialog").dialog( "option", "position", 
+				{ my: "left top", at: "center bottom", of: "#txtSeed" } );
 		    $("#dialog").dialog("open");
 		    $("#dialog2").dialog("close");
 	       // return false;
@@ -187,14 +200,13 @@
 	});
 	
 	$("#btnGo").click(function () {
-		//亂數表代號不得空白
-		if($('#txtSeed').val() == ""){
-			alert("請輸入亂數表代號!")
-			//return;
-		}
 		//說明dialog
 		if(actExplain){
+			//切換dialog內容
 			$("#dialog").text("").text("隨便點一個字試試看!");
+			//切換dialog位置
+			$("#dialog").dialog( "option", "position", 
+    			 { my: "center bottom", at: "center top", of: '#randomTable' } );
 		    $("#dialog").dialog("open"); 
 		    $("#dialog2").dialog("close");
 	        //return false;
@@ -228,6 +240,7 @@
 		var len = $("#sltLength").val();
 		//alert(len);
 		
+		//密碼陣列 玩弄(X) 練習(O)一下陣列技巧
 		var psArray=[];
 		$("#txtList").html("");
 	    Math.seedrandom($("#txtSeed").val()); // 設定亂數種子
@@ -237,6 +250,7 @@
 			
 			//創建list group存放資料
 			$("#txtList").append(
+				// 雙引號是跳脫字元 顯示不出來  所以輸入unicode  " = \u0022
 				"<li id=\u0022li"+ iRow +
 				"\u0022 class=\u0022list-group-item list-group-item-success col-sm-6\u0022>"
 				+  sLine +"</li>"
@@ -252,7 +266,7 @@
 					"<span id=\u0022p"+ (psArray.length - 1) +
 					"\u0022 class=\u0022txtPs\u0022 >" + ch + "&nbsp;</span>"
 				$("#li"+ iRow).append(txt);
-				//show出點選紀錄
+				//每次產生新的亂數 就清空歷史紀錄
 				$('#howTo').text("");
 				$('#showHist').text("");
 			}
@@ -260,7 +274,7 @@
 		
 		
 		//選取密碼  獲得相關資訊以及說明
-		//hover效果
+		//hover效果  ^= 是一種選擇器語法  可以選到所有含關鍵字的元件
 		$('[id^=p]').hover(function(){
 			$(this).wrap("<mark></mark")	
 			},function(){
@@ -268,20 +282,23 @@
 			}
 		);
 		var hist ="";
-    	var pswSet = [];
+    	//var pswSet = [];
 
 		$('[id^=p]').click(function(e) {
 			e.stopPropagation();
+			//被點的到變紅色  其餘的回復原色
 			$('[id^=p]').css("color", "");
 		    $(e.target).css("color", "red");
 	    
 	    	var relPassword = $(this).text();
+	    	//因為id都叫pXX  所以去掉第一個p就是密碼的編號
 	    	var n = $(e.target).prop("id").substring(1);
 	    	
 	    	//說明txt
-	    	var numR = (Math.floor(n / 10) +1);
-	    	var numC = (n % 10 + 1);
-
+	    	var numR = (Math.floor(n / 10) +1);//第R行
+	    	var numC = (n % 10 + 1);//第C個
+			
+			//boostrap支援的語法  <code></code>  會讓文字有明顯效果  
 	    	var txt = "您輸入的亂數碼編號為:【<code>"+ $("#txtSeed").val() +"</code>】,選取的數字為: 第<code>"+ numR +"</code>行的第<code>"
 	    		+ numC +"</code>個數字\u0022"+ relPassword +
 	    		"\u0022<br>";
@@ -291,19 +308,22 @@
 				var innerTxt = "這組亂數表是根據您輸入的代號產生,下次再輸入相同的亂數表代號"+
 								",就會產生一組完全相同的亂數表,您可以利用亂數表的位置坐標:(x,y) = 【密碼】,"+
 								"紀錄或尋找你想要的字,只需記下座標值,抄寫在顯眼的地方(例如:提款卡背面),即使被看到也不必擔心密碼外洩!";
+				//輸入dialog2內容
 				$("#dialog2").text("").text(innerTxt);
 			    $("#dialog2").dialog("open"); 
 			    $("#dialog").dialog("close");
 		        //return false;
 			}
 	    	//選取記錄
+	    	//上課曾提到過  boostrap支援的小icon  ui-icon-arrowthick-1-e 就是小箭頭
 	    	var picHist = "(<code>"
 	    		+ numR +"</code>,<code>"+ numC +
 	    		"</code>) <span class=\u0022ui-icon ui-icon-arrowthick-1-e\u0022>=</span> \u0022"+
 	    		relPassword +"\u0022<br>";
 	    	//儲存點選的密碼
 	    	//pswSet.push(relPassword);
-	    		
+	    	
+	    	//秀出點選過的歷史紀錄	
 	    	hist += picHist;
 	    	$('#howTo').text("").append(txt);
 	    	$('#showHist').text("").append(hist);
