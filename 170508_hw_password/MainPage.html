@@ -10,7 +10,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-  <!--JQuery&randomseed-->
+<!--JQuery&randomseed-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="js/jquery.js"></script>
 <script src="js/seedrandom.js"></script>
@@ -20,64 +20,33 @@
 <script src="//code.jquery.com/jquery-1.12.4.js"></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-<style>
-  /* Remove the navbar's default margin-bottom and rounded borders */ 
-  .navbar {
-    margin-bottom: 0;
-    border-radius: 0;
-  }
-  
-  /* Add a gray background color and some padding to the footer */
-  footer {
-    background-color: #f2f2f2;
-    padding: 25px;
-  }
-    #expWraper{
-	top: 0px; width: 85px; 
-	height: 88px; right: 0px; 
-	overflow: hidden; position: fixed;
-	z-index: 2;
-}
-
-#explain{
-	padding: 7px 0px; left: -5px; top: 15px; 
-	width: 120px; text-align: center; color: rgb(106, 99, 64); 
-	font-weight: normal; position: relative; 
-	cursor: pointer; -ms-transform: rotate(45deg); 
-	box-shadow: 0px 0px 3px rgba(0,0,0,0.3); 
-	background-color: rgb(219, 183, 0); 
-	text-shadow: rgba(255, 255, 255, 0.5) 0px 1px 0px; 
-	-webkit-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3); 
-	-webkit-transform: rotate(45deg); 
-	-moz-transform: rotate(45deg); 
-	-o-transform: rotate(45deg); 
-	-moz-box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.3);
-} 
-
-
-#explain a {
-	color: rgb(57, 57, 57); text-decoration: none;
-}
-#explain:hover a {
-	text-decoration: underline;
-}
-  </style>
+<!--My css-->
+<link href="style.css" rel="stylesheet">
 </head>
 <body>
+
+<!--對話框	-->
 <div id="dialog"></div>
 <div id="dialog2"></div>
+<div id="dialog3"></div>
+
+<!--說明功能-->
 <div id="expWraper">
 	<div id="explain">
 		<a id="expButton" type="button">點我看說明</a>
 	</div>
 </div>
+
+<!--前情提要-->
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
+     	<a class="navbar-brand" href="#">《前情提要》</a>	
     </div>
   </div>
 </nav>
 
+<!--標題-->
 <div class="jumbotron">
   <div class="container text-center">
     <h1>密碼產生器</h1>      
@@ -86,77 +55,59 @@
 </div>
   
 <div class="container-fluid sm-3 text-center">    
-  <!--<h3>Some of my Work</h3><br>-->
   <div class="row">
+  	<!---->
     <div class="col-sm-4">
         <div class="row">
-          <!---->
-          <div class="row">
-            <div class="row">
-              <div id="sltType" class="col-sm-12 well">密碼類型</div>
-              
-                <div class="col-sm-12 row btn-group-md">
-      	       		<input class="col-sm-4" type="button" class="btn btn-radio btn-muted" name="pswType" value="數字">
-          				<input class="col-sm-4" type="button" class="btn btn-radio btn-muted" name="pswType" value="數字+小寫字母" > 
-          				<input class="col-sm-4" type="button" class="btn btn-radio btn-muted" name="pswType" value="數字+大小寫字母" > 
-        			  </div>
-
-            </div>
+            <div id="sltType" class="well">密碼類型</div>
+                <div class="btn-group-md">
+ 	       			<input class="col-sm-4" type="button" class="btn btn-radio btn-muted" name="pswType" value="數字">
+      				<input class="col-sm-4" type="button" class="btn btn-radio btn-muted" name="pswType" value="數字+小寫字母" > 
+      				<input class="col-sm-4" type="button" class="btn btn-radio btn-muted" name="pswType" value="數字+大小寫字母" > 
+ 		    	</div>
+            <div class="well">亂數表長度</div>
+        	
+            <div class="col-sm-6" id="slider"  name="slider"></div>
             
-            <div>
-              <div class="well">亂數表長度</div>
-              <div class="col-sm-12 row">
-    	       		<input class="col-sm-6" type="range" id ="sltLength" name="sltLength" value="5" min="1" max="10">
-        				<label class="col-sm-6" for="sltLength" style="font-size:1.6em"><span id="labOfLen" class="badge">5</span></label>
-        			</div>
-            </div>
-            <!---->
-            <div >
-              <div class="col-sm-12 well">亂數表代號：</div>
-              <div class="col-sm-12 row">
-                <div class="col-sm-1"></div>
-        		    <div class="col-sm-4">
-        		       <input type="text" id="txtSeed" name="txtSeed" value=""  
-        		    		  class="sltRandom" placeholder="輸入任意字元" />
-        			  </div>
-        			  
-        			  <div class="col-sm-2"></div>
-          			<div id="btnContainer" class="col-sm-5">
-          				<input class="btn btn-danger" type="button" id="btnGo" value="產生亂數表" />
-        		    </div>
-        		    
-              </div>
-            </div>
-  
-          </div>
-          
-        </div>
+		    <label for="slider" style="font-size:1.6em">
+		       <span id="labOfLen" class="badge">5</span>
+  	        </label>
+		</div>
+    	
+    	<div class="well">亂數表代號：</div>
+    	<div>
+	  		<div id="btnContainer" class="row">
+	  			<input type="text" id="txtSeed" name="txtSeed" value=""
+	    		  class="col-sm-6 sltRandom" placeholder="輸入任意字元" />
+  				<input class=" col-sm-6btn btn-danger" type="button" id="btnGo" value="產生亂數表" />
+		    </div>
+    	</div>
     </div>
-    
+    <!---->
     <div class="col-sm-8"> 
       <p class="well">亂數表</p>
       	<div id="randomContainer">
       		<div class="row">
-      			<div id="randomTable" class="col-sm-7">
+      			<div id="randomTable" class="col-sm-9">
       				<ul id="txtList" class="list-group"></ul>
       			</div>
       			
-      			<div id="textArea" class="col-sm-4">
+      			<div id="textArea" class="col-sm-3">
       				<div id="howTo"></div>
       				
       				<div id="showHist"></div>
+      				<div type="btn" class="undo"  >
+      					<span class="ui-icon ui-icon-arrowrefresh-1-e" style=" visibility: hidden">11</span>
+      				</div>
       			</div>
       		</div>
 	      </div>
-     
     </div>
     
   </div>
-</div><br>
-
-
+</div>
 <footer class="container-fluid text-center">
-  <p>Ed Lo, 2017/05</p>
+  <p>© by Ed Lo, 2017-my <a href="https://github.com/Edwardz43" style="text-decoration: underline">Github</a></p>
 </footer>
 
 <script>
@@ -173,6 +124,10 @@
 	    else {
 	    	actExplain = true;
 			$(this).text("關閉說明").css('background-color', 'rgb(255, 234, 148)');
+			$("#dialog").text("").text("你想要怎樣的密碼??先點一下左邊的按鈕吧!");
+    		$("#dialog").dialog( "option", "position", 
+    			{ my: "left center", at: "right center", of: "#sltType" } );
+		    $("#dialog").dialog("open");
 	    }
 	   
 	    //alert(actExplain);
@@ -189,7 +144,7 @@
     });
     
     $("#dialog2").dialog({
-    	title:"這個要怎麼使用?",
+    	title:"這個要怎麼用?",
         autoOpen: false, 
         show: "clip", 
         hide: "fade",
@@ -197,13 +152,54 @@
         width: 350,
         position: { my: "center bottom", at: "center top", of: '#randomTable' },
     });
+    
+    $("#dialog3").dialog({
+    	title:"關於密碼...",
+        autoOpen: false, 
+        show: "bounce", 
+        hide: "explode",
+        height: 350,
+        width: 360,
+        modal: true,
+        position: { my: "center center", at: "center center", of: window },
+    });
+    
+    $('#slider').slider({
+    	min : 1,
+    	max : 10,
+    	value : 5,
+    	change: function(e) {}
+    	// range : 'min'
+    });
+    
+    //看前情提要
+    $('.navbar-brand').click(function(e) {
+    	$("#dialog3").html(
+
+			"好密碼的條件：愈長、愈亂、愈與個人資料無關。問題是，這樣子的密碼會不會就愈記不住？"
+			+ "於是，某人就想啦－－既然記不住，不如就將密碼寫下來，例如，銀行密碼就寫在提款卡的背面，"
+			+ "但是，最重要的就是但是：不要寫得太直白。"
+			+ "該怎麼做才好呢？他參考http://ppt.cc/rELO，寫了一支亂數產生器。\n"
+			+ "程式寫出來後，輸入1234並且產生亂數表。如下表：\n"
+			+ "01: 3499305845;\n02: 1769646932;\n03: 3175789704;\n04: 4592818053;\n05: 1597861333;\n"
+			+ "06: 4414077977;\n07: 2122376182;\n08: 1169150223;\n09: 6149827002;\n10: 1990694015;\n"
+			+ "接下來，在提款卡背面寫下: 13 31 62 18 32 62 73 43\r"
+			+ "他的意思是：密碼的－－\n"
+			+ "第一個字元是第一橫列，第三直欄，也就是 9；第二個字元是第三橫列，第一直欄，也就是 3；(以下類推...)\n"
+			+ "銀行密碼：93481429。\n"
+			+ "好極了，以後就只需記得例如 1234 這組密碼即可。"
+	
+	);
+    	$("#dialog3").dialog("open");
+    })
+    
 	
 	//選擇密碼類型+說明dialog
     $("input[name='pswType']").click(function(e) {
       e.stopPropagation();
       // alert("ok");
-		  $("input[name='pswType']").removeClass("btn-danger");
-			$(this).toggleClass("btn-danger");
+		$("input[name='pswType']").removeClass("btn-danger");
+		$(this).toggleClass("btn-danger");
 	    pswType = $(this).val();
 	    if(actExplain){
 	    	//切換dialog內容
@@ -216,21 +212,20 @@
 	       //return false;
 	    }
   	});
-
-	
+	var len = 5;
 	//選擇亂數表長度
-    $("input[name='sltLength']").change(function(){
-		$('#labOfLen').text($(this).val());
+	$( "#slider" ).on("slidechange", function(e) {
+		len = $(e.target).slider( "values",0 );
+		$('#labOfLen').text(len);
 		if(actExplain){
 			//切換dialog內容
 			$("#dialog").text("").text("在這邊選擇你想要的亂數表長度,每行有10個字元");
 			//切換dialog位置
 			$("#dialog").dialog( "option", "position", 
-				{ my: "center top", at: "center bottom", of: "#sltLength" } );
+				{ my: "center bottom", at: "center top", of: "#slider" } );
 		    $("#dialog").dialog("open");
 		    $("#dialog2").dialog("close");
-	        //return false;
-	    }
+		}
 	});
 	
 	//輸入亂數表編號
@@ -240,7 +235,7 @@
 			$("#dialog").text("").text("在這邊輸入一組好記的代號,數字文字或符號皆可");
 			//切換dialog位置
 			$("#dialog").dialog( "option", "position", 
-				{ my: "left top", at: "center bottom", of: "#txtSeed" } );
+				{ my: "center top", at: "left bottom", of: "#txtSeed" } );
 		    $("#dialog").dialog("open");
 		    $("#dialog2").dialog("close");
 	       // return false;
@@ -254,13 +249,22 @@
 	});
 	
 	$("#btnGo").click(function () {
+		$('.ui-icon').css("visibility", "hidden");
+		if($("#txtSeed").val()==""){
+			alert("請輸入亂數表代號!")
+			return;
+		}
+		if(pswType == null){
+			alert("請選擇密碼類型!")
+			return;
+		}
 		//說明dialog
 		if(actExplain){
 			//切換dialog內容
 			$("#dialog").text("").text("隨便點一個字試試看!");
 			//切換dialog位置
 			$("#dialog").dialog( "option", "position", 
-    			 { my: "center bottom", at: "center top", of: '#randomTable' } );
+    			 { my: "center bottom", at: "center top", of: '#randomContainer'} );
 		    $("#dialog").dialog("open"); 
 		    $("#dialog2").dialog("close");
 	        //return false;
@@ -286,12 +290,12 @@
 				sPool = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz0123456789";
 				//alert(sPool);
 				break;
-			default:
-				sPool = "0123456789";
+			// default:
+			// 	sPool = "0123456789";
 		}
 
 		
-		var len = $("#sltLength").val();
+		
 		//alert(len);
 		
 		//密碼陣列 玩弄(X) 練習(O)一下陣列技巧
@@ -335,10 +339,11 @@
 				$(this).unwrap();
 			}
 		);
-		var hist ="";
-    	//var pswSet = [];
+		
+    	var pswSet = [];
 
 		$('[id^=p]').click(function(e) {
+			$('.ui-icon').css("visibility", "visible");
 			e.stopPropagation();
 			//被點的到變紅色  其餘的回復原色
 			$('[id^=p]').css("color", "");
@@ -375,14 +380,28 @@
 	    		"</code>) <span class=\u0022ui-icon ui-icon-arrowthick-1-e\u0022>=</span> \u0022"+
 	    		relPassword +"\u0022<br>";
 	    	//儲存點選的密碼
-	    	//pswSet.push(relPassword);
-	    	
-	    	//秀出點選過的歷史紀錄	
-	    	hist += picHist;
+	    	pswSet.push(picHist);
+	    	//秀出點選過的歷史紀錄
+	    	var hist ="";
+	    	pswSet.forEach(function(x){
+	    		hist += x;	
+	    	});
 	    	$('#howTo').text("").append(txt);
-	    	$('#showHist').text("").append(hist);
+	    	$('#showHist').text("").html(hist);
 	    	
-		})
+	    	
+	    
+		});
+		//undo
+		$('.undo').click(function(e) {
+    		e.stopPropagation();
+    		hist ="";
+    	    pswSet.pop();
+	    	pswSet.forEach(function(x){
+	    		hist += x;	
+	    	});
+	    	$('#showHist').text("").html(hist);
+    	});
 		
 	});
 	
