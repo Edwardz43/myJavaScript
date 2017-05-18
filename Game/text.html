@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<title>Game</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="text/javascript" src="jquery.js"></script>
+<head>
+    <style type="text/css">
+        #myBg{
+            background-color:yellow;
+            width:1600px;
+            height:800px;
+        }
+        #myCanvas{
+            position:relative;
+            width:100%;
+            height:100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="report"></div>
+    <div id="myBg"> <canvas id="myCanvas"> </div>
+    
+        
+    </canvas>
+    
+    <script type="text/javascript">
+    
+        //一進入畫面 準備就緒 開始執行
+        $(document).ready(function(){
+            
+            var canvas = $('#myCanvas')[0];
+            var ctx = canvas.getContext('2d');
+            var mouseX, mouseY;
+            
+            //誠佑的程式碼
+            function onMousemove(event){
+                if(event.offSetX || event.layerX) {
+        
+                    mouseX = event.offSetX == undefined ? event.layerX : event.offSetX;
+                    mouseY = event.offSetY == undefined ? event.layerY : event.offSetY;
+                    //console.log(mouseX);
+                }
+            }
+            //事件傾聽器
+            canvas.addEventListener("mousemove" , onMousemove,false);
+            
+            //每當滑鼠移動 就執行一次
+            $(document).mousemove(function(){
+                //這是圖檔
+                var target = new Image();
+                target.src = 'images/target.png'
+                
+                //開始畫
+                ctx.save();
+                
+                //解說: 我發現 canvas的原始寬和高只有300, 150 而javascript會用放大的方法來解決更大的canvas
+                //然後  我錯了   我發現他是線性的!  只不過他的寬和高是分別放大的  所以今天一直出現奇怪的狀況
+                //所以  我們用一個小方法來解決:  1.固定背景的寬和高  像我是把它寫死 1600,800
+                //然後我寫個兩個參數:  scaleX  scaleY  分別計算寬和高的縮放比例  最後在把偵測到的滑鼠X Y 乘上這兩個比例
+                
+                var width = $("#myBg").css("width");//這邊出來的結果是1600
+                var height = $("#myBg").css("height");//這邊出來的結果是800  多寫這兩行是方便日後螢幕縮放可以調整
+            
+                var scaleX = 300 / 1600;
+                var scaleY = 150 / 800;
+                ctx.clearRect(0,0, 600, 480);
+                ctx.drawImage(target, mouseX* scaleX - 15, mouseY*scaleY - 15, 30,30);//- 15是為了對齊準星 因為圖的大小是30 減一半回去
+                ctx.restore();
+                
+                //除錯用
+                var s = "X :"+ mouseX +", Y :" + mouseY+", width :"+ width +", height :" + height;
+                $('#report').text(s);    
+                
+            })
+        })
+       
+    </script>
+</body>
+</html>
