@@ -1,0 +1,81 @@
+use AdventureWorks
+go
+
+-- 建立示範專用的 DemoOrderDetail 資料表
+select * into dbo.DemoProducts
+  from Production.Product
+go
+
+-- 建立叢集索引 (鎖定選項都是 off)
+Create clustered index idx_DemoProduct_ProductID
+  on dbo.DemoProducts (ProductID)
+  with (allow_page_locks = off, allow_row_locks = off)
+go
+
+-- 檢視鎖定資訊 - Part I
+begin tran
+
+update dbo.DemoProducts set [name] = 'Road-350-W Yellow, 40' where ProductID = 973
+
+select resource_type, request_mode
+  from sys.dm_tran_locks
+  where resource_database_id = db_id()
+  and resource_subtype = ''
+  and request_owner_id > 0 
+
+-- 在另一個 Client 端執行下列 select 指令, 結果呢?
+-- select * from dbo.DemoProducts where ProductID = 974
+
+rollback tran
+go
+
+
+-- 允許資料頁鎖定
+alter index idx_DemoProduct_ProductID
+  on dbo.DemoProducts
+  set (Allow_page_locks = on)
+go
+
+-- 檢視鎖定資訊 - Part II
+begin tran
+
+update dbo.DemoProducts set [name] = 'Road-350-W Yellow, 40' where ProductID = 973
+
+select resource_type, request_mode
+  from sys.dm_tran_locks
+  where resource_database_id = db_id()
+  and resource_subtype = ''
+  and request_owner_id > 0 
+
+rollback tran
+go
+
+
+-- 允許單筆記錄鎖定
+Alter index idx_DemoProduct_ProductID
+  on dbo.DemoProducts
+  set (Allow_row_locks = on)
+go
+
+
+-- 檢視鎖定資訊 - Part III
+begin tran
+
+update dbo.DemoProducts set [name] = 'Road-350-W Yellow, 40' where ProductID = 973
+
+select resource_type, request_mode
+  from sys.dm_tran_locks
+  where resource_database_id = db_id()
+  and resource_subtype = ''
+  and request_owner_id > 0 
+
+-- 在另一個 Client 端執行下列 select 指令, 結果呢?
+-- select * from dbo.DemoProducts where ProductID = 974
+
+rollback tran
+go
+
+
+-- 清除/還原 Lab 環境
+drop table dbo.DemoProducts
+go

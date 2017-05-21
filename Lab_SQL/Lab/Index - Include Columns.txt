@@ -1,0 +1,44 @@
+use AdventureWorks
+go
+
+-- 建立示範專用的 DemoStore 資料表
+select * into dbo.DemoStore from Sales.Store
+go
+
+-- 在沒有索引的情況下, 檢視下列指令的執行計畫
+-- Hint: 資料表掃描(Table Scan)
+Select CustomerID, Name 
+  from dbo.DemoStore 
+  where CustomerID = 150
+
+-- 建立非叢集索引
+Create nonclustered index idx_DemoStore
+  on dbo.DemoStore(CustomerID)
+go
+
+-- 再次檢視下列指令的執行計畫
+-- Hint: 同時使用索引搜尋"Index Seek" 與 RID查閱 "bookmark seek"
+Select CustomerID, Name 
+  from dbo.DemoStore 
+  where CustomerID = 150
+
+-- 重建一次索引, 這次我們加上 include 選項
+drop index idx_DemoStore on dbo.DemoStore
+go
+
+Create nonclustered index idx_DemoStore
+  on dbo.DemoStore(CustomerID)
+  include (Name)
+go
+
+-- 再次檢視下列指令的執行計畫
+-- Hint: 這次只需索引搜尋"Index Seek"
+Select CustomerID, Name 
+  from dbo.DemoStore 
+  where CustomerID = 150
+go
+
+-- 清除/還原 Lab 環境
+drop table dbo.DemoStore
+go
+

@@ -1,0 +1,55 @@
+use northwind
+go
+
+select * from employees
+
+select EmployeeID, ReportsTo from employees
+
+select Count(*) from employees
+
+select Count(ReportsTo) from employees
+
+select * from products
+
+select avg(UnitPrice) from products where CategoryID in (1, 3, 6)
+
+select CategoryID, avg(UnitPrice) from products group by CategoryID
+
+select CategoryID, avg(UnitPrice) from products group by CategoryID
+
+select * from [order details]
+
+select OrderID, sum(Quantity) from [order details] group by OrderID
+
+select ProductID, sum(Quantity) from [order details] group by ProductID
+
+select OrderID, ProductID, sum(Quantity) from [order details] 
+  group by OrderID, ProductID with rollup
+
+select OrderID, ProductID, sum(Quantity) from [order details] 
+  group by OrderID, ProductID with cube
+
+
+select * from [order details]
+
+select OrderID, ProductID, Quantity from [order details]
+  order by OrderID
+  
+select OrderID, ProductID, Quantity from [order details]
+  order by OrderID
+  compute sum(Quantity)
+
+select OrderID, ProductID, Quantity from [order details]
+  order by OrderID
+  compute sum(Quantity) by OrderID
+
+
+
+
+
+
+
+
+
+
+

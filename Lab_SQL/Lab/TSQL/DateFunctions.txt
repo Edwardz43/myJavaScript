@@ -1,0 +1,29 @@
+declare @d datetime
+set @d = GetDate()
+select @d
+
+
+select datepart(y, GetDate())
+
+select datepart(week, GetDate())
+
+select datepart(weekday, GetDate())
+
+select dateadd(d, 300, GetDate())
+
+
+declare @d1 datetime
+declare @d2 datetime
+set @d1 = GetDate()
+set @d2 = dateadd(d, 30, @d1)
+select datediff(d, @d1, @d2)
+
+
+select * from orders where datepart(m, orderdate) = 7 and datepart(yy, orderdate) = 1997
+
+select * from orders where orderdate between '1997/7/1' and '1997/7/31'
+
+select * from orders where orderdate >= '1997/7/1' and orderdate <= '1997/7/31'
+
+
+

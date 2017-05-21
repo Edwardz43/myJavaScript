@@ -1,0 +1,31 @@
+declare @i int
+set @i = 40
+print @i
+go
+
+select @@Version
+go
+
+-- #Temp
+
+use northwind
+go
+
+
+select * from customers where CompanyName Like 'A%'
+
+select * into CustA from customers where CompanyName Like 'A%'
+
+select * into #CustB from customers where CompanyName Like 'B%'
+
+select * from #CustB
+
+select * into ##CustC from customers where CompanyName Like 'C%'
+
+select * from ##CustC
+
+
+
+
+
+

@@ -1,0 +1,15 @@
+﻿@using testEmployeeMVC.Models
+@model List<employee>
+
+<ul data-role="listview" data-filter="true">
+    @{ foreach (employee dr in Model) {
+            <li>
+                <a href="/Home/Update/@dr.id">
+                    <img src="~/images/@dr.picture">
+                    <h4>@dr.firstName @dr.lastName PM</h4>
+                    <p>@dr.title</p> <span class="ui-li-count">4</span>
+                </a>
+            </li>
+        }
+    }
+</ul>

@@ -1,0 +1,127 @@
+-- Lab 練習: 備份與還原(指令版)
+
+USE master
+go
+
+EXEC xp_cmdShell 'md c:\data'
+go
+
+EXEC sp_addumpdevice 'disk', 'LabBackupDevice', 'c:\data\LabBackupDevice.bak'
+go
+
+USE Northwind
+GO
+
+ALTER DATABASE Northwind SET RECOVERY FULL
+GO
+
+BACKUP DATABASE Northwind TO LabBackupDevice WITH NAME = 'Full 1', FORMAT
+GO
+
+BEGIN TRANSACTION mark_h WITH MARK
+INSERT INTO CUSTOMERS(CustomerID, CompanyName, ContactName)
+VALUES('HEALT', 'Health Food Store', 'Mike Nash')
+COMMIT TRANSACTION mark_h
+GO
+
+BACKUP Log Northwind TO LabBackupDevice WITH NAME = 'Log 1', NOINIT
+GO
+
+BEGIN TRANSACTION mark_v WITH MARK
+INSERT INTO CUSTOMERS(CustomerID, CompanyName, ContactName)
+VALUES('VOLCA', 'Volcano Coffee Company', 'Paula Wilson')
+COMMIT TRANSACTION mark_v
+GO
+
+BACKUP DATABASE Northwind TO LabBackupDevice WITH NAME = 'Diff ', DIFFERENTIAL, NOINIT
+GO
+
+BEGIN TRANSACTION mark_t WITH MARK
+INSERT INTO CUSTOMERS(CustomerID, CompanyName, ContactName)
+VALUES('THEWI', 'The Wine Cellar', 'Michael Holz')
+COMMIT TRANSACTION mark_t
+GO
+
+BEGIN TRANSACTION mark_c WITH MARK
+INSERT INTO CUSTOMERS(CustomerID, CompanyName, ContactName)
+VALUES('CHIEN', 'Wolfgang Chien', 'Wolfgang Chien')
+COMMIT TRANSACTION mark_c
+GO
+
+BACKUP Log Northwind TO LabBackupDevice WITH NAME = 'Log 2', NOINIT
+GO
+
+-- resote --
+USE master
+GO
+
+RESTORE HEADERONLY FROM LabBackupDevice
+GO
+
+-- Try 1
+-- RESTORE HEADERONLY FROM LabBackupDevice
+RESTORE DATABASE Northwind from LabBackupDevice with file = 1, RECOVERY
+GO
+SELECT * FROM Northwind..customers 
+  WHERE customerid in ('VOLCA', 'HEALT','THEWI', 'CHIEN')
+GO
+
+-- Try 2
+-- RESTORE HEADERONLY FROM LabBackupDevice
+RESTORE DATABASE Northwind from LabBackupDevice with file = 1, NORECOVERY
+RESTORE log Northwind from LabBackupDevice with file = 2, RECOVERY
+GO
+SELECT * FROM Northwind..customers 
+  WHERE customerid in ('VOLCA', 'HEALT','THEWI', 'CHIEN')
+GO
+
+
+-- Try 3
+-- RESTORE HEADERONLY FROM LabBackupDevice
+RESTORE DATABASE Northwind from LabBackupDevice with file = 1, NORECOVERY
+RESTORE DATABASE Northwind from LabBackupDevice with file = 3, RECOVERY
+GO
+SELECT * FROM Northwind..customers 
+  WHERE customerid in ('VOLCA', 'HEALT','THEWI', 'CHIEN')
+GO
+
+-- Try 4
+-- RESTORE HEADERONLY FROM LabBackupDevice
+RESTORE DATABASE Northwind from LabBackupDevice with file = 1, NORECOVERY
+RESTORE DATABASE Northwind from LabBackupDevice with file = 3, NORECOVERY
+RESTORE log Northwind from LabBackupDevice with file = 4, RECOVERY
+GO
+SELECT * FROM Northwind..customers 
+  WHERE customerid in ('VOLCA', 'HEALT','THEWI', 'CHIEN')
+GO
+
+
+-- Try 5
+-- RESTORE HEADERONLY FROM LabBackupDevice
+RESTORE DATABASE Northwind from LabBackupDevice with file = 1, NORECOVERY
+RESTORE log Northwind from LabBackupDevice with file = 2, STOPATMARK='mark_h', RECOVERY
+GO
+SELECT * FROM Northwind..customers 
+  WHERE customerid in ('VOLCA', 'HEALT','THEWI', 'CHIEN')
+GO
+
+
+-- Try 6
+-- RESTORE HEADERONLY FROM LabBackupDevice
+RESTORE DATABASE Northwind from LabBackupDevice with file = 1, NORECOVERY
+RESTORE DATABASE Northwind from LabBackupDevice with file = 3, NORECOVERY
+RESTORE log Northwind from LabBackupDevice with file = 4, STOPATMARK='mark_t', RECOVERY
+GO
+SELECT * FROM Northwind..customers 
+  WHERE customerid in ('VOLCA', 'HEALT','THEWI', 'CHIEN')
+GO
+
+-- Try 7
+-- RESTORE HEADERONLY FROM LabBackupDevice
+RESTORE DATABASE Northwind from LabBackupDevice with file = 1, NORECOVERY
+RESTORE DATABASE Northwind from LabBackupDevice with file = 3, NORECOVERY
+RESTORE log Northwind from LabBackupDevice with file = 4, STOPATMARK='mark_c', RECOVERY
+GO
+SELECT * FROM Northwind..customers 
+  WHERE customerid in ('VOLCA', 'HEALT','THEWI', 'CHIEN')
+GO

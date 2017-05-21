@@ -1,0 +1,16 @@
+use Northwind
+go
+
+
+Declare @LastDay DateTime
+SELECT @Lastday = max(orderdate) FROM orders
+print @LastDay
+
+SELECT orderid, customerid
+FROM orders
+WHERE orderdate = @LastDay
+
+ 
+SELECT orderid, customerid
+FROM orders
+WHERE orderdate = (SELECT max(orderdate) FROM orders)

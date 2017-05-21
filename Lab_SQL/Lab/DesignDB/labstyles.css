@@ -1,0 +1,162 @@
+BODY {
+	FONT-FAMILY: Verdana, Arial, Helvetica, Sans Serif; FONT-SIZE: 80%; MARGIN-BOTTOM: 8pt; MARGIN-LEFT: 8pt; MARGIN-RIGHT: 8pt
+}
+H1 {
+	COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; FONT-SIZE: 22pt
+}
+H2 {
+	COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; FONT-SIZE: 16pt; FONT-WEIGHT: bold
+}
+H3 {
+	COLOR: black; FONT-FAMILY: Arial Narrow, Arial; FONT-SIZE: 15pt; FONT-WEIGHT: bold
+}
+H4 {
+	COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; FONT-SIZE: 10pt; FONT-WEIGHT: bold
+}
+H5 {
+	COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; FONT-SIZE: 10pt; FONT-WEIGHT: bold
+}
+H6 {
+	COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; FONT-SIZE: 10pt; FONT-WEIGHT: bold
+}
+A:link {
+	COLOR: maroon
+}
+A:visited {
+	COLOR: maroon
+}
+P {
+	MARGIN-BOTTOM: 0.6em; MARGIN-TOP: 0.6em
+}
+P.proclabel {
+	FONT-SIZE: 100%; FONT-WEIGHT: bold
+}
+OL {
+	MARGIN-BOTTOM: 0em; MARGIN-LEFT: 2.4em; MARGIN-TOP: 0.7em
+}
+UL {
+	LIST-STYLE: disc; MARGIN-BOTTOM: 0em; MARGIN-LEFT: 1.5em; MARGIN-TOP: 0.6em
+}
+LI {
+	MARGIN-BOTTOM: 0.7em; MARGIN-LEFT: 0em
+}
+DD {
+	MARGIN-BOTTOM: 0em; MARGIN-LEFT: 1.5em
+}
+DT {
+	MARGIN-TOP: 2em
+}
+PRE {
+	BACKGROUND: #eeeeee; FONT-FAMILY: Courier New; FONT-SIZE: 110%; MARGIN-BOTTOM: 1em; MARGIN-LEFT: 0pt; MARGIN-TOP: 1em; PADDING-BOTTOM: 5pt; PADDING-LEFT: 5pt; PADDING-RIGHT: 5pt; PADDING-TOP: 5pt
+}
+CODE {
+	BACKGROUND: #eeeeee; FONT-FAMILY: Courier New; FONT-SIZE: 110%; MARGIN-BOTTOM: 1em; MARGIN-LEFT: 0pt; MARGIN-TOP: 1em; PADDING-BOTTOM: 5pt; PADDING-LEFT: 5pt; PADDING-RIGHT: 5pt; PADDING-TOP: 5pt
+}
+TABLE {
+	FONT-SIZE: 100%; MARGIN-BOTTOM: 0.75em; MARGIN-TOP: 0.75em; PADDING-BOTTOM: 2pt; PADDING-LEFT: 2pt; PADDING-RIGHT: 2pt; PADDING-TOP: 2pt
+}
+TH {
+	BACKGROUND: #dddddd; TEXT-ALIGN: left; VERTICAL-ALIGN: bottom
+}
+TR {
+	
+}
+TD {
+	BACKGROUND: #eeeeee
+}
+P.margin {
+	MARGIN-LEFT: 2em; MARGIN-TOP: -1.75em
+}
+P.indent {
+	MARGIN-LEFT: 2em
+}
+.indent1 {
+	MARGIN-LEFT: 1.5em
+}
+.indent2 {
+	MARGIN-LEFT: 2em
+}
+.indent3 {
+	MARGIN-LEFT: 2.5em
+}
+.syntax {
+	MARGIN-LEFT: 2em
+}
+.spacing {
+	MARGIN-LEFT: 2em
+}
+.popup {
+	CURSOR: hand
+}
+.proc {
+	MARGIN-TOP: 1.5em
+}
+TD.media {
+	BACKGROUND: #ffffff; VERTICAL-ALIGN: top
+}
+TD.samplecode {
+	BACKGROUND: #ffffff; VERTICAL-ALIGN: top
+}
+OL.sub {
+	MARGIN-BOTTOM: 0.7em; MARGIN-LEFT: 2.4em; MARGIN-TOP: 1.3em
+}
+OL.selfcheck {
+	MARGIN-BOTTOM: 0.7em; MARGIN-LEFT: 2em; MARGIN-TOP: 1.2em
+}
+LI.selfcheck {
+	FONT-WEIGHT: bold; MARGIN-BOTTOM: 0.7em; MARGIN-LEFT: 0em
+}
+TD.selfcheck {
+	BACKGROUND: #eeeeee; VERTICAL-ALIGN: top; align: left
+}
+SPAN.glossPopup {
+	COLOR: #339933; CURSOR: hand; TEXT-DECORATION: underline
+}
+TH.special {
+	BACKGROUND: #c4d4de; TEXT-ALIGN: center; VERTICAL-ALIGN: bottom
+}
+.question {
+	COLOR: maroon; CURSOR: hand; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; FONT-SIZE: 10pt
+}
+.answer {
+	DISPLAY: none
+}
+.code {
+	FONT-FAMILY: Courier New, Courier; FONT-SIZE: 10pt
+}
+.interlist {
+	MARGIN-BOTTOM: -1pt; MARGIN-TOP: 4pt
+}
+.interlist2 {
+	MARGIN-BOTTOM: -1pt; MARGIN-TOP: 4pt
+}
+.footnote {
+	FONT-SIZE: 7pt
+}
+.ind1 {
+	MARGIN-LEFT: 0.25in
+}
+.ind2 {
+	MARGIN-LEFT: 0.5in
+}
+.mod {
+	FONT-SIZE: 12px; FONT-WEIGHT: bold; MARGIN-LEFT: 5pt; MARGIN-TOP: 4pt
+}
+.topic {
+	FONT-SIZE: 12px; FONT-WEIGHT: bold; MARGIN-LEFT: 19pt; MARGIN-TOP: -11pt
+}
+.post {
+	MARGIN-BOTTOM: 6pt; MARGIN-LEFT: 0pt; MARGIN-TOP: 6pt
+}
+.note {
+	MARGIN-BOTTOM: 0pt; MARGIN-TOP: -15pt
+}
+DL {
+	COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; FONT-SIZE: 10pt
+}
+DD {
+	COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; FONT-SIZE: 10pt
+}
+DT {
+	COLOR: black; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; FONT-SIZE: 10pt
+}

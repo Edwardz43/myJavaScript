@@ -1,0 +1,35 @@
+use northwind
+go
+
+select * from products
+
+select ProductID, ProductName, CategoryID from products
+
+select ProductID, ProductName, CategoryID,
+  (  case CategoryID
+       when 1 then '食品'
+       when 2 then '文具'
+       when 3 then '家電'
+       else '其他'
+     end
+  ) as CategoryText
+from products
+
+select ProductID, ProductName, CategoryID,
+  (  case CategoryID
+       when 1 then '食品'
+       when 2 then '文具'
+       when 3 then '家電'
+       else '其他'
+     end
+  ) as CategoryText,
+  Unitprice,
+  (
+    case
+      when unitPrice > 100 then 'expensive'
+      when unitPrice <= 6 then 'cheap'
+      else 'normal'
+    end
+  ) as priceLevel
+from products
+

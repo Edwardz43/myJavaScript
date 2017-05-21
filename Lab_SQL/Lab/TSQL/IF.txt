@@ -1,0 +1,37 @@
+declare @i int
+-- declare @n varchar(300)
+
+-- Assignment statement
+-- 1
+set @i = 5
+if @i >= 10
+  print 'Yes'
+else
+  print 'No'
+print @i
+go
+
+
+-- 2
+-- select ProductID from products where productid = 3
+-- select @i = ProductID from products where productid = 3
+declare @i int
+select @i = ProductID from products
+print @i
+go
+
+-- 3
+declare @i int
+set @i = (select ProductID from products where productid = 3)
+-- set @i = (select ProductID from products)
+print @i
+go
+
+
+declare @StockQty decimal(10, 1)
+select @StockQty = Sum(UnitsInStock) from products
+if @StockQty > 3000
+  print 'stock level too height'
+else
+  print 'No'
+go

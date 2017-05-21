@@ -1,0 +1,51 @@
+select substring('1234567890', 2, 3)  -- 234
+
+select right('1234567890', 3)
+
+select subString('1234567890', ?? ,3)
+
+
+select charIndex('**', '1234**456**789')  -- 5
+select charIndex('**', '1234**456**789', 6)  -- 10
+
+
+select replace('1234512345', '23', 'xx')
+
+select replace('1234512345', '23', '')
+
+
+select LTrim('   1234 567')
+
+select rTrim('   1234 567   ') + '*'
+
+
+declare @s varchar(10)
+declare @Result char(10)
+set @s = '123'
+set @Result = @s
+select len(@Result)
+select '*' + @Result + '*'
+go
+
+
+select len('中文字')  -- 3
+select len('中文字   ')  -- 3
+select len('  中文字')  -- 5
+go
+
+
+select round(123.45, 1)
+select round(123.456, 2)
+
+select round(123.45, -1)  -- 120
+select round(125.45, -1)  -- 130
+
+select round(125.45, -2)  -- 130
+select round(175.45, -2)  -- 130
+
+select round(575.45, -3)  -- 1000
+
+
+
+
+

@@ -1,0 +1,114 @@
+-- 建立使用者自訂函數: IndexName
+-- 稍後我們會用到這個函數
+use AdventureWorks
+go
+
+Create Function dbo.IndexName
+(
+  @objectID int,
+  @indexID int
+)
+returns nvarchar(128)
+as
+begin
+  declare @result nvarchar(128)
+  select @result = name 
+    from sys.indexes 
+    where object_id = @objectID and index_id = @indexID
+  return @result
+end
+go
+
+-- 檢視 Product 資料表的片斷資訊
+select object_name(object_id) as TableName, 
+  dbo.IndexName(object_id, index_id) as IndexName, 
+  avg_page_space_used_in_percent, avg_fragmentation_in_percent
+  from sys.dm_db_index_physical_stats 
+  ( DB_ID('AdventureWorks'), object_id('Production.Product'), null, null, 'DETAILED' )
+  where index_level = 0
+go
+
+
+-- 一併示範在 SQL Management Studio 以滑鼠右鍵點按索引名稱 | 屬性 | 片段
+-- 可看到相同的數據
+
+
+-- 建立示範專用的 DemoOrderHeader 資料表
+CREATE TABLE dbo.DemoOrderHeader
+	(
+	SalesOrderID int NOT NULL,
+	RevisionNumber tinyint NOT NULL,
+	OrderDate datetime NOT NULL,
+	DueDate datetime NOT NULL,
+	ShipDate datetime NULL,
+	Status tinyint NOT NULL,
+	OnlineOrderFlag dbo.Flag NOT NULL,
+	SalesOrderNumber nvarchar(25) NOT NULL,
+	PurchaseOrderNumber dbo.OrderNumber NULL,
+	AccountNumber dbo.AccountNumber NULL,
+	CustomerID int NOT NULL,
+	ContactID int NOT NULL,
+	SalesPersonID int NULL,
+	TerritoryID int NULL,
+	BillToAddressID int NOT NULL,
+	ShipToAddressID int NOT NULL,
+	ShipMethodID int NOT NULL,
+	CreditCardID int NULL,
+	CreditCardApprovalCode varchar(15) NULL,
+	CurrencyRateID int NULL,
+	SubTotal money NOT NULL,
+	TaxAmt money NOT NULL,
+	Freight money NOT NULL,
+	TotalDue money NOT NULL,
+	Comment nvarchar(128) NULL,
+	rowguid uniqueidentifier NOT NULL,
+	ModifiedDate datetime NOT NULL
+	)
+
+insert dbo.DemoOrderHeader
+  select * from Sales.SalesOrderHeader
+go
+
+-- 故意製造片段零碎
+Delete dbo.DemoOrderHeader
+  where SalesOrderID % 2 = 0
+go
+
+create clustered index idx_DemoOrderHeader_c
+  on dbo.DemoOrderHeader(SalesOrderID)
+go
+
+insert dbo.DemoOrderHeader
+  select * from Sales.SalesOrderHeader where SalesOrderID % 2 = 0
+go
+
+-- 檢視 DemoOrderHeader 資料表的片斷資訊
+select object_name(object_id) as TableName, 
+  dbo.IndexName(object_id, index_id) as IndexName, 
+  avg_page_space_used_in_percent, avg_fragmentation_in_percent
+  from sys.dm_db_index_physical_stats 
+  ( DB_ID('AdventureWorks'), object_id('dbo.DemoOrderHeader'), null, null, 'DETAILED' )
+  where index_level = 0
+go
+
+-- 重建索引
+alter index idx_DemoOrderHeader_c
+  on dbo.DemoOrderHeader
+  rebuild
+go
+
+-- 再次檢視 DemoOrderHeader 資料表的片斷資訊
+select object_name(object_id) as TableName, 
+  dbo.IndexName(object_id, index_id) as IndexName, 
+  avg_page_space_used_in_percent, avg_fragmentation_in_percent
+  from sys.dm_db_index_physical_stats 
+  ( DB_ID('AdventureWorks'), object_id('dbo.DemoOrderHeader'), null, null, 'DETAILED' )
+  where index_level = 0
+go
+
+
+-- 清除/還原 Lab 環境
+drop function dbo.IndexName
+drop table dbo.DemoOrderHeader
+go
+

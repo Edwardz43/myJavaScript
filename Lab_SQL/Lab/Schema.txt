@@ -1,0 +1,102 @@
+Use Master
+go
+
+-- 建立示範專用的資料庫
+Create Database DemoSchemaDB
+
+-- 使用者管理
+Create login Susan with password = 'P@ssw0rD'
+Create login Richard with password = 'P@ssw0rD'
+Create login Leah with password = 'P@ssw0rD'
+go
+
+use DemoSchemaDB
+go
+
+create user Susan for login Susan with default_schema = HR_Acc
+create user Richard for login Richard with default_schema = HR_Acc
+create user Leah for login Leah with default_schema = HR_Acc
+go
+
+-- 建立 Schema
+Create Schema HR_Acc authorization Susan
+go
+
+-- Susan 的 principal_id 是什麼?
+select * from sys.database_principals where name = 'Susan'
+go
+
+-- HR_Acc 的 principal_id 與 Susan 相同嗎?
+select * from sys.schemas
+go
+
+-- 建立兩個資料表: HR_Acc.Tab1, dbo.Tab1
+Create table HR_Acc.Tab1 (c1 char(50))
+go
+
+insert into HR_Acc.Tab1 values ('HR_Acc.Tab1, testing')
+go
+
+Create table dbo.Tab1 (c1 char(50))
+go
+
+insert into dbo.Tab1 values ('dbo.Tab1, testing')
+go
+
+select * from dbo.Tab1
+select * from HR_Acc.Tab1
+go
+
+
+-- 基於權限問題, 以下指令無法執行
+Execute as User = 'Richard' select * from tab1
+go
+
+revert
+go
+
+-- 設定權限
+use DemoSchemaDB
+go
+
+Grant select on dbo.Tab1 to Richard, Leah
+go
+Grant select on HR_Acc.Tab1 to Richard, Leah
+go
+
+-- 權限開放了, 說明一下為什麼傳回的是: HR_Acc.Tab1, testing                              
+execute as user = 'Richard' select * from tab1
+go
+
+Revert
+
+-- 
+Alter authorization on schema::HR_Acc to Richard
+go
+
+-- 將 HR_Acc.Tab1 轉移到 Sales_Acc
+Create Schema Sales_Acc authorization Susan
+go
+
+alter schema Sales_Acc Transfer HR_Acc.Tab1
+go
+
+-- 說明一下為什麼傳回的是: dbo.Tab1, testing                                 
+execute as user = 'Richard' select * from tab1
+go
+
+Revert
+
+
+-- 清除/還原 Lab 環境
+use master
+go
+
+Drop database DemoSchemaDB
+go
+
+use master
+drop login Susan
+drop login Richard
+drop login Leah
+go

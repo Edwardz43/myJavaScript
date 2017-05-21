@@ -1,0 +1,40 @@
+use northwind
+go
+
+select * into CustGer from customers where Country = 'Germany'
+go
+
+select * into CustMex from customers where Country = 'Mexico'
+go
+
+create view vw_GerMex as
+select * from CustGer
+union
+select * from CustMex
+go
+
+select * from vw_GerMex
+go
+
+-- Error: 衍生資料表 'vw_GerMex' 無法更新，因為定義中包含 UNION 運算子。
+update vw_GerMex set ContactName = 'Maria Anders 123' where CustomerID = 'ALFKI'
+go
+
+
+-- drop trigger t_updateGerMex
+
+create trigger t_updateGerMex on vw_GerMex instead of update as
+declare @sCountry varchar(40)
+declare @sCustomerID char(5)
+declare @sContactName varchar(40)
+
+select @sCustomerID = CustomerID from inserted
+select @sCountry = Country from inserted
+select @sContactName = ContactName from inserted
+
+if @sCountry = 'Germany'
+  update CustGer set ContactName = @sContactName where CustomerID = @sCustomerID
+
+if @sCountry = 'Mexico'
+  update CustNMex set ContactName = @sContactName where CustomerID = @sCustomerID
+go

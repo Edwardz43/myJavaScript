@@ -1,0 +1,147 @@
+Transaction 與 Lock
+===================
+
+
+1. 啟動 SQL Server Management Studio, 登入 SQL Server, 
+   新增查詢, 執行下列指令:
+print @@SPID
+
+==> 好了, 這個就是你目前的連線代號了. 
+(請注意, 以下內容均假定顯示出來的 spid 為 54 來進行說明, 
+你看到的代號未必是 54)
+
+
+2. 在 SQL Management Studio 物件總管, 
+   展開到 <你的Server> | 管理 | 活動監視器, [dc]活動監視器
+   觀察"依處理序鎖定", 看看其中有沒有 54 號處理序的鎖定資訊?
+   
+   Answer: 沒有.
+
+
+3. 切換回查詢輸入視窗, 執行下列指令:
+use northwind
+go
+
+
+4. 切換回到活動監視器, 點按工具列的"重新整理", 
+   再次觀察"依處理序鎖定", 看看其中有沒有 54 號處理序的鎖定資訊?
+
+
+
+__________________________________________________________________
+體會 Transaction 何時結束
+
+5. 切換回查詢輸入視窗, 執行下列指令:
+begin transaction
+select * from Customers
+  where CompanyName Like 'B%'
+print 'trans count: ' + Convert(varchar(4), @@TranCount)
+==> 下方訊息頁籤印出多少? 
+==> 你認為現在 Transaction 結束了嗎?
+
+
+6. 繼續執行下列指令:
+commit transaction
+print 'trans count: ' + Convert(varchar(4), @@TranCount)
+==> 下方訊息頁籤印出多少? 
+==> 你認為現在 Transaction 結束了嗎?
+
+
+
+
+__________________________________________________________________
+體會 Transaction 的 「整體性」 與 「可回復性」
+
+7. 執行下列指令:
+begin transaction
+update Customers
+  set CompanyName = 'Bottom-Dollar Markets 123'
+  where CustomerID = 'BOTTM'
+select * from Customers
+  where CompanyName Like 'B%'
+==> 請問 CustomerID = 'BOTTM' 的資料改變了嗎?
+
+
+8. 繼續執行下列指令:
+rollback transaction
+select * from Customers
+  where CompanyName Like 'B%'
+==> 請問 CustomerID = 'BOTTM' 的資料有沒有改變呢? 
+==> 你能解釋為什麼嗎?
+
+
+
+__________________________________________________________________
+體會 Transaction 的「隔離性」
+  -- read committed 與 repeatable read 有何不同
+
+9. 點按"新增查詢", 再多開一個查詢輸入視窗, 藉此模擬出兩個 Client 端.
+
+10. 第一個視窗執行以下指令:
+set transaction isolation level read committed
+begin transaction 
+select * from Customers
+  where CompanyName Like 'B%'
+==> 現在 spid 54 鎖定了什麼? Answer: almost nothing.
+
+
+11. 第二視窗執行:
+use northwind
+go
+
+update Customers
+  set CompanyName = 'Blauer See Delikatessen 123'
+  where CustomerID = 'BLAUS'
+==> 一切順利嗎?
+
+
+12. 第一視窗執行:
+update Customers
+  set CompanyName = 'Bottom-Dollar Markets 123'
+  where CustomerID = 'BOTTM'
+==> 現在 spid 54 鎖定了什麼?
+
+*** 別忘了第一視窗執行以便歸零環境:
+rollback tran
+
+
+13. 重複 10-12 再做一次, 但是第一視窗改用以下指令, 
+    ( 差別在於 repeatable read )
+set transaction isolation level repeatable read
+begin transaction
+select * from Customers
+  where CompanyName Like 'B%'
+
+==> 噢! 第二視窗能夠順利改資料嗎? 
+==> 在第一視窗在 rollback 之前, spid 54 鎖定了什麼?
+
+14. 別忘了第一視窗執行以便歸零環境:
+rollback tran
+
+
+
+
+__________________________________________________________________
+再度體會 Transaction 的「隔離性」
+  -- SERIALIZABLE 如何預防 "phantom data"
+
+15. 第一個視窗執行以下指令:
+set transaction isolation level SERIALIZABLE
+begin transaction 
+select * from Customers
+  where CompanyName Like 'B%'
+
+16. 在第二視窗執行以下指令:
+update Customers
+  set CompanyName = 'Bottom-Dollar Markets 123'
+  where CustomerID = 'CHOPS'
+select * from Customers
+  where CustomerID Like 'C%'
+
+==> 有結果嗎? 怎麼要這麼久?
+==> OK, 請檢視 spid 54 鎖定的內容與先前有何不同?
+
+17. 第一視窗執行:
+rollback tran
+==> 你覺得 SERIALIZABLE 究竟在鎖些什麼呢?
+
