@@ -1,28 +1,26 @@
 #myCanvas{
-    position: absolute;
-    /*padding-top: 10;*/
-    /*padding-left: 10;*/
+    position: relative;
     width:100%;
-    height :100%;
-    /*width : 1280px; */
-    /*height : 600px;*/
-    /*z-index : 2;*/
+    height:600px;
 }
 .myGame{
     position: absolute;
-    top:7;
-    left:7;
-    width : 1280px; 
+    top:15%;
+    left:15%;
+    width : 70%; 
     height : 600px;
+	margin-bottom: 30px;
     /*border: 1px solid;*/
     z-index:-1;
 }
 
 #myBG {
-	position: relative;
-	width: 1280px;
+	position: absolute;
+	top:15%;
+    left:15%;
+	width: 70%;
 	height: 600px;
-	margin: 0;
+	margin-bottom: 30px;
 	overflow: hidden;
 	outline: 1px solid gray;
 }
@@ -33,7 +31,7 @@
 	height: 600px;
 	background : url('images/BG003.jpg');
 	background-repeat: repeat-x;
-    animation: rollImage linear 40s infinite;
+    animation: rollImage linear 30s infinite;
     z-index:-2;
 } 
 
@@ -41,4 +39,88 @@
 @keyframes rollImage {
 	from { right: 0px; }
 	to { right: 2062px; }
+}
+
+footer{
+    background-color: black;
+    line-height: 2.7;
+    color: #ffffff;
+    position: absolute;
+    width: 100%;
+    height: 30px;
+    bottom: 5%;
+}
+
+
+
+/*modal*/
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/*暫停畫面*/
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
 }

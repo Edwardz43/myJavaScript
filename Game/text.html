@@ -34,11 +34,13 @@
             var canvas = $('#myCanvas')[0];
             var ctx = canvas.getContext('2d');
             var mouseX, mouseY;
+            var dx = 0;
+            var dir;
             
             //誠佑的程式碼
             function onMousemove(event){
                 if(event.offSetX || event.layerX) {
-        
+                    dx = mouseX;
                     mouseX = event.offSetX == undefined ? event.layerX : event.offSetX;
                     mouseY = event.offSetY == undefined ? event.layerY : event.offSetY;
                     //console.log(mouseX);
@@ -69,9 +71,11 @@
                 ctx.clearRect(0,0, 600, 480);
                 ctx.drawImage(target, mouseX* scaleX - 15, mouseY*scaleY - 15, 30,30);//- 15是為了對齊準星 因為圖的大小是30 減一半回去
                 ctx.restore();
+                dir = mouseX > dx?"right":"left";
                 
                 //除錯用
-                var s = "X :"+ mouseX +", Y :" + mouseY+", width :"+ width +", height :" + height;
+                var s = "X :"+ mouseX +", Y :" + mouseY+", width :"+ width +", height :" + height+
+                ", dir : " + dir ;
                 $('#report').text(s);    
                 
             })

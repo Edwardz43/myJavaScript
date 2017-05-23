@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>HTML Project</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="jquery.js"></script>
+
+<style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {width:1280px;height: 600px}
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height:auto;} 
+    }
+    
+    #GameArea{
+        padding:0px;
+    }
+    
+    #myCanvas{
+    position: relative;
+    /*padding-top: 10;*/
+    /*padding-left: 10;*/
+    width:100%;
+    height :100%;
+    /*width : 1280px; */
+    /*height : 600px;*/
+    z-index : 2;
+    }
+    
+    .myGame{
+       	position: relative;
+    	width:1280px;
+        height :600px;
+        /*border: 1px solid;*/
+        z-index:-1;
+    }
+    
+    #myBG {
+    	position: relative;
+    	width:100%;
+      height :100%;
+    	margin: 0;
+    	overflow: hidden;
+    	outline: 1px solid gray;
+    	z-index:-2;
+    }
+    
+    #bGImg {
+    	position: relative;
+    	width: 3502px;
+    	height: 600px;
+    	background : url('images/BG003.jpg');
+    	background-repeat: repeat-x;
+        animation: rollImage linear 40s infinite;
+        z-index:-2;
+    } 
+    
+    @keyframes rollImage {
+	from { right: 0px; }
+	to { right: 2062px; }
+    }
+    
+    
+    
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="#">Logo</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Projects</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  
+<div id="GameArea" class="container-fluid text-center">    
+  <div class="content">
+      
+    <div class="myGame" ><canvas  id="myCanvas"></canvas></div>
+    <div id="myBG">
+        <div id="bGImg"></div>
+    </div>
+    
+  </div>
+</div>
+
+<footer class="container-fluid bg-4 text-center">
+    <p>© by Ed Lo, 2017-my 
+        <a href="https://github.com/Edwardz43" style="text-decoration: underline">
+          Github
+        </a>
+    </p>
+</footer>
+
+</body>
+</html>
