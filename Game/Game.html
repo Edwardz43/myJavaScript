@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <title>Game</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,12 +27,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>                        
       </button>
-      <a class="navbar-brand" href="#">About</a>
+      <a class="navbar-brand" href="https://edlo43.wordpress.com/" target="_blank">About</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
         <li><a href="#">Tutorial</a></li>
-        <li><a href="Game.html">Reset</a></li>
+        <li><a href="#" id="resetBtn">Reset</a></li>
         <li><a href="#" id="myBtn">Pause</a></li>
         <!--<li><a href="#">Contact</a></li>-->
       </ul>
@@ -45,7 +44,11 @@
 </nav>        
 <div class='myGame'><canvas  id="myCanvas"></canvas></div>
 <div id="myBG">
-    <div id="bGImg"></div>
+    <div 
+      id="bGImg" 
+      style="background : url('images/BG003.jpg');animation: rollImage linear 30s infinite;">
+      
+    </div>
 </div>
 
  <!--The Modal -->
