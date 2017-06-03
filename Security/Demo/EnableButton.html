@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<form method="post" action="http://exec.hostzi.com/echo.php">
+  China Airline flight number:
+  <input type="text" name="flightNumber" pattern="CI-\d\d\d" value="CI-123"> <br>
+
+  Zip:
+  <input type="text" name="zip" pattern="\d{3}|\d{5}" value="400"> <br>
+
+  National ID:
+  <input type="text" name="nid" pattern="[A-Z][12]\d{8}" value="A212345678"> <br>
+
+  E-mail:
+  <input type="text" name="email" 
+   style="width: 300px;" required
+   pattern="\w+([.-]\w+)*@\w+([.-]\w+)+"> <br>
+  
+  
+  <input type="checkbox" id="chkAgree" onclick="checkAgree()" > Agree <br>
+  
+  <br>
+  <input type="submit" name="btnOK" id="btnOK" value="OK, send it." disabled="disabled" >
+  <input type="button" value="back" onclick="history.back();">
+  <input type="submit" name="btnCancel" value="Cancel" formnovalidate >
+
+<script type="text/javascript">
+
+function checkAgree()
+{
+//   if (document.getElementById("chkAgree").checked)
+// 	  document.getElementById("btnOK").disabled = false;
+//   else
+// 	  document.getElementById("btnOK").disabled = true;
+  
+// 	document.getElementById("btnOK").disabled = 
+// 		(document.getElementById("chkAgree").checked) ? false : true;
+  
+  
+	document.getElementById("btnOK").disabled = 
+		!(document.getElementById("chkAgree").checked);
+  
+}
+
+</script>
+
+
+</form>
+
+</body>
+</html>

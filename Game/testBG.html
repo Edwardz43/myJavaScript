@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<body onload="startGame()">
+<div id="myGame" class='myGame'></div>
+<script>
+
+var myBackground;
+var balls = [];
+var chargeSound = new Audio('BGM/charge.wav');
+chargeSound.volume = 0.1;
+chargeSound.loop = true;
+
+function startGame() {
+    //myBackground = new component(2062, 600, "black", 0, 0, "backgroundcolor");
+    myBackground = new component(2062, 600, "images/BG003.jpg", 0, 0, "background");
+    myGameArea.start();
+     $(document).keydown(function(evt) {
+        if(evt.keyCode == 32 && !Fairy.died && !Fairy.isCharging){
+            var timer = setInterval(Fairy.charge, 10);
+            Fairy.isCharging = true;
+            $(document).keyup(function(evt) { 
+                if(evt.keyCode == 32) {
+                    Fairy.isCharging = false;
+                    Fairy.chargeNum = 1;
+                    chargeSound.pause();
+                    chargeSound.load();
+                    clearInterval(timer);
+                } 
+            });
+
+        }
+    });
+    
+    $(document).keydown(function(evt) {
+        if(evt.keyCode == 13){
+            enermys.push(new enermyKnight());   
+        }
+        if(evt.keyCode == 37){
+            Fairy.Move = 'LEFT';   
+        }
+        if(evt.keyCode == 38){
+            Fairy.Move = 'UP';   
+        }
+        if(evt.keyCode == 39){
+            Fairy.Move = 'RIGHT';   
+        }
+        if(evt.keyCode == 40){
+            Fairy.Move = 'DOWN';   
+        }
+     
+    });         
+    
+    $(document).keyup(function(evt) {
+        if(evt.keyCode == 32 && !Fairy.died){
+            Fairy.shot();   
+        }
+        if(evt.keyCode == 37){
+            Fairy.Move = 'h-NONE';   
+        }
+        if(evt.keyCode == 38){
+            Fairy.Move = 'v-NONE';   
+        }
+        if(evt.keyCode == 39){
+            Fairy.Move = 'h-NONE';  
+        }
+        if(evt.keyCode == 40){
+            Fairy.Move = 'v-NONE';   
+        }
+    });
+}
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = 1280;
+        this.canvas.height = 600;
+        this.context = this.canvas.getContext("2d");
+        //$('#myGame').add();
+        var myGame = $('#myGame')[0];
+        myGame.insertBefore(this.canvas, myGame.childNodes[0]);
+        this.frameNo = 0;
+        this.interval = setInterval(updateGameArea, 16);
+        },
+    clear : function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    stop : function() {
+        clearInterval(this.interval);
+    }
+};
+
+function component(width, height, color, x, y, type) {
+    this.type = type;
+    if (type == "image" || type == "background") {
+        this.image = new Image();
+        this.image.src = color;
+    }
+    this.width = width;
+    this.height = height;
+    this.speedX = 0;
+    this.speedY = 0;    
+    this.x = x;
+    this.y = y;    
+    this.update = function() {
+        var ctx = myGameArea.context;
+        if (type == "image" || type == "background") {
+            ctx.drawImage(this.image, 
+                this.x, 
+                this.y,
+                this.width, this.height);
+        if (type == "background") {
+            ctx.drawImage(this.image, 
+                this.x + this.width, 
+                this.y,
+                this.width, this.height);
+        }
+        } else {
+            ctx.fillStyle = color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+    }
+    this.newPos = function() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.type == "background") {
+            if (this.x == -(this.width)) {
+                this.x = 0;
+            }
+        }
+    }    
+}
+
+function updateGameArea() {
+    myGameArea.clear();
+    myBackground.speedX = -1;
+    myBackground.newPos();    
+    myBackground.update();
+    Fairy.move();
+    Fairy.draw();
+    for(var i=0; i<balls.length; i++){
+        moveBall(balls[i]);  
+        drawBall(balls[i]);
+    }
+    drawState();
+}
+
+//妖精
+var Fairy = {
+    level : 1,
+    exp : 0,
+    lupExp : 100,
+    maxHp : 1200,
+    hp : 1200,
+    X : 100,
+    Y : 100,
+    dx : 0,
+    dy : 0,
+    speed : 5,
+    width : 25*4,
+    height : 21*4,
+    Move : "none",
+    beHit : false,
+    atk : 8,
+    died : false,
+    dir : 'r',
+    //draw相關
+    drawCount : 0,
+    hitCount : 0,
+    chargeCount : 0,
+    deadCount : 0,
+    image : new Image(),
+    chargeNum : 0,
+    isCharging : false,
+    
+    shot : function (){
+        var power = Math.floor(Fairy.chargeNum/50 +1);
+        var dirBall = Fairy.dir=="r"?3:-3;
+    	if(power > 3){
+    	    balls.push(new Ball(Fairy.X - 5, Fairy.Y , power, dirBall, -0.5));
+    	    balls.push(new Ball(Fairy.X - 5, Fairy.Y + 8, power, dirBall, 0.5));
+    	}
+        balls.push(new Ball(Fairy.X - 5, Fairy.Y + 4, power, dirBall, 0));
+        var fireSound = new Audio('BGM/fire.ogg');
+        fireSound.volume = 0.1;
+        fireSound.play();
+    },
+    move : function(){
+        //var ctx = myGameArea.context;
+        var canvas = myGameArea.canvas;
+        if(Fairy.hp > 0){
+            switch (Fairy.Move) {
+                case 'LEFT':
+                    Fairy.dx = -Fairy.speed;
+                    Fairy.dir = 'l';
+                    break;
+                case 'RIGHT':
+                    Fairy.dx = Fairy.speed;
+                    Fairy.dir = 'r';
+                    break;
+                case 'UP':
+                    Fairy.dy = -Fairy.speed;  
+                    break;
+                case 'DOWN':
+                    Fairy.dy = Fairy.speed; 
+                    break;
+                case 'h-NONE':
+                    Fairy.dx = 0;
+                    break;
+                case 'v-NONE':
+                    Fairy.dy = 0;
+                    break;
+                default:
+                    Fairy.dx = 0;
+                    Fairy.dy = 0;
+            }
+            if (Fairy.X + Fairy.dx < 0 || Fairy.X + Fairy.dx + Fairy.width >= canvas.width){
+                Fairy.dx = 0; 
+            }
+            if (Fairy.Y + Fairy.dy < 0 || Fairy.Y + Fairy.dy +Fairy.height > canvas.height){
+                Fairy.dy = 0; 
+            }
+            Fairy.X = Fairy.X + Fairy.dx;
+            Fairy.Y = Fairy.Y + Fairy.dy;
+        }    
+    },
+    charge :function  (){
+        Fairy.chargeNum++;
+        if(Fairy.chargeNum >= 200) {
+            Fairy.chargeNum = 200;
+        }
+        if(Fairy.chargeNum > 50){
+            
+            chargeSound.play();
+        }
+    },
+    draw : function (){
+        var ctx = myGameArea.context;
+        //var canvas = myGameArea.canvas;
+        Fairy.image.src = 'images/Fairy02.png';
+        if(!Fairy.died){
+            if(!Fairy.beHit){
+                if (Fairy.drawCount >= 18) Fairy.drawCount = 0;
+                ctx.save();
+                if(Fairy.dir == "r"){
+                    ctx.drawImage(
+                    Fairy.image, Math.floor(Fairy.drawCount / 6)*50 , 85, 50, 42,
+                    Fairy.X, Fairy.Y, Fairy.width , Fairy.height
+                    );    
+                }else{
+                    ctx.drawImage(
+                    Fairy.image, Math.floor(Fairy.drawCount / 6)*50 , 43, 50, 42,
+                    Fairy.X, Fairy.Y, Fairy.width , Fairy.height
+                    );    
+                }
+                //alert(imgFairy.src);
+                ctx.restore();   
+                Fairy.drawCount++;
+            }else{
+                if(Fairy.drawCount >= 18)Fairy.drawCount = 0;
+                if (Fairy.drawCount % 4 == 0 && Fairy.hitCount <= 50) {
+                    ctx.save();
+                     //ctx.drawImage(imgFairy, Fairy.X, Fairy.Y, Fairy.width , Fairy.height );
+                    if(Fairy.dir == "r"){
+                        ctx.drawImage(
+                        Fairy.image, Math.floor(Fairy.drawCount / 6)*50 , 85, 50, 42,
+                        Fairy.X, Fairy.Y, Fairy.width , Fairy.height
+                        );    
+                    }else{
+                        ctx.drawImage(
+                        Fairy.image, Math.floor(Fairy.drawCount / 6)*50 , 43, 50, 42,
+                        Fairy.X, Fairy.Y, Fairy.width , Fairy.height
+                        );    
+                    }
+                    ctx.restore();
+                }else if(Fairy.hitCount > 50){
+                    Fairy.beHit = false;
+                    Fairy.hitCount =0;
+                }
+                Fairy.hitCount++;
+                Fairy.drawCount++;
+            }
+            if(Fairy.chargeNum >= 50){
+                var imgCharge = new Image();
+                imgCharge.src = 'images/charging.png';
+                if(Fairy.chargeCount >= 60)Fairy.chargeCount = 0;
+                ctx.save();
+                ctx.drawImage(
+                    imgCharge, Math.floor(Fairy.chargeCount / 6)*240 , 0, 240, 240,
+                    Fairy.X - 30, Fairy.Y - 30, 160 , 160
+                    );
+                Fairy.chargeCount++;
+                ctx.restore();
+            }
+        }else{
+            Fairy.hp = 0;
+            if(Fairy.deadCount < 42){
+                ctx.save();
+                Fairy.image.src = 'images/deadeffect.png',
+                ctx.drawImage(
+                    Fairy.image, 0, Math.floor(Fairy.deadCount / 6)*240, 640, 240,
+                    Fairy.X - 150, Fairy.Y - 50, 320 , 120
+                    );
+                Fairy.deadCount++;
+                ctx.restore(); 
+            }
+        }    
+    }
+};
+
+//魔法球 
+function Ball(X, Y, power,dx, dy){
+    this.X = X;
+    this.Y = Y;
+    this.width = 100, 
+    // + Fairy.level;   
+    this.height = 100,
+    // + Fairy.level;
+    this.deltaX = dx*3.5,
+    this.deltaY = dy*3.5;
+    //集氣攻擊太強  要調整
+    this.power = (Fairy.level + Fairy.atk) * power;
+    this.hit = false;
+    this.counter = 0;
+}
+    
+function moveBall(ball){
+    //var ctx = myGameArea.context;
+    var canvas = myGameArea.canvas;
+    //攻擊命中
+    // for(var i=0; i < enermys.length; i++){
+    //     var midX = enermys[i].X + enermys[i].width / 2;    
+    //     var midY = enermys[i].Y + enermys[i].height / 2;
+    
+    //     if (enermys[i].hp > 0) {
+    //         if ((
+    //             ball.X + ball.deltaX + ball.width >= midX  && 
+    //             ball.X - ball.deltaX  <= midX + enermys[i].width /2 &&
+    //             ball.Y + ball.height * 0.5 >= midY - enermys[i].height * 0.5 && 
+    //             ball.Y - ball.deltaY * 0.7 <= midY + enermys[i].height * 0.2
+    //             )){
+    //             var hitSound = new Audio('BGM/enermy.wav');
+    //             hitSound.volume = 0.1;
+    //             hitSound.play();
+
+    //             if(ball.power / Fairy.level <= 20) ball.hit = true;
+    //             else ball.power -= 12;
+                
+    //             enermys[i].hp -= ball.power * 0.8;
+    //             if(enermys[i].hp <= 0) {
+    //                 var enermyDown = new Audio('BGM/enermydown01.wav');
+    //                 enermyDown.volume = 0.1;
+    //                 enermyDown.play();
+    //             }
+                
+    //             if(ball.power ==0 )balls.splice(balls.indexOf(ball), 1);
+    //         }
+    //     }
+    // }
+    
+    // if (Boss.hp > 0 && Boss.X <= 200) {
+    //     if (
+    //             ball.X + ball.deltaX  >= Boss.X - Boss.width*0.2 && 
+    //             ball.X - ball.deltaX  <= Boss.X + Boss.width*0.2 &&
+    //             ball.Y + ball.height  >= 40 + Boss.Y - Boss.height*0.2 && 
+    //             ball.Y - ball.deltaY  <= 60 + Boss.Y + Boss.height*0.2
+    //         ){
+    //         // var hitSound = new Audio('BGM/enermy.wav');
+    //         // hitSound.volume = 0.5;
+    //         // hitSound.play();
+    
+    //         if(ball.power / Fairy.level <= 20) ball.hit = true;
+    //         else ball.power -= 15;
+    //         Boss.hp -= ball.power * 0.6;
+    //         if(Boss.hp <= 0) {
+    //             Boss.hp = 0;
+    //             Boss.died = true;
+    //         }
+    //         if(ball.power ==0 )balls.splice(balls.indexOf(ball), 1);
+    //     }
+    // }
+    //火球飛超過銀幕 就從陣列中移除火球
+    if (ball.X + ball.deltaX  > canvas.width ){
+        //alert("ok");
+        balls.splice(balls.indexOf(ball), 1);
+    }
+    
+    ball.X += ball.deltaX;
+    ball.Y += ball.deltaY;
+}
+
+function drawBall(ball) {
+    var mBall = new Image();
+    mBall.src = 'images/magicball.png';
+    
+    var bBall = new Image();
+    bBall.src = 'images/bigball.png';
+    var ctx = myGameArea.context;
+    //var canvas = myGameArea.canvas;
+    //如果球被刪除了  就=null 那就不必畫了
+    if(ball != null){
+        if(ball.hit != true){
+        	ctx.save();
+        	var power = ball.power /(Fairy.level + Fairy.atk);
+        	
+        	//集氣就丟大球
+        	if(power > 2){
+        	    ctx.drawImage(
+                bBall, (ball.counter % 5)*480 , Math.floor(ball.counter/5)*480,
+                480, 480,
+                ball.X + 5, ball.Y, ball.width, ball.height
+                );
+                ball.counter++;
+                if (ball.counter >= 31) ball.counter = 0;
+            
+            //沒集氣就丟小球    
+        	}else{
+        	   ctx.drawImage(
+                mBall, (ball.counter %3 )*320 , Math.floor(ball.counter/3)*240, 320, 240,
+                ball.X + 5, ball.Y, ball.width, ball.height
+                );
+                ball.counter++;
+                if(ball.counter >= 31) ball.counter = 0;
+        	}
+        	
+            ctx.restore();
+            
+        }else {
+            balls.splice(balls.indexOf(ball), 1);
+        }
+    }
+}
+
+//畫狀態
+function drawState(){
+    var ctx = myGameArea.context;
+    //var canvas = myGameArea.canvas;
+    ctx.save();
+    // var star = new Image();
+    // star.src = 'images/star.png';
+    // ctx.drawImage(star, 0, 0, canvas.width, canvas.height);
+    var hpLength = (Fairy.hp <= 0)?0:(Fairy.hp / Fairy.maxHp) *400;
+    var expBar = (Fairy.exp / Fairy.lupExp) * 400;
+    var chargeBar = (Fairy.chargeNum/50 / 4) * 100;
+    //state
+    var lv = "Lv : " + Fairy.level + " HP : "+ Fairy.hp+"/"+Fairy.maxHp;
+    ctx.font = "30px oblique";
+    //ctx.strokeText(lv,130,13);
+    ctx.fillStyle = "black";
+    ctx.fillText(lv,520,52);
+    //ctx.strokeText(lv,131,13);
+    ctx.fillStyle = "#FFDC35";
+    ctx.fillText(lv,521,53);
+    ctx.restore();
+    
+    //Fairy icon
+    var icon = new Image();
+    icon.src = 'images/Fairy03.png';
+    ctx.save();
+    ctx.strokeStyle = "#842B00";
+    ctx.strokeRect(10, 19, 84, 84);
+    ctx.fillStyle = "#CEDCC3";
+    ctx.fillRect(11, 20, 85, 85);
+    ctx.drawImage(icon, 96, 96, 96, 96, 12, 22, 83, 83);
+    ctx.restore();
+    
+    ctx.save();
+    ctx.fillStyle = "#842B00";
+    ctx.fillRect(96,20,410,48);
+    
+    //Fairy HP
+    ctx.fillStyle = "#EA0000";
+    ctx.fillRect(102,24, 400, 24);
+    ctx.fillStyle = "#00AD00";
+    ctx.fillRect(102,24, 400, 24);
+    
+    //Fairy EXP
+    ctx.fillStyle = "#1B1F3A";
+    ctx.fillRect(102,55, 400, 8);
+    ctx.fillStyle = "#4781E7";
+    ctx.fillRect(102,55, expBar, 8);
+    
+    //Fairy ChargeBar
+    ctx.fillStyle = "#1B1F3A";
+    ctx.fillRect(100,72, 100, 16);
+    ctx.fillStyle = "#BE77FF";
+    ctx.fillRect(100,72, chargeBar, 16);
+    ctx.restore();
+    
+    //gameover
+    if(Fairy.died){
+        ctx.save();
+        ctx.font = "30px oblique";
+        ctx.fillStyle = "white";
+        ctx.fillText("Game Over",85,85);
+        ctx.fillStyle = "red";
+        ctx.fillText("Game Over",86,86);
+        ctx.restore();
+    }
+}
+
+</script>
+</body>
+</html>

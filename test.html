@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>AJAX_ch14</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<style> #test {background:#CCC;} </style>
+
+</head>
+
+<body>
+
+<button id="btn1">載入HTML測試頁</button>
+<button id="btn2">載入Unicode測試頁</button>
+<br><br>
+
+<!--用來放置以 load() 載入內容的后塊-->
+
+<div id="test">...</div>
+
+</body>
+
+<script>
+$(function(){
+
+//按鈕事件處理程式
+$('button').click(function(){
+
+//測試用網址
+var url='http://httpbin.org/';
+
+//判斷按下的按鈕，並在網址後面附加對應的路徑
+if($(this).attr('id') == 'btn1' )
+url +="html";
+
+else
+url +="encoding/utf8";
+
+//用load()載入檔案內容，並指定到#test元素
+$('#test').load(url);
+
+});
+});    
+</script>
+        
+</html>

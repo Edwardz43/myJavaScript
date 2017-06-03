@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<title>TwoSum</title>
+<meta charset= 'utf-8'>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+    <input id="nums" type="text" name="in" value="2, 7, 11, 15"/>
+    <input id="target" type="text" name="in" value="9"/>
+    <button id="inPut" >PRESS</button>
+    <div id="debug"></div>
+
+<script type="text/javascript">
+    var nums = [];
+    $('#inPut').click(function(){
+        var s = $('#nums').val();
+        nums = s.split(",");
+        //alert('nums : ' + nums);
+        var target = $('#target').val();
+        //alert('target : ' + target);
+        var temp = twoSum(nums, target);
+        //alert('temp : ' + temp);
+        $('#debug').text(temp);
+        
+    });
+    
+    // 1
+    var twoSum = function(nums, target) {
+        var res = [];
+        var i = 0;
+        var j = 0;
+        var check;
+        while(!check){
+            var sum = new Number(nums[i]) + new Number(nums[j]);
+            if(sum == target && i != j) {
+                check = true;
+                res.push(i);
+                res.push(j);
+            }
+            j++;
+            if(j > nums.length + 1){
+                i++; 
+                j = 0;
+            }
+        }
+        return res;
+    };
+    
+    // 2
+    var twoSum = function(nums, target) {
+        var res = [];
+        var i = 0;
+        var j = 0;
+        var check;
+        while(!check){
+            var sum = new Number(nums[i]) + new Number(nums[j]);
+            if(sum == target && i != j) {
+                check = true;
+                res.push(i);
+                res.push(j);
+            }
+            j++;
+            if(j > nums.length + 1){
+                i++; 
+                j = 0;
+            }
+        }
+        return res;
+    };    
+</script>
+</body>
+</html>

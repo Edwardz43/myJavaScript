@@ -1,0 +1,161 @@
+﻿1.  環境設定
+
+
+1-1	除了一開始的 lab，請另外新建一個 Workspace
+    名稱: lab2，同樣也是選 PHP 那個 Workspace 範本。
+
+
+1-2 上傳今天的練習資料夾
+
+
+1-3 將 Lab_JSONP 資料夾 Ctrl+C Ctrl-V 複製貼到 Workspace 之下
+    (Note: 兩個 Workspace 都要)
+    (Note: 完成後，目錄結構像這樣:
+        lab
+          +- Lab_JSONP
+    )
+
+1-4 分別在 lab 與 lab2 都執行 setup_northwind.txt 的 SQL Script 
+    以建立 northwind 資料庫。
+    (Hint: 在新的 Terminal 依序輸入:
+        mysql-ctl start
+        mysql -uroot
+        source Lab_JSONP/setup_northwind.txt
+        exit
+        exit
+    )
+
+
+1-5 視需要修改 config.php 的檔案內容，例如: root 的密碼。
+
+
+1.6 點按 Workspace 工具列的 Run Project 啟動 Apache
+    在瀏覽器輸入下列網址，如果一切順利，畫面會出現目錄清單。
+
+https://工作區名稱-帳號.c9users.io
+例如:
+https://lab-appdev1226-1.c9users.io
+
+(Hint: Workspace 下方的終端機視窗會有伺服器的網址。)
+
+(Hint: 快捷鍵 Ctrl + F 可置換本文件的 lab-appdev1226，
+       改成你的工作區名稱-帳號。)
+(Hint: 快捷鍵 Ctrl + F 可置換本文件的 lab2-appdev1226，
+       改成你的工作區名稱2-帳號。)
+
+
+1.7 另一個 Workspace 工具列的 Run Project 啟動 Apache，
+    同樣也確認 Apache 正常執行。
+
+
+1.8 接下來，我們主要還是在原本的 lab 工作環境進行練習。
+
+
+
+
+2.  試用 Server 端各支程式，觀察傳回頁面的內容。
+
+
+2-1 開啟 GetProductJson.php，執行程式時，代入 Query String: id=1，例如:
+https://lab-appdev1226-1.c9users.io/Lab_JSONP/GetProductJson.php?id=1
+
+
+2-2 開啟 GetProductJsonp.php，執行程式時，除了代入 Query String: id=1
+    再加上 callback=MyCallback 參數，例如:
+https://lab-appdev1226-1.c9users.io/Lab_JSONP/GetProductJsonp.php?id=1&callback=MyCallback 
+
+
+2-3 將 callback 的參數值改成 DataArrived 參數，例如:
+https://lab-appdev1226-1.c9users.io/Lab_JSONP/GetProductJsonp.php?id=1&callback=DataArrived 
+
+
+2-4 請想想看，如果將上述 2-3 的網址當成 <script> 元素的 src 屬性，
+    取回的文字內容會被瀏覽器視同是程式，是否就相當於呼叫 DataArrived() 函式。
+
+
+
+
+3.  體驗 Same Origin Policy 限制。
+
+
+3-1 開啟 GetDataFromServer_31.php，觀察 $.get() 那行的寫法(網址採用相對路徑)，
+    利用下列網址執行程式，點按「Refresh」按鈕，觀察可否取得最新庫存量。
+    https://lab-appdev1226-1.c9users.io/Lab_JSONP/GetDataFromServer_31.php
+    
+    
+3-2 開啟 GetDataFromServer_32.php，修改 $.get() 那行的寫法，
+    改成你另一個Workspace(也就是lab2)的網址:
+	$.get('https://lab2-appdev1226-1.c9users.io/Lab_JSONP/GetProductJson.php?id=' + sID, DataArrived);
+    存檔之後，利用下列網址執行程式，點按「Refresh」按鈕，
+    https://lab-appdev1226-1.c9users.io/Lab_JSONP/GetDataFromServer_32.php
+    觀察可否取得最新庫存量。
+    
+    (Note: 幾乎一樣的程式，為何這次不行呢?)
+
+
+3-3 開啟 GetDataFromServer_33.php，
+    請觀察並說明程式的作法:
+    <script type="text/javascript">
+        $("#btnRefresh").click(btnRefresh_click);
+
+        function btnRefresh_click() {
+            var script = document.createElement('script');
+            script.src = 'https://lab2-appdev1226-1.c9users.io/Lab_JSONP/GetProductJsonp.php?id=1&callback=DataArrived';
+            script.type = 'text/javascript';
+            document.getElementsByTagName('head')[0].appendChild(script);
+        }
+
+        function DataArrived(data) {
+            $("#txtUnitsInStock").val(data.UnitsInStock);
+        }
+    </script>
+    利用下列網址執行程式，點按「Refresh」按鈕，
+    https://lab-appdev1226-1.c9users.io/Lab_JSONP/GetDataFromServer_33.php
+    觀察可否取得最新庫存量。
+
+
+3-4 開啟 GetDataFromServer_34.php，
+    請觀察並說明程式的作法:
+
+    <script type="text/javascript">
+        $("#btnRefresh").click(btnRefresh_click);
+
+        function btnRefresh_click() {
+            $.ajax({
+                url: "https://lab2-appdev1226-1.c9users.io/Lab_JSONP/GetProductJsonp.php",
+                type: "get",
+                dataType: 'jsonp',
+                data: {id: 1},
+                jsonp: 'callback',
+                jsonpCallback: 'DataArrived',
+            });
+        }
+
+        function DataArrived(data) {
+            $("#txtUnitsInStock").val(data.UnitsInStock);
+        }
+    </script>
+
+    利用下列網址執行程式，點按「Refresh」按鈕，
+    https://lab-appdev1226-1.c9users.io/Lab_JSONP/GetDataFromServer_34.php
+    觀察可否取得最新庫存量。
+
+
+
+
+4.  Cross Domain Sharing
+
+
+4-1 開啟 lab2 workspace 的 GetProductJson.php，
+    去除 header 那行的註解。
+    header("Access-Control-Allow-Origin: *");
+
+    
+4-2 找到 GetDataFromServer_32.php，
+    再次確認 $.get() 的寫法是絕對路徑
+    存檔之後，利用下列網址執行程式，點按「Refresh」按鈕，
+    https://lab-appdev1226-1.c9users.io/Lab_JSONP/GetDataFromServer_32.php
+
+    <Note> 如今點按「Refresh」按鈕，可取得最新庫存量。
+    
+

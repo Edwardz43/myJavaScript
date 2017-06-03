@@ -1,0 +1,56 @@
+1.  準備 Workspace 並且上傳習作檔案
+
+
+1-1	除了一開始的 lab 工作區，請另外新建一個 Workspace
+    名稱: lab2，同樣也是選 PHP 那個 Workspace 範本。
+
+
+1-2 上傳今天的練習資料夾
+
+
+1-3	將 Security 資料夾 Ctrl+C Ctrl-V 複製貼到 Workspace 之下
+
+    (Note: 完成後，目錄結構像這樣:
+        lab
+          +- Security
+    )
+    (Note: 兩個 Workspace 都要。)
+
+
+
+2. 	在主要的 Workspace 執行 SetupDB.txt 以
+    備妥 securityLab 資料庫的資料結構與測試資料
+    (Hint: 在新的 Terminal 依序輸入:
+        mysql-ctl start
+        mysql -uroot
+        source Security/SetupDB.txt
+        exit
+        exit
+    )
+
+
+3.	視需要修改各資料夾 config.php 的設定值，例如:密碼。
+    (Note: 暫依 Cloud9 的預設值，root密碼為空白!)
+
+
+(Optional)
+4.  如要進行 CSRF 資料夾的攻防手法:
+
+
+4-1 開啟第一工作區 (lab那個) / Security / CSRF / index.php
+    將下列網址:
+    https://lab2-appdev1226-2.c9users.io
+    改成你的:
+    https://工作區名稱2-帳號.c9users.io
+    
+    
+4-1 開啟第二工作區 (lab2那個) / Security / CSRF / badPage.php
+    將下列網址:
+    https://lab-appdev1226-1.c9users.io
+    改成你的:
+    https://工作區名稱-帳號.c9users.io
+
+    
+<Hint>
+在你點按 Workspace 工具列的 Run Project 啟動 Apache 之後，
+工作區下方的終端機視窗會有伺服器的網址。)
