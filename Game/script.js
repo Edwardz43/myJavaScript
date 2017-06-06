@@ -190,34 +190,6 @@ $(document).ready(function(){
         },
         move : function(){
             if(Fairy.hp > 0){
-            
-                // if(Fairy.Move == 'LEFT'){
-                //     Fairy.dx = -Fairy.speed;
-                //     Fairy.dir = 'l';
-                // }
-                // if( Fairy.Move =='RIGHT'){
-                //     Fairy.dx = Fairy.speed;
-                //     Fairy.dir = 'r';
-                // }
-                // if(Fairy.Move == 'UP'){
-                //     Fairy.dy = -Fairy.speed;    
-                // }
-                // if(Fairy.Move =='DOWN'){
-                //     Fairy.dy = Fairy.speed; 
-                // }
-                // if(Fairy.Move == 'l-NONE' || Fairy.Move == 'r-NONE'){
-                //     Fairy.dx = 0;    
-                // }
-                // if(Fairy.Move == 'u-NONE' || Fairy.Move == 'd-NONE'){
-                //     Fairy.dy = 0;    
-                // }
-                
-                // if (Fairy.X + Fairy.dx < 0 || Fairy.X + Fairy.dx + Fairy.width >= canvas.width){
-                //     Fairy.dx = 0; 
-                // }
-                // if (Fairy.Y + Fairy.dy < 0 || Fairy.Y + Fairy.dy +Fairy.height > canvas.height){
-                //     Fairy.dy = 0; 
-                // }
                 switch (Fairy.Move) {
                     case 'LEFT':
                         Fairy.dx = -Fairy.speed;
@@ -271,14 +243,12 @@ $(document).ready(function(){
                         Fairy.X, Fairy.Y, Fairy.width , Fairy.height
                         );    
                     }
-                    //alert(imgFairy.src);
                     ctx.restore();   
                     Fairy.drawCount++;
                 }else{
                     if(Fairy.drawCount >= 18)Fairy.drawCount = 0;
                     if (Fairy.drawCount % 4 == 0 && Fairy.hitCount <= 50) {
                         ctx.save();
-                         //ctx.drawImage(imgFairy, Fairy.X, Fairy.Y, Fairy.width , Fairy.height );
                         if(Fairy.dir == "r"){
                             ctx.drawImage(
                             imgFairy, Math.floor(Fairy.drawCount / 6)*50 , 85, 50, 42,
@@ -327,7 +297,7 @@ $(document).ready(function(){
         },
         levelUp : function(){
             Fairy.level++;
-            Fairy.lupExp += Math.pow(Fairy.level, 1.2) * 90; 
+            Fairy.lupExp += Math.pow(Fairy.level, 0.8) * 90; 
             Fairy.maxHp += Fairy.level * 50;
             Fairy.atk += 1.5 + Math.floor(Math.random()*2);
             recoverHp(Fairy.maxHp);
@@ -377,19 +347,16 @@ $(document).ready(function(){
             hpPlus -= 10;
             if(hpPlus <= 0)clearInterval(timer);    
         },5);
-    }
+    }                                    
     
     //魔法球 
     function Ball(X, Y, power,dx, dy){
         this.X = X;
         this.Y = Y;
         this.width = 100, 
-        // + Fairy.level;   
         this.height = 100,
-        // + Fairy.level;
         this.deltaX = dx*4,
         this.deltaY = dy*4;
-        //集氣攻擊太強  要調整
         this.power = (Fairy.level + Fairy.atk) * power;
         this.hit = false;
         this.counter = 0;
@@ -435,7 +402,7 @@ $(document).ready(function(){
         
                 if(ball.power / Fairy.level <= 20) ball.hit = true;
                 else ball.power -= 15;
-                Boss.hp -= ball.power * 0.3;
+                Boss.hp -= ball.power * 0.6;
                 if(Boss.hp <= 0) {
                     Boss.hp = 0;
                     Boss.died = true;
@@ -464,7 +431,7 @@ $(document).ready(function(){
             	ctx.save();
             	var power = ball.power /(Fairy.level + Fairy.atk);
             	
-            	//集氣就丟大球
+            	//集氣就丟3球
             	if(power > 2){
             	    ctx.drawImage(
                     bBall, (ball.counter % 5)*480 , Math.floor(ball.counter/5)*480,
@@ -474,7 +441,7 @@ $(document).ready(function(){
                     ball.counter++;
                     if (ball.counter >= 31) ball.counter =0
                 
-                //沒集氣就丟小球    
+                //沒集氣就丟1球    
             	}else{
             	   ctx.drawImage(
                     mBall, (ball.counter %3 )*320 , Math.floor(ball.counter/3)*240, 320, 240,
@@ -584,7 +551,7 @@ $(document).ready(function(){
                     }
                     enermys.splice(enermys.indexOf(this),1);
                     enermyCount++;
-                    if(enermyCount % 10 == 0 && enermyCount < 50) enermys.push(new enermyKnight());
+                    if(enermyCount % 10 == 0 && enermyCount < 30) enermys.push(new enermyKnight());
                     deadCount = 0; 
                 }
             }
@@ -683,7 +650,7 @@ $(document).ready(function(){
                     }
                     enermys.splice(enermys.indexOf(this),1);
                     enermyCount++;
-                    if(enermyCount % 10 == 0 && enermyCount < 50) enermys.push(new enermyKnight());
+                    if(enermyCount % 10 == 0 && enermyCount < 30) enermys.push(new enermyKnight());
                     deadCount = 0;
                 }
             }
@@ -1053,7 +1020,7 @@ $(document).ready(function(){
     };
     //Boss出場
     function bossStage(){
-         if(enermyCount >= 50 && gameStage == 1){
+         if(enermyCount >= 30 && gameStage == 1){
             gameStage = 2;
             setTimeout(function() {
                 BGM.src = 'BGM/BossBattle.mp3';
@@ -1064,7 +1031,7 @@ $(document).ready(function(){
                 BGM.play();    
             }, 2500);
         }
-        if(enermyCount >= 50 && gameStage == 2 || gameStage == 3){
+        if(enermyCount >= 30 && gameStage == 2 || gameStage == 3){
             Boss.move();
             Boss.draw();
             if(Boss.shotTimer % 240 == 0 ) Boss.shot1();
@@ -1302,7 +1269,7 @@ $(document).ready(function(){
             myBackground.update();
             
             //過場特效
-            if(enermyCount >= 50 && stageTraner.count < 73) stageTraner.draw();
+            if(enermyCount >= 30 && stageTraner.count < 73) stageTraner.draw();
          
             Fairy.move();
             Fairy.draw();
