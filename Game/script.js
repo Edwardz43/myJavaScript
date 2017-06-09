@@ -56,10 +56,44 @@ $(document).ready(function(){
     
     var canvas = myGameArea.canvas;
     var ctx = canvas.getContext('2d');
-   
+    
+    //選妖精 先預設女性 黃色
+    var colorNum = 0;
+    var fairyColor;
+    var fairySex = "f";
+    var imgFairy = new Image();
+    imgFairy.src = 'images/fairy_f/yellow_03.png';
+    var imgFairyicon = new Image();
+    imgFairyicon.src = 'images/fairy_f/yellow_02.png';
+    function selectFairy(){
+        switch(colorNum){
+            case 0:
+                fairyColor = "yellow";
+                //alert(fairyColor);
+                break;
+            case 1:
+                fairyColor = "blue";
+                //alert(fairyColor);
+                break;
+            case 2:
+                fairyColor = "pink";
+                //alert(fairyColor);
+                break;
+            case 3:
+                fairyColor = "purple";
+                //alert(fairyColor);
+                break;
+            default:
+                fairyColor = "yellow";
+        }
+        imgFairy.src = 'images/fairy_'+ fairySex +'/'+ fairyColor +'_03.png';
+        imgFairyicon.src = 'images/fairy_'+ fairySex +'/'+ fairyColor +'_02.png';
+        Fairy.hurtSound.src = 'BGM/hurt_' + fairySex + '.wav';
+    }
+    
     //開場畫面
     var demoCount = 0;
-    var flash = 5;
+    var flash = 60;
     var startColor ='white';  
     function drawTitle(){
         if(gameStage == 0){
@@ -67,9 +101,6 @@ $(document).ready(function(){
         myBackground.speedX = -1;
         myBackground.newPos();    
         myBackground.update();    
-        // var c = $('#myCanvas')[0];
-        // var ctx = c.getContext('2d');
-        var title = new Image();
         var gameTitle = 'Fairy Quest';
         
         //title
@@ -83,23 +114,22 @@ $(document).ready(function(){
         //start game
         var startHint = 'Press Enter to Start';
         ctx.font = "40px Arial";
-        ctx.strokeStyle = 'black';
-        ctx.strokeText(startHint, 461, 431, 800, 240);
-        ctx.font = "40px Arial";
         ctx.fillStyle = startColor;
-        if(demoCount % 60 > flash) ctx.fillText(startHint, 460, 430, 800, 240);
+        if(demoCount % flash > 5) ctx.fillText(startHint, 460, 430, 800, 240);
         ctx.restore();
         
         ctx.save();
         //ctx.clearRect(60, 48, 35 , 35);
-        title.src = 'images/Fairy02.png',
         ctx.drawImage(
-            title, Math.floor(demoCount / 20) *50 , 0, 50, 42,
+            imgFairy, Math.floor(demoCount / 20) *50 , 0, 50, 42,
             180, 200, 150 , 140
             );
    
         demoCount++;
         if(demoCount >=60) demoCount = 0;
+        
+        if(isGaming) stageTraner.draw();
+            
         ctx.restore();
        
         }
@@ -112,19 +142,48 @@ $(document).ready(function(){
         BGM.play();
         var demoLoop = setInterval(drawTitle, 20);
         $(document).keyup(function(e){
-            if(e.keyCode == 13 && gameStage == 0){
-                flash = 30;
-                startColor ='red';
-                isGaming = true;
-                setTimeout(startGame, 1500);
-                setTimeout(function(){
-                    clearInterval(demoLoop);
-                    gameStage = 1;
-                    BGM.src = 'BGM/Battle.mp3';
-                    BGM.volume = 0.2;
-                    BGM.play();
-                },1000);
+            if(gameStage == 0){
+                if(e.keyCode == 13){
+                    flash = 10;
+                    var decideSound = new Audio('BGM/decide.mp3');
+                    decideSound.volume = 0.6;
+                    decideSound.play();
+                    startColor ='red';
+                    setTimeout(function() {isGaming = true;},500);
+                    setTimeout(startGame, 1500);
+                    setTimeout(function(){
+                        clearInterval(demoLoop);
+                        gameStage = 1;
+                        BGM.src = 'BGM/Battle.mp3';
+                        BGM.volume = 0.2;
+                        BGM.play();
+                    },1500);
+                }    
+                if(e.keyCode == 37){
+                    var selectSound = new Audio('BGM/select.mp3');
+                    selectSound.volume = 0.3;
+                    selectSound.play();
+                    colorNum--;
+                    if(colorNum < 0) colorNum = 3;
+                    selectFairy();
+                }
+                if(e.keyCode == 39){
+                    var selectSound2 = new Audio('BGM/select.mp3');
+                    selectSound2.volume = 0.3;
+                    selectSound2.play();
+                    colorNum++
+                    if(colorNum > 3) colorNum = 0;
+                    selectFairy();
+                }
+                if(e.keyCode == 38 || e.keyCode == 40){
+                    var selectSound3 = new Audio('BGM/select.mp3');
+                    selectSound3.volume = 0.3;
+                    selectSound3.play();
+                    fairySex = fairySex == "f" ? "m" : "f";
+                    selectFairy();
+                }
             }
+            
         });    
     }
     
@@ -139,11 +198,11 @@ $(document).ready(function(){
     var enermys = [];
     var items = [];
     
-    var enermyCount = 0;
+    var enermyCount = 30;
     var gameStage = 0;
     var countCong = 0;
     
-    var chargeSound = new Audio('BGM/charge.wav');
+    var chargeSound = new Audio('BGM/charde.wav');
     chargeSound.volume = 0.1;
     chargeSound.loop = true;
     
@@ -166,7 +225,7 @@ $(document).ready(function(){
         height : 84,
         Move : "none",
         beHit : false,
-        atk : 6,
+        atk : 15,
         died : false,
         dir : 'r',
         //draw相關
@@ -176,16 +235,17 @@ $(document).ready(function(){
         deadCount : 0,
         chargeNum : 1,
         isCharging : false,
+        hurtSound : new Audio('BGM/hurt_' + fairySex + '.wav'),
         shot : function (){
             var power = Math.floor(Fairy.chargeNum/50 +1);
             var dirBall = Fairy.dir=="r"?3:-3;
         	if(power > 3){
-        	    balls.push(new Ball(Fairy.X - 5, Fairy.Y + 2, power, dirBall, -0.5));
-        	    balls.push(new Ball(Fairy.X - 5, Fairy.Y + 6, power, dirBall, 0.5));
+        	    balls.push(new Ball(Fairy.X - 5, Fairy.Y + 2, power, dirBall, -0.3));
+        	    balls.push(new Ball(Fairy.X - 5, Fairy.Y + 6, power, dirBall, 0.3));
         	}
             balls.push(new Ball(Fairy.X - 5, Fairy.Y + 4, power, dirBall, 0));
             var fireSound = new Audio('BGM/magicBall.ogg');
-            fireSound.volume = 0.1;
+            fireSound.volume = 0.05;
             fireSound.play();
         },
         move : function(){
@@ -224,10 +284,18 @@ $(document).ready(function(){
                 Fairy.X = Fairy.X + Fairy.dx;
                 Fairy.Y = Fairy.Y + Fairy.dy;
             }
+            //集氣
+            if(Fairy.isCharging){
+                Fairy.chargeNum++;
+                if(Fairy.chargeNum >= 150) {
+                    Fairy.chargeNum = 150;
+                }
+                if(Fairy.chargeNum > 50){
+                    chargeSound.play();
+                }
+            }
         },
         draw : function (){
-            var imgFairy = new Image();
-            imgFairy.src = 'images/Fairy02.png';
             if(!Fairy.died){
                 if(!Fairy.beHit){
                     if (Fairy.drawCount >= 18) Fairy.drawCount = 0;
@@ -272,7 +340,7 @@ $(document).ready(function(){
                     if(Fairy.chargeCount >= 60)Fairy.chargeCount = 0;
                     var imgCharge = new Image();
                     imgCharge.src = 'images/charging2.png';
-                    if(Fairy.chargeNum == 200)imgCharge.src = 'images/charging.png';
+                    if(Fairy.chargeNum == 150)imgCharge.src = 'images/charging.png';
                     ctx.save();
                     ctx.drawImage(
                         imgCharge, Math.floor(Fairy.chargeCount / 6)*240 , 0, 240, 240,
@@ -298,8 +366,8 @@ $(document).ready(function(){
         levelUp : function(){
             Fairy.level++;
             Fairy.lupExp += Math.pow(Fairy.level, 0.8) * 90; 
-            Fairy.maxHp += Fairy.level * 50;
-            Fairy.atk += 1.5 + Math.floor(Math.random()*2);
+            Fairy.maxHp += 100;
+            Fairy.atk ++;
             recoverHp(Fairy.maxHp);
             //升級音效
             var lvupSound = new Audio('BGM/lvup.mp3');
@@ -308,18 +376,7 @@ $(document).ready(function(){
             Fairy.exp = 0;    
         }
     };
-    
-    //集氣
-    function charge (){
-        Fairy.chargeNum++;
-        if(Fairy.chargeNum >= 200) {
-            Fairy.chargeNum = 200;
-        }
-        if(Fairy.chargeNum > 50){
-            chargeSound.play();
-        }
-    }
-    
+
     //扣HP    
     function reduceHp(x){
         var hpMinus = x;
@@ -360,6 +417,7 @@ $(document).ready(function(){
         this.power = (Fairy.level + Fairy.atk) * power;
         this.hit = false;
         this.counter = 0;
+        this.img = new Image();
     }
         
     function moveBall(ball){
@@ -402,7 +460,7 @@ $(document).ready(function(){
         
                 if(ball.power / Fairy.level <= 20) ball.hit = true;
                 else ball.power -= 15;
-                Boss.hp -= ball.power * 0.6;
+                Boss.hp -= ball.power * 0.8;
                 if(Boss.hp <= 0) {
                     Boss.hp = 0;
                     Boss.died = true;
@@ -421,20 +479,16 @@ $(document).ready(function(){
     }
     
     function drawBall(ball) {
-        var mBall = new Image();
-        mBall.src = 'images/magicball.png';
-        var bBall = new Image();
-        bBall.src = 'images/bigball.png';
         //如果球被刪除了  就=null 那就不必畫了
         if(ball != null){
             if(ball.hit != true){
             	ctx.save();
             	var power = ball.power /(Fairy.level + Fairy.atk);
-            	
             	//集氣就丟3球
             	if(power > 2){
+            	    ball.img.src = 'images/bigball.png';
             	    ctx.drawImage(
-                    bBall, (ball.counter % 5)*480 , Math.floor(ball.counter/5)*480,
+                    ball.img, (ball.counter % 5)*480 , Math.floor(ball.counter/5)*480,
                     480, 480,
                     ball.X + 5, ball.Y, ball.width, ball.height
                     );
@@ -443,8 +497,9 @@ $(document).ready(function(){
                 
                 //沒集氣就丟1球    
             	}else{
-            	   ctx.drawImage(
-                    mBall, (ball.counter %3 )*320 , Math.floor(ball.counter/3)*240, 320, 240,
+            	     ball.img.src = 'images/magicball.png';
+            	    ctx.drawImage(
+                    ball.img, (ball.counter %3 )*320 , Math.floor(ball.counter/3)*240, 320, 240,
                     ball.X + 5, ball.Y, ball.width, ball.height
                     );
                     ball.counter++;
@@ -461,9 +516,9 @@ $(document).ready(function(){
     
     //敵人
     var enermyShadow = function () {
-        this.level = Fairy.level;
-        this.maxHp = 50 + this.level*35;
-        this.hp = 50 + this.level*35;
+        this.level = 3;
+        this.maxHp = 160;
+        this.hp = 160;
         this.X = 1300;
         this.Y = 450 + Math.random()* 30;
         this.dx = -(1.2 + Math.random()* 0.8);
@@ -494,9 +549,8 @@ $(document).ready(function(){
                                 Fairy.died = true;
                                 Fairy.hp = 0;
                             }
-                            var hitSound = new Audio('BGM/hurt02.wav');
-                            hitSound.volume = 0.1;
-                            hitSound.play();
+                            Fairy.hurtSound.volume = 0.2;
+                            Fairy.hurtSound.play();
                             reduceHp(this.power);
                             //test
                             damage += this.power;
@@ -559,9 +613,9 @@ $(document).ready(function(){
     }
     
     var enermyHarpy = function () {
-        this.level = Fairy.level;
-        this.maxHp = 40 + this.level*28;
-        this.hp = 40 + this.level*28;
+        this.level = 5;
+        this.maxHp = 180;
+        this.hp = 180;
         this.X = 1300;
         this.Y = 120 + Math.random()* 120;
         this.dx = -(2 + Math.random()* 2);
@@ -593,9 +647,8 @@ $(document).ready(function(){
                                 Fairy.died = true;
                                 Fairy.hp = 0;
                             }
-                            var hitSound = new Audio('BGM/hurt02.wav');
-                            hitSound.volume = 0.1;
-                            hitSound.play();
+                            Fairy.hurtSound.volume = 0.2;
+                            Fairy.hurtSound.play();
                             reduceHp(this.power);
                             //test
                             damage += this.power;
@@ -658,9 +711,9 @@ $(document).ready(function(){
     }
     
     var enermyKnight = function () {
-        this.level = Fairy.level + 1;
-        this.maxHp = 300 + this.level*200;
-        this.hp = 300 + this.level*200;
+        this.level = 8;
+        this.maxHp = 2500;
+        this.hp = 2500;
         this.X = 1300;
         this.Y = 400;
         this.dx = -(2 + Math.random()* 1.2);
@@ -679,7 +732,7 @@ $(document).ready(function(){
                 var deltaY = 3* Math.cos(Math.atan2(this.X - Fairy.X, this.Y - Fairy.Y));
                 enermyballs.push(new enermyBall(this.X + 5, this.Y + 10, -deltaX, -deltaY, this.level, "knight"));
             }
-        }
+        };
         
         this.move = function (){
             if(this.hp > 0){
@@ -693,9 +746,8 @@ $(document).ready(function(){
                                 Fairy.died = true;
                                 Fairy.hp = 0;
                             }
-                            var hitSound = new Audio('BGM/hurt02.wav');
-                            hitSound.volume = 0.1;
-                            hitSound.play();
+                            Fairy.hurtSound.volume = 0.2;
+                            Fairy.hurtSound.play();
                             reduceHp(this.power);
                             //test
                             damage += this.power;
@@ -806,14 +858,18 @@ $(document).ready(function(){
         if (Fairy.hp > 0 && Fairy.beHit == false) {
             if (
                 ball.X + ball.deltaX  >= midX - Fairy.width *0.5 && 
-                ball.X - ball.deltaX  <= midX + Fairy.width *0.5 &&
-                ball.Y + ball.deltaY  >= midY - Fairy.height *0.6 && 
+                ball.X - ball.deltaX  <= midX + Fairy.width *0.3 &&
+                ball.Y + ball.deltaY  >= midY - Fairy.height *0.9 && 
                 ball.Y - ball.deltaY  <= midY + Fairy.height *0.2 
-                ){
-                var hitSound = new Audio('BGM/hurt02.wav');
-                hitSound.volume = 0.1;
-                hitSound.play();
+                )
+            {
+                Fairy.hurtSound.volume = 0.2;
+                Fairy.hurtSound.play();
                 ball.hit = true;
+                if(Fairy.hp - this.power <= 0){
+                    Fairy.died = true;
+                    Fairy.hp = 0;
+                }
                 Fairy.beHit = true;
                 reduceHp(ball.power);
                 //test
@@ -860,7 +916,19 @@ $(document).ready(function(){
                         );
                         ball.count++;
                         if (ball.count >= 101) ball.count = 0;
-            	        break;     
+            	        break;
+        	        case "boss3":
+            	        var imgBossB03 = new Image();
+                        imgBossB03.src = 'images/bossB03.png';
+                        ctx.drawImage(
+                            imgBossB03, (Math.floor(ball.count / 10) % 5)*480 , 
+                            Math.floor(ball.count / 50)*480, 480, 480,
+                            ball.X, ball.Y - 10, 80, 80
+                        );
+                        ball.count++;
+                        if (ball.count >= 151) ball.count = 0;
+            	        break;
+            	        
             	    case "knight":
             	        var imgKnightBall = new Image();
                         imgKnightBall.src = 'images/knightball.png';
@@ -892,28 +960,31 @@ $(document).ready(function(){
     
     //Boss
     var Boss = {
-        level : 10,
-        maxHp : 10000,
-        hp : 10000,
-        X : 1350,
+        maxHp : 8000,
+        hp : 8000,
+        X : 920,
         Y : 150,
         dx : -0.6,
         //dy : 0, 
         width : 360,
         height : 360,
         //Move : "none",
-        atk : 10,
+        atk : 15,
         died : false,
         imgCount : 0,
         imgDiedCount : 0,
         shotTimer : 0,
+        fury : false,
+        img : new Image(),
         //散彈
         shot1 : function (){
             if(Boss.X <= 900 && Boss.hp > 0){
-                var deltaX = 3* Math.sin(Math.atan2(this.X - Fairy.X, this.Y + 60 - Fairy.Y*0.2));
-                var deltaY = 3* Math.cos(Math.atan2(this.X - Fairy.X, this.Y + 60 - Fairy.Y*0.2));
+                var pX = this.X + this.width/2;
+                var pY = this.Y + this.height/2;
+                var deltaX = 3* Math.sin(Math.atan2(pX - Fairy.X, pY - Fairy.Y + 130));
+                var deltaY = 3* Math.cos(Math.atan2(pX - Fairy.X, pY - Fairy.Y + 130));
                 for(var i = 0; i < 5; i++){
-                    enermyballs.push(new enermyBall(Boss.X + 120, Boss.Y + 140 , -deltaX* 0.8, - deltaY + i*0.3,  this.atk, 'boss1'));
+                    enermyballs.push(new enermyBall(pX -50, pY -50, -deltaX*0.6, - deltaY*0.6 + 0.25 * i,  this.atk, 'boss1'));
                 }
                 // var fireSound = new Audio('BGM/fire.ogg');
                 // fireSound.volume = 0.1;
@@ -932,17 +1003,10 @@ $(document).ready(function(){
             }
         },
         shot3 : function(){
-            if(Boss.X <= 900 && Boss.hp > 0){
-                var n = 0;
-                var shot3 = setInterval(function(){
-                    var deltaX = 3* Math.sin(Math.atan2(this.X - Fairy.X, this.Y - Fairy.Y));
-                    var deltaY = 3* Math.cos(Math.atan2(this.X - Fairy.X, this.Y + 120 - Fairy.Y));
-                    enermyballs.push(new enermyBall(Boss.X + 120 , Boss.Y + 140 , -deltaX, -deltaY ,  this.atk*1.0, 'boss2'));
-                    n++;
-                    //alert('ok');
-                },200);
-                
-                if(n >= 20) clearInterval(shot3);
+            if(Boss.X <= 900 && Boss.hp > 0 && Boss.shotTimer % 15 == 0 && Boss.shotTimer <= 300){
+                var deltaX = 2* Math.sin(Math.atan2(this.X - Fairy.X, this.Y - Fairy.Y));
+                var deltaY = 2* Math.cos(Math.atan2(this.X - Fairy.X, this.Y + 120 - Fairy.Y));
+                enermyballs.push(new enermyBall(Boss.X + 120 , Boss.Y + 140 , -deltaX, -deltaY ,  this.atk*1.0, 'boss3'));
                 // var fireSound = new Audio('BGM/fire.ogg');
                 // fireSound.volume = 0.1;
                 // fireSound.play();
@@ -964,9 +1028,8 @@ $(document).ready(function(){
                                 //test
                                 damage += Boss.atk*5;
                             }
-                            var hitSound = new Audio('BGM/hurt02.wav');
-                            hitSound.volume = 0.1;
-                            hitSound.play();
+                            Fairy.hurtSound.volume = 0.2;
+                            Fairy.hurtSound.play();
                             Fairy.beHit = true;
                     }
                 }
@@ -976,38 +1039,19 @@ $(document).ready(function(){
             }    
         },
         draw : function(){
-            var imgBoss = new Image();
-            imgBoss.src = 'images/Boss.png';
-            var hpLen = (Boss.hp / Boss.maxHp)*1170;
+            //var imgBoss = new Image();
+            Boss.img.src = 'images/Boss.png';
             ctx.save();
-            //hp bar
-            if(Boss.X <= 900){
-               
-                ctx.fillStyle = '#CEDCC3';
-                ctx.fillRect(1199, 519, 72, 72);
-                ctx.drawImage(imgBoss, 54, 41, 90, 90, 1200,520,70,70);
-                ctx.fillStyle="#842B00";
-                ctx.fillRect(20, 550, 1170, 40);
-                ctx.fillStyle="#00AD00";
-                ctx.fillRect(20, 550, hpLen, 40);
-                
-                ctx.strokeStyle = "#2F1B41";
-                ctx.font = "40px Arial";
-                ctx.strokeText('Evil God',550,585,140,240);
-                ctx.fillStyle = "#643579";
-                ctx.fillText('Evil God',551,586,140,240);
-            }
-            imgBoss.src = 'images/Boss.png';
             
             if(Boss.hp > 0)  
             ctx.drawImage(
-                imgBoss, 0, Math.floor(Boss.imgCount/10) * 200, 200, 200,
+                Boss.img, 0, Math.floor(Boss.imgCount/10) * 200, 200, 200,
                 Boss.X, Boss.Y, Boss.width, Boss.height
             );
             //Boss死亡特效
             else {
                 ctx.drawImage(
-                    imgBoss, 0, Math.floor(Boss.imgCount/10) * 200, 200, 200,
+                    Boss.img, 0, Math.floor(Boss.imgCount/10) * 200, 200, 200,
                     Boss.X - 3 *(Boss.imgCount %10 > 5 ? 1: -1), Boss.Y + (Boss.imgDiedCount * 0.6) , Boss.width, Boss.height - (Boss.imgDiedCount *1)
                 );
                 Boss.imgDiedCount++;
@@ -1026,7 +1070,7 @@ $(document).ready(function(){
                 BGM.src = 'BGM/BossBattle.mp3';
                 //alert('tran');
                 myBackground = new component(2062, 600, "images/BG004.png", 0, 0, "background");
-            }, 500);
+            }, 200);
             setTimeout(function(){
                 BGM.play();    
             }, 2500);
@@ -1038,12 +1082,15 @@ $(document).ready(function(){
             //if(Math.random() * 300 < 1)Boss.shot1();
             if(Boss.shotTimer % 180 == 0 ) Boss.shot2();
             if(Math.random() * 300 < 1)Boss.shot2();
+            if(Boss.hp <= Boss.maxHp* 0.3 && !Boss.fury) {
+                Boss.fury = true;
+                Boss.shotTimer = 0;
+            } 
+            if(Boss.fury) Boss.shot3();
+            
             Boss.shotTimer++;
             if(Boss.shotTimer >= 1200) Boss.shotTimer = 0;
         }
-        // if(Boss.hp <= 20 && Boss.shotTimer % 600 == 0){
-        //     Boss.shot3();
-        // }
     }
     
     //道具
@@ -1119,52 +1166,79 @@ $(document).ready(function(){
     }
     
     //畫狀態
-    var icon = new Image();
-    icon.src = 'images/Fairy03.png';
     function drawState(){
-        var hpLength = (Fairy.hp <= 0)?0:(Fairy.hp / Fairy.maxHp) *400;
-        var expBar = (Fairy.exp >= Fairy.lupExp) ? 400 :(Fairy.exp / Fairy.lupExp) * 400;
-       
-        //Fairy icon
-        var icon = new Image();
-        icon.src = 'images/Fairy03.png';
+        var bar = 180;
+        var hpLength = (Fairy.hp <= 0)?0:(Fairy.hp / Fairy.maxHp) *bar;
+        var expBar = (Fairy.exp / Fairy.lupExp) * bar;
+        
         ctx.save();
-        ctx.strokeStyle = "#842B00";
-        ctx.strokeRect(9, 20, 87, 87);
-        ctx.fillStyle = "#CEDCC3";
-        ctx.fillRect(10, 21, 85, 85);
-        ctx.drawImage(icon, 96, 96, 96, 96, 11, 23, 80, 80);
+        ctx.fillStyle = "rgba(192, 125, 53, 0.6)";
+        ctx.fillRect(0, 0, 310, 102);
+        ctx.strokeStyle = "#5F5F5F";
+        ctx.strokeRect(0,0, 312, 104);
         ctx.restore();
         
-        //frame
         ctx.save();
-        ctx.fillStyle = "#842B00";
-        ctx.fillRect(96,20,410,48);
-        
         //Fairy HP
+        ctx.font = "20px oblique";
+        var hp = "HP";
+        ctx.fillStyle = "yellow";
+        ctx.fillText(hp,90,62);
         ctx.fillStyle = "#EA0000";
-        ctx.fillRect(102,24, 400, 24);
+        ctx.strokeRect(120,42, bar + 4, 28);
         ctx.fillStyle = "#00AD00";
-        ctx.fillRect(102,24, hpLength, 24);
+        ctx.fillRect(122,44, hpLength > bar ? bar : hpLength, 24);
         
         //Fairy EXP
+        ctx.font = "18px oblique";
+        var exp = "exp";
+        ctx.fillStyle = "yellow";
+        ctx.fillText(exp,90,85);
         ctx.fillStyle = "#1B1F3A";
-        ctx.fillRect(102,55, 400, 8);
+        ctx.strokeRect(120,78, bar + 4, 12);
         ctx.fillStyle = "#4781E7";
-        ctx.fillRect(102,55, expBar, 8);
+        ctx.fillRect(122,80, expBar > bar ? bar : expBar, 8);
         ctx.restore();
         
-        //state
+        //icon
         ctx.save();
-        var lv = "Lv : " + Fairy.level;
-        var hp = Fairy.hp+"/"+Fairy.maxHp;
-        ctx.font = "30px oblique";
+        ctx.fillStyle = "#B79A59";
+        ctx.beginPath();
+        ctx.arc(0,0,100,0,2*Math.PI);
+        ctx.stroke();
+        ctx.fill();
+        ctx.fillStyle = "rgba(87, 74, 71, 0.5)";
+        ctx.beginPath();
+        ctx.arc(0,0,95,0,2*Math.PI);
+        ctx.stroke();
+        ctx.fill();
         
-        ctx.fillStyle = "black";
-        ctx.fillText(hp,253,46);
-        ctx.fillStyle = "#FFDC35";
-        ctx.fillText(hp,254,47);
+        //根據血量決定表情
+        if(Fairy.hp <= Fairy.maxHp*0.7 && Fairy.hp > Fairy.maxHp*0.3) ctx.drawImage(imgFairyicon, 0, 0, 96, 96, 0, 0, 70, 70);
+        else if(Fairy.hp <= Fairy.maxHp*0.3 && Fairy.hp > 0) ctx.drawImage(imgFairyicon, 192, 0, 96, 96, 0, 0, 70, 70);
+        else if(Fairy.hp <= 0) ctx.drawImage(imgFairyicon, 288, 96, 96, 96, 0, 0, 70, 70);
+        else ctx.drawImage(imgFairyicon, 96, 96, 96, 96, 0, 0, 70, 70);
         ctx.restore();
+        
+        //hp bar
+        if(Boss.X <= 900 && gameStage == 2 || gameStage == 3){
+            Boss.img.src = 'images/Boss.png';
+            var hpLen = (Boss.hp / Boss.maxHp)*1170;
+            
+            ctx.fillStyle = '#CEDCC3';
+            ctx.fillRect(1199, 519, 72, 72);
+            ctx.drawImage(Boss.img, 54, 41, 90, 90, 1200,520,70,70);
+            ctx.fillStyle="#842B00";
+            ctx.fillRect(20, 550, 1170, 40);
+            ctx.fillStyle="#00AD00";
+            ctx.fillRect(20, 550, hpLen, 40);
+            
+            ctx.strokeStyle = "#2F1B41";
+            ctx.font = "40px Arial";
+            ctx.strokeText('Evil God',550,585,140,240);
+            ctx.fillStyle = "#643579";
+            ctx.fillText('Evil God',551,586,140,240);
+        }
         
         //gameover
         if(Fairy.died){
@@ -1195,7 +1269,7 @@ $(document).ready(function(){
         }
     };
     
-    //
+    //結束場景
     function endStage(){
         if(gameStage == 2 && Boss.died){
             gameStage = 3;
@@ -1267,9 +1341,8 @@ $(document).ready(function(){
             myBackground.speedX = -1;
             myBackground.newPos();    
             myBackground.update();
-            
             //過場特效
-            if(enermyCount >= 30 && stageTraner.count < 73) stageTraner.draw();
+            if(enermyCount >= 30 && stageTraner.count < 73) new stageTraner.draw();
          
             Fairy.move();
             Fairy.draw();
@@ -1292,11 +1365,6 @@ $(document).ready(function(){
                     if(Math.random() * 200 < 1 && enermys[i] != null)enermys[i].shot(); 
                 }
             }
-            for(var i = 0; i < enermyballs.length; i++){
-                moveEnermyBall(enermyballs[i]);  
-                drawEnermyBall(enermyballs[i]);
-            }
-            
             //道具
             for(var i = 0; i < items.length; i++){
                 items[i].check();
@@ -1306,6 +1374,13 @@ $(document).ready(function(){
             //Boss進場
             bossStage();
             
+            //畫子彈
+            for(var i = 0; i < enermyballs.length; i++){
+                moveEnermyBall(enermyballs[i]);  
+                drawEnermyBall(enermyballs[i]);
+            }
+            
+            //主角狀態
             drawState();
             
             //破關
@@ -1313,7 +1388,8 @@ $(document).ready(function(){
             
             //測試用
             var s =  
-            "atk :"+ Fairy.atk +", enermyCount : "+ enermyCount +", Damage : "+ damage +", EndCount : " + imgEndCount;
+            "atk :"+ Fairy.atk +", enermyCount : "+ enermyCount +", Damage : "+ damage +", chargeNum : " + Fairy.chargeNum+
+            ", sound : "+Fairy.hurtSound.currentSrc + ", Sex : " + fairySex;
             //+", X :" + Fairy.X + ", Y :"+Fairy.Y; 
             $("#report").text(s);
             window.requestAnimationFrame(animate);
@@ -1321,13 +1397,13 @@ $(document).ready(function(){
     }
     
     function startGame(){
+        stageTraner.count = 0;
         BGM.play();
         window.requestAnimationFrame(animate);
         myBackground = new component(2062, 600, "images/BG003.jpg", 0, 0, "background");
         if(isGaming){
             $(document).keydown(function(evt) {
                 if(evt.keyCode == 32 && !Fairy.died && !Fairy.isCharging){
-                    var timer = setInterval(charge, 10);
                     Fairy.isCharging = true;
                     $(document).keyup(function(evt) { 
                         if(evt.keyCode == 32) {
@@ -1335,7 +1411,6 @@ $(document).ready(function(){
                             Fairy.chargeNum = 1;
                             chargeSound.pause();
                             chargeSound.load();
-                            clearInterval(timer);
                         } 
                     });
         
@@ -1343,21 +1418,7 @@ $(document).ready(function(){
             });
             
             $(document).keydown(function(evt) {
-                // if(evt.keyCode == 13){
-                //     enermys.push(new enermyKnight());   
-                // }
-                // if(evt.keyCode == 37){
-                //     Fairy.Move = 'LEFT';   
-                // }
-                // if(evt.keyCode == 38){
-                //     Fairy.Move = 'UP';   
-                // }
-                // if(evt.keyCode == 39){
-                //     Fairy.Move = 'RIGHT';   
-                // }
-                // if(evt.keyCode == 40){
-                //     Fairy.Move = 'DOWN';   
-                // }
+                //alert(evt.keyCode);
                 switch (evt.keyCode) {
                     case 13:
                         enermys.push(new enermyKnight());   
@@ -1373,7 +1434,19 @@ $(document).ready(function(){
                         break;
                     case 40:
                         Fairy.Move = 'DOWN';
-                        break;    
+                        break;
+                    case 65:
+                        //alert('A');
+                        Fairy.hp = Fairy.maxHp;
+                        break;
+                    case 107:
+                        //alert('A');
+                        Fairy.atk += 10;
+                        break;
+                    case 109:
+                        //alert('A');
+                        Fairy.atk -= 10;
+                        break;
                     //default:
                         // code
                 }

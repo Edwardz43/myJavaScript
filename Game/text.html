@@ -8,20 +8,18 @@
 <head>
     <style type="text/css">
         #myBg{
-            background-color:yellow;
+            background-color:black;
             width:1600px;
             height:800px;
         }
         #myCanvas{
             position:relative;
-            width:100%;
-            height:100%;
         }
     </style>
 </head>
 <body>
     <div id="report"></div>
-    <div id="myBg"> <canvas id="myCanvas"> </div>
+    <div id="myBg"><canvas id="myCanvas"> </div>
     
         
     </canvas>
@@ -30,9 +28,11 @@
     
         //一進入畫面 準備就緒 開始執行
         $(document).ready(function(){
-            
             var canvas = $('#myCanvas')[0];
+            canvas.width = 1600;
+            canvas.height = 800;
             var ctx = canvas.getContext('2d');
+            
             var mouseX, mouseY;
             var dx = 0;
             var dir;
@@ -50,7 +50,9 @@
             canvas.addEventListener("mousemove" , onMousemove,false);
             
             //每當滑鼠移動 就執行一次
-            $(document).mousemove(function(){
+           
+           function animation (){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
                 //這是圖檔
                 var target = new Image();
                 target.src = 'images/target.png'
@@ -59,17 +61,61 @@
                 ctx.save();
                 
                 //解說: 我發現 canvas的原始寬和高只有300, 150 而javascript會用放大的方法來解決更大的canvas
-                //然後  我錯了   我發現他是線性的!  只不過他的寬和高是分別放大的  所以今天一直出現奇怪的狀況
-                //所以  我們用一個小方法來解決:  1.固定背景的寬和高  像我是把它寫死 1600,800
-                //然後我寫個兩個參數:  scaleX  scaleY  分別計算寬和高的縮放比例  最後在把偵測到的滑鼠X Y 乘上這兩個比例
+            
+                //更新: 在創建canvas之後  順便賦予它長寬 例如 : canvas.width = 1600; canvas.height = 800;
                 
                 var width = $("#myBg").css("width");//這邊出來的結果是1600
                 var height = $("#myBg").css("height");//這邊出來的結果是800  多寫這兩行是方便日後螢幕縮放可以調整
             
-                var scaleX = 300 / 1600;
-                var scaleY = 150 / 800;
-                ctx.clearRect(0,0, 600, 480);
-                ctx.drawImage(target, mouseX* scaleX - 15, mouseY*scaleY - 15, 30,30);//- 15是為了對齊準星 因為圖的大小是30 減一半回去
+                // var scaleX = 300 / 1600;
+                // var scaleY = 150 / 800;
+                ctx.drawImage(target, mouseX - 50, mouseY- 50, 100,100);//- 15是為了對齊準星 因為圖的大小是30 減一半回去
+                
+                ctx.save();
+                ctx.fillStyle = "rgba(87, 74, 71, 0.8)";
+                ctx.fillRect(0, 0, 310, 102);
+                ctx.strokeStyle = "#5F5F5F";
+                ctx.strokeRect(0,0, 312, 104);
+                ctx.restore();
+                
+                ctx.save();
+                //Fairy HP
+                ctx.font = "20px oblique";
+                var hp = "HP";
+                ctx.fillStyle = "yellow";
+                ctx.fillText(hp,90,62);
+                ctx.fillStyle = "#EA0000";
+                ctx.strokeRect(120,42, 184, 28);
+                ctx.fillStyle = "#00AD00";
+                ctx.fillRect(122,44, 180, 24);
+                
+                //Fairy EXP
+                ctx.font = "18px oblique";
+                var exp = "exp";
+                ctx.fillStyle = "yellow";
+                ctx.fillText(exp,90,85);
+                ctx.fillStyle = "#1B1F3A";
+                ctx.strokeRect(120,78, 184, 12);
+                ctx.fillStyle = "#4781E7";
+                ctx.fillRect(122,80, 180, 8);
+                ctx.restore();
+                
+                var icon = new Image();
+                icon.src = 'images/Fairy03.png';
+                var icon = new Image();
+                icon.src = 'images/Fairy03.png';
+                ctx.save();
+                ctx.fillStyle = "#B79A59";
+                ctx.beginPath();
+                ctx.arc(0,0,100,0,2*Math.PI);
+                ctx.stroke();
+                ctx.fill();
+                ctx.fillStyle = "rgba(87, 74, 71, 0.5)";
+                ctx.beginPath();
+                ctx.arc(0,0,95,0,2*Math.PI);
+                ctx.stroke();
+                ctx.fill();
+                ctx.drawImage(icon, 96, 96, 96, 96, 0, 0, 80, 80);
                 ctx.restore();
                 dir = mouseX > dx?"right":"left";
                 
@@ -77,8 +123,12 @@
                 var s = "X :"+ mouseX +", Y :" + mouseY+", width :"+ width +", height :" + height+
                 ", dir : " + dir ;
                 $('#report').text(s);    
-                
-            })
+                window.requestAnimationFrame(animation);
+            }
+            
+           
+            animation();
+            
         })
        
     </script>
