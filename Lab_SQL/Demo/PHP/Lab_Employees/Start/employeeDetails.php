@@ -40,7 +40,7 @@ $row = mysql_fetch_assoc ( $result );
 			<h1>Employee Details</h1>
 		</div>
 		<div data-role="content">
-			<img src="images/<?php echo $row["picture"] ?>" class="employee-pic" width="100" />
+			<img src="images/<?= $row["picture"] ?>" class="employee-pic" width="100" />
 			<div class="employee-details">
 				<h3><?php echo $row["firstName"] . " " . $row["lastName"] ?></h3>
 				<p><?php echo $row["title"] ?></p>

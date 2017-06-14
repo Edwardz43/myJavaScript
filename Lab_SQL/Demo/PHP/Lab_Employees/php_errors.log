@@ -1,0 +1,28 @@
+[11-Jun-2017 06:39:18 UTC] PHP Warning:  mysql_fetch_assoc() expects parameter 1 to be resource, null given in /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php on line 12
+[11-Jun-2017 06:39:18 UTC] PHP Stack trace:
+[11-Jun-2017 06:39:18 UTC] PHP   1. {main}() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php:0
+[11-Jun-2017 06:39:18 UTC] PHP   2. mysql_fetch_assoc() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php:12
+[11-Jun-2017 06:40:32 UTC] PHP Warning:  mysql_connect(): Access denied for user 'root'@'localhost' (using password: YES) in /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Finished/index.php on line 4
+[11-Jun-2017 06:40:32 UTC] PHP Stack trace:
+[11-Jun-2017 06:40:32 UTC] PHP   1. {main}() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Finished/index.php:0
+[11-Jun-2017 06:40:32 UTC] PHP   2. mysql_connect() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Finished/index.php:4
+[11-Jun-2017 06:41:48 UTC] PHP Warning:  mysql_fetch_assoc() expects parameter 1 to be resource, null given in /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php on line 12
+[11-Jun-2017 06:41:48 UTC] PHP Stack trace:
+[11-Jun-2017 06:41:48 UTC] PHP   1. {main}() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php:0
+[11-Jun-2017 06:41:48 UTC] PHP   2. mysql_fetch_assoc() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php:12
+[11-Jun-2017 06:42:00 UTC] PHP Warning:  mysql_fetch_assoc() expects parameter 1 to be resource, null given in /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php on line 12
+[11-Jun-2017 06:42:00 UTC] PHP Stack trace:
+[11-Jun-2017 06:42:00 UTC] PHP   1. {main}() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php:0
+[11-Jun-2017 06:42:00 UTC] PHP   2. mysql_fetch_assoc() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php:12
+[11-Jun-2017 06:43:05 UTC] PHP Warning:  mysql_fetch_assoc() expects parameter 1 to be resource, null given in /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php on line 12
+[11-Jun-2017 06:43:05 UTC] PHP Stack trace:
+[11-Jun-2017 06:43:05 UTC] PHP   1. {main}() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php:0
+[11-Jun-2017 06:43:05 UTC] PHP   2. mysql_fetch_assoc() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php:12
+[11-Jun-2017 06:44:04 UTC] PHP Warning:  mysql_fetch_assoc() expects parameter 1 to be resource, null given in /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php on line 12
+[11-Jun-2017 06:44:04 UTC] PHP Stack trace:
+[11-Jun-2017 06:44:04 UTC] PHP   1. {main}() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php:0
+[11-Jun-2017 06:44:04 UTC] PHP   2. mysql_fetch_assoc() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php:12
+[11-Jun-2017 06:46:20 UTC] PHP Warning:  mysql_fetch_assoc() expects parameter 1 to be resource, null given in /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php on line 12
+[11-Jun-2017 06:46:20 UTC] PHP Stack trace:
+[11-Jun-2017 06:46:20 UTC] PHP   1. {main}() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php:0
+[11-Jun-2017 06:46:20 UTC] PHP   2. mysql_fetch_assoc() /home/ubuntu/workspace/Lab_SQL/Demo/PHP/Lab_Employees/Start/index.php:12

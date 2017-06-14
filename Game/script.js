@@ -198,7 +198,7 @@ $(document).ready(function(){
     var enermys = [];
     var items = [];
     
-    var enermyCount = 30;
+    var enermyCount = 0;
     var gameStage = 0;
     var countCong = 0;
     
@@ -962,7 +962,7 @@ $(document).ready(function(){
     var Boss = {
         maxHp : 8000,
         hp : 8000,
-        X : 920,
+        X : 1320,
         Y : 150,
         dx : -0.6,
         //dy : 0, 
