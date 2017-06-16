@@ -44,7 +44,7 @@ $row = mysql_fetch_assoc ( $result );
 				<img src="images/<?php echo $row["picture"]?>">
 				<h4><?php echo $row["firstName"] . " " . $row["lastName"] ?></h4>
 				<p><?php echo "#".$row["number"]." , ".$row["pos"] ?> </p>
-	            <p><?php echo $row["height"]."cm,".$row["weight"]."kg" ?> </p>
+	            <p><?php echo $row["height"]." ".$row["weight"]."lbs" ?> </p>
 			</a>
 			</li>
 	    <?php endwhile ?>
