@@ -16,7 +16,8 @@ select playerID, number, pos, firstName, lastName, height, weight, born, debut, 
 SqlQuery;
 
 $result = mysql_query ( $commandText, $link );
-$row = mysql_fetch_assoc ( $result );
+
+// $row = mysql_fetch_assoc ( $result );  
 // var_dump($row);
 ?>
 
