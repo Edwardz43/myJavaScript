@@ -239,11 +239,26 @@ $(document).ready(function(){
         shot : function (){
             var power = Math.floor(Fairy.chargeNum/50 +1);
             var dirBall = Fairy.dir=="r"?3:-3;
-        	if(power > 3){
-        	    balls.push(new Ball(Fairy.X - 5, Fairy.Y + 2, power, dirBall, -0.3));
-        	    balls.push(new Ball(Fairy.X - 5, Fairy.Y + 6, power, dirBall, 0.3));
-        	}
-            balls.push(new Ball(Fairy.X - 5, Fairy.Y + 4, power, dirBall, 0));
+            var type;
+            switch (power) {
+                case 2: case 3:
+                    type = "green";
+                    break;
+                case 4:
+                    type = "blue";
+                    break;    
+                default:
+                    type = "nomal";
+                    break;
+            }
+        	if(Fairy.atk > 19){
+        	    balls.push(new Ball(Fairy.X - 5, Fairy.Y + 2, power, dirBall, -0.1,type));
+                balls.push(new Ball(Fairy.X - 5, Fairy.Y + 6, power, dirBall, 0.1,type));    
+        	}else if (Fairy.atk > 23) {
+                balls.push(new Ball(Fairy.X - 5, Fairy.Y + 2, power, dirBall, -0.3,type));
+                balls.push(new Ball(Fairy.X - 5, Fairy.Y + 4, power, dirBall, 0, type));
+                balls.push(new Ball(Fairy.X - 5, Fairy.Y + 6, power, dirBall, 0.3,type));    
+            }else balls.push(new Ball(Fairy.X - 5, Fairy.Y + 4, power, dirBall, 0, type));
             var fireSound = new Audio('BGM/magicBall.ogg');
             fireSound.volume = 0.05;
             fireSound.play();
@@ -322,7 +337,7 @@ $(document).ready(function(){
                     Fairy.drawCount++;
                 }else{
                     if(Fairy.drawCount >= 18)Fairy.drawCount = 0;
-                    if (Fairy.drawCount % 4 == 0 && Fairy.hitCount <= 50) {
+                    if (Fairy.drawCount % 4 != 0 && Fairy.hitCount <= 50) {
                         ctx.save();
                         if(Fairy.dir == "r"){
                             ctx.drawImage(
@@ -414,14 +429,15 @@ $(document).ready(function(){
     }                                    
     
     //魔法球 
-    function Ball(X, Y, power,dx, dy){
+    function Ball(X, Y, power,dx, dy, type){
+        this.type = type;
+        this.power = (Fairy.level + Fairy.atk) * power;
         this.X = X;
         this.Y = Y;
         this.width = 100, 
         this.height = 100,
         this.deltaX = dx*4,
         this.deltaY = dy*4;
-        this.power = (Fairy.level + Fairy.atk) * power;
         this.hit = false;
         this.counter = 0;
         this.img = new Image();
@@ -491,28 +507,37 @@ $(document).ready(function(){
             if(ball.hit != true){
             	ctx.save();
             	var power = ball.power /(Fairy.level + Fairy.atk);
-            	//集氣就丟3球
-            	if(power > 2){
-            	    ball.img.src = 'images/bigball.png';
-            	    ctx.drawImage(
-                    ball.img, (ball.counter % 5)*480 , Math.floor(ball.counter/5)*480,
-                    480, 480,
-                    ball.X + 5, ball.Y, ball.width, ball.height
-                    );
-                    ball.counter++;
-                    if (ball.counter >= 31) ball.counter =0
-                
-                //沒集氣就丟1球    
-            	}else{
-            	     ball.img.src = 'images/magicball.png';
-            	    ctx.drawImage(
-                    ball.img, (ball.counter %3 )*320 , Math.floor(ball.counter/3)*240, 320, 240,
-                    ball.X + 5, ball.Y, ball.width, ball.height
-                    );
-                    ball.counter++;
-                    if(ball.counter >= 31) ball.counter = 0;
-            	}
-            	
+            	//集氣就丟大球
+            	switch (ball.type) {
+                    case "green":
+                        ball.img.src = 'images/charging2.png';
+                        ctx.drawImage(
+                        ball.img, (Math.floor(ball.counter / 6) % 4 + 3)*240 , Math.floor(ball.counter/24)*240,
+                        240, 240,ball.X + 5, ball.Y, ball.width, ball.height
+                        );
+                        ball.counter++;
+                        if (ball.counter >= 25) ball.counter = 0;
+                        break;
+                    case "blue":
+                        ball.img.src = 'images/charging.png';
+                        ctx.drawImage(
+                        ball.img, (Math.floor(ball.counter / 6) % 4 + 3)*240 , Math.floor(ball.counter/24)*240,
+                        240, 240,
+                        ball.X + 5, ball.Y, ball.width, ball.height
+                        );
+                        ball.counter++;
+                        if (ball.counter >= 25) ball.counter = 0;
+                        break;     
+                    default:
+                        ball.img.src = 'images/magicball.png';
+                        ctx.drawImage(
+                        ball.img, (ball.counter %3 )*320 , Math.floor(ball.counter/3)*240, 320, 240,
+                        ball.X + 5, ball.Y, ball.width, ball.height
+                        );
+                        ball.counter++;
+                        if(ball.counter >= 31) ball.counter = 0;
+                        break;
+                } 
                 ctx.restore();
                 
             }else {
@@ -617,13 +642,13 @@ $(document).ready(function(){
                     }
                     //跳躍
                     if(this.X + this.width*0.5 >= Fairy.X &&this.X - this.width*0.5 <= Fairy.X){
-                        if(this.jumpTimer == 60 && this.Y <= 400) 
-                            this.dy = -35;
+                        if(this.jumpTimer == 60 && this.Y <= 420) 
+                            this.dy = -32;
                     }
                     this.dy += 2.5;
                     this.X += this.dx;
                     this.Y += this.dy;
-                    if(this.Y >= 400) this.Y = 400;
+                    if(this.Y >= 420) this.Y = 420;
                     this.jumpTimer++;
                     if(this.jumpTimer > 60) this.jumpTimer = 0;    
                 }else{
@@ -665,7 +690,7 @@ $(document).ready(function(){
                 }
                 
                 if(this.hp < this.maxHp){
-                    var len = this.type=="knight"?90:50;
+                    var len = this.type=="knight"?80:50;
                     var hpLen = (this.hp / this.maxHp)*len;
                     ctx.fillStyle="#EA0000";
                     ctx.fillRect(this.X + 26,this.Y - 5, len, 5);
@@ -965,8 +990,6 @@ $(document).ready(function(){
         this.count = 0;
         this.timeout = 0;
         this.check = function(){
-            // var midX = Fairy.X + Fairy.width / 2;
-            // var midY = Fairy.Y + Fairy.height / 2;
             if (
                 this.x + this.width*0.5  >= Fairy.X && 
                 this.x - this.width*0.5  <= Fairy.X &&
@@ -1047,7 +1070,7 @@ $(document).ready(function(){
         ctx.fillStyle = "yellow";
         ctx.fillText(hp,90,62);
         ctx.fillStyle = "#EA0000";
-        ctx.strokeRect(121,43, bar + 2, 26);
+        ctx.strokeRect(120,42, bar + 4, 28);
         ctx.fillStyle = "#00AD00";
         ctx.fillRect(122,44, hpLength > bar ? bar : hpLength, 24);
         
@@ -1057,7 +1080,7 @@ $(document).ready(function(){
         ctx.fillStyle = "yellow";
         ctx.fillText(exp,90,85);
         ctx.fillStyle = "#1B1F3A";
-        ctx.strokeRect(121,79, bar + 2, 10);
+        ctx.strokeRect(120,78, bar + 4, 12);
         ctx.fillStyle = "#4781E7";
         ctx.fillRect(122,80, expBar > bar ? bar : expBar, 8);
         ctx.restore();
@@ -1310,7 +1333,7 @@ $(document).ready(function(){
                 switch (evt.keyCode) {
                     case 32:
                         if(!Fairy.died)
-                        setTimeout(Fairy.shot,0);   
+                        Fairy.shot();   
                         break;
                     case 37: case 39:
                         Fairy.Move = 'h-NONE';     
