@@ -11,12 +11,11 @@ $result = mysql_query ( "set names utf8", $link );
 mysql_selectdb ( $dbname, $link );
 $commandText = <<<SqlQuery
 select playerID, number, pos, firstName, lastName, height, weight, born, debut, picture, website,`[from]`,teamID
-  from Players
+  from Players p
   where teamID = $id
 SqlQuery;
 
 $result = mysql_query ( $commandText, $link );
-
 // $row = mysql_fetch_assoc ( $result );  
 // var_dump($row);
 ?>
@@ -25,7 +24,7 @@ $result = mysql_query ( $commandText, $link );
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Players</title>
+<title><?php  ?></title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <script src="scripts/jquery-1.9.1.min.js"></script>
 <script src="scripts/jquery.mobile-1.3.2.min.js"></script>

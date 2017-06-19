@@ -25,7 +25,7 @@ $row = mysql_fetch_assoc ( $result );
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Lab</title>
+<title><?php echo $row["firstName"] . " " . $row["lastName"] ?></title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <script src="scripts/jquery-1.9.1.min.js"></script>
 <script src="scripts/jquery.mobile-1.3.2.min.js"></script>
