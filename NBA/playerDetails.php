@@ -7,17 +7,24 @@ if (! is_numeric ( $id ))
 	die ( "id not a number." );
 
 require ("config.php");
-$link = mysql_connect ( $dbhost, $dbuser, $dbpass ) or die ( mysql_error () );
-$result = mysql_query ( "set names utf8", $link );
-mysql_selectdb ( $dbname, $link );
-$commandText = <<<SqlQuery
-select playerID, number, pos, firstName, lastName, height, weight, born, debut, picture, website,`[from]`,teamID
-  from Players
-  where playerID = $id
-SqlQuery;
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
 
-$result = mysql_query ( $commandText, $link );
-$row = mysql_fetch_assoc ( $result );
+$sql = "SELECT * FROM players where playerID = $id";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    // output data of each row
+    // while($row = $result->fetch_assoc()) {
+
+} else {
+    echo "0 results";
+}
+
+$row = $result->fetch_assoc();
 // var_dump($row);
 ?>
 
@@ -39,19 +46,24 @@ $row = mysql_fetch_assoc ( $result );
 			<h1>Player Details</h1>
 		</div>
 		<div data-role="content">
-			<img src="images/<?php echo $row["picture"] ?>" class="employee-pic" width="100" />
-			<div class="employee-details">
-				<h3><?php echo $row["firstName"] . " " . $row["lastName"] ?></h3>
-				<p><?php echo "#".$row["number"] ?></p>
-				<p><?php echo $row["pos"] ?></p>
+			<img src="images/<?php echo $row["picture"] ?>" class="player-pic" width="240" />
+			<div class="player-details">
+				<h1><?php echo $row["firstname"] . " " . $row["lastname"] ?></h1>
+				<h2><?php echo "Number : #".$row["number"] ?></h2>
+				<h2><?php echo "Position : ".$row["pos"] ?></h2>
 			</div>
 
 			<ul data-role="listview" data-inset="true" class="action-list">
+				<li><h4>Height</h4><p><?php echo $row["height"] ?></p></li>
+				<li><h4>Weight</h4><p><?php echo $row["weight"]."lbs" ?></p></li>
 				<li><h4>NBA Draft</h4><p><?php echo $row["debut"] ?></p></li>
-				<li><h4>Birth Day</h4><p><?php echo $row["born"] ?></p></li>
 				<li><h4>From</h4><p><?php echo $row["[from]"] ?></p></li>
-				<li><h4>Website</h4>
-					<a href="<?php echo $row["website"] ?>" target="_blank">Click</a>
+				<li><h4>Birth Day</h4><p><?php echo $row["born"] ?></p></li>
+				<li><h4>Age</h4><p><?php echo $row["age"] ?></p></li>
+				<li>
+					<a href="https://www.youtube.com/results?search_query=<?php echo $row["firstname"] .
+					 "+" . $row["lastname"] ?>" target="_blank">Link
+					</a>
 				</li>
 			</ul>
 		</div>

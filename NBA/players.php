@@ -5,19 +5,25 @@ $id = $_GET ["teamID"];
 if (! is_numeric ( $id ))
 	die ( "id not a number." );
 
-require ("config.php");
-$link = mysql_connect ( $dbhost, $dbuser, $dbpass ) or die ( mysql_error () );
-$result = mysql_query ( "set names utf8", $link );
-mysql_selectdb ( $dbname, $link );
-$commandText = <<<SqlQuery
-select playerID, number, pos, firstName, lastName, height, weight, born, debut, picture, website,`[from]`,teamID
-  from Players p
-  where teamID = $id
-SqlQuery;
 
-$result = mysql_query ( $commandText, $link );
-// $row = mysql_fetch_assoc ( $result );  
-// var_dump($row);
+require ("config.php");
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
+
+$sql = "SELECT * FROM players where teamID = $id";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    // output data of each row
+    // while($row = $result->fetch_assoc()) {
+
+} else {
+    echo "0 results";
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,13 +44,12 @@ $result = mysql_query ( $commandText, $link );
 	</div>
 	<div data-role="content">
 		<ul data-role="listview" data-filter="true">
-	    <?php while ($row = mysql_fetch_assoc($result)) : ?>
+	    <?php while ($row = $result->fetch_assoc()) : ?>
 			<li>
-			<a href="playerDetails.php?id=<?php echo $row["playerID"]?>"> 
+			<a href="./playerDetails.php?id=<?php echo $row["playerID"]?>"> 
 				<img src="images/<?php echo $row["picture"]?>">
-				<h4><?php echo $row["firstName"] . " " . $row["lastName"] ?></h4>
-				<p><?php echo "#".$row["number"]." , ".$row["pos"] ?> </p>
-	            <p><?php echo $row["height"]." ".$row["weight"]."lbs" ?> </p>
+				<h2><?php echo $row["firstname"] . " " . $row["lastname"] ?></h2>
+				<h4><?php echo "#".$row["number"]." , ".$row["pos"] ?> </h4>
 			</a>
 			</li>
 	    <?php endwhile ?>

@@ -1,8 +1,8 @@
 <?php
 	
-	$dbhost = 'localhost';
-	$dbuser = 'root';
-	$dbpass = '';
-	$dbname = 'NBA';
+	$servername = "localhost";
+	$username = "root";
+	$password = "root";
+	$dbname = "nba";
 
 ?>

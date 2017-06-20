@@ -16,7 +16,7 @@ INSERT INTO `Teams` VALUES
 (1,'Brooklyn Nets',20,62,'http://www.nba.com/teams/nets','BKN.svg'),
 (2,'Cleveland Cavaliers',51,31,'http://www.nba.com/teams/cavaliers','CLE.svg'),
 (3,'Golden State Warriors',67,15,'http://www.nba.com/teams/warriors','GSW.svg'),
-(4,'Houston Rockets',55,27,'http://www.nba.com/teams/rockets','HOU.png'),
+(4,'Houston Rockets',55,27,'http://www.nba.com/teams/rockets','HOU.svg'),
 (5,'Los Angeles Lakers',26,56,'http://www.nba.com/teams/lakers','LAL.svg'),
 (6,'Oklahoma City Thunder',47,35,'http://www.nba.com/teams/thunder','OKC.svg');
 

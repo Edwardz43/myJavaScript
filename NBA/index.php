@@ -1,17 +1,25 @@
 <?php
+
 require ("config.php");
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+} 
 
-$link = mysql_connect ( $dbhost, $dbuser, $dbpass ) or die ( mysql_error () );
-$result = mysql_query ( "set names utf8", $link );
-mysql_selectdb ( $dbname, $link );
-$commandText = <<<SqlQuery
-select teamID, name, win, lose, website, picture
-   from Teams t
-SqlQuery;
+$sql = "SELECT * FROM teams";
+$result = $conn->query($sql);
 
-$result = mysql_query ( $commandText, $link );
+if ($result->num_rows > 0) {
+    // output data of each row
+    // while($row = $result->fetch_assoc()) {
+
+} else {
+    echo "0 results";
+}
+
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,22 +40,18 @@ $result = mysql_query ( $commandText, $link );
 
 <div data-role="content">
 	<ul data-role="listview" data-filter="true">
-    <?php while ($row = mysql_fetch_assoc($result)) : ?>
+   	<?php while ($row = $result->fetch_assoc()) : ?>
 		<li>
 		<a href="players.php?teamID=<?php echo $row["teamID"]?>"> 
 			<img src="images/<?php echo $row["picture"]?>">
-			<h3><?php echo $row["name"] ?></h3>
+			<h2><?php echo $row["name"] ?></h2>
             <h4><?php echo $row["win"]." wins ".$row["lose"]." loses" ?> </h4>
 		</a>
 		</li>
-    <?php endwhile ?>
+	<?php endwhile ?>	
 	</ul>
 </div>
-
+<?php $conn->close(); ?>
 </div>
-<?php
-mysql_free_result ( $result );
-mysql_close ( $link );
-?>
 </body>
 </html>

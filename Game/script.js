@@ -251,10 +251,10 @@ $(document).ready(function(){
                     type = "nomal";
                     break;
             }
-        	if(Fairy.atk > 19){
+        	if(Fairy.atk > 19 && Fairy.atk < 23){
         	    balls.push(new Ball(Fairy.X - 5, Fairy.Y + 2, power, dirBall, -0.1,type));
                 balls.push(new Ball(Fairy.X - 5, Fairy.Y + 6, power, dirBall, 0.1,type));    
-        	}else if (Fairy.atk > 23) {
+        	}else if (Fairy.atk >= 23) {
                 balls.push(new Ball(Fairy.X - 5, Fairy.Y + 2, power, dirBall, -0.3,type));
                 balls.push(new Ball(Fairy.X - 5, Fairy.Y + 4, power, dirBall, 0, type));
                 balls.push(new Ball(Fairy.X - 5, Fairy.Y + 6, power, dirBall, 0.3,type));    
