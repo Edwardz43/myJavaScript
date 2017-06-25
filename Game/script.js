@@ -216,9 +216,9 @@ $(document).ready(function(){
         lupExp : 100,
         maxHp : 500,
         hp : 500,
-        X : 100,
+        X : -80,
         Y : 100,
-        dx : 0,
+        dx : 1,
         dy : 0,
         speed : 5,
         width : 100,
@@ -235,6 +235,7 @@ $(document).ready(function(){
         deadCount : 0,
         chargeNum : 1,
         isCharging : false,
+        inComing : false,
         hurtSound : new Audio('BGM/hurt_' + fairySex + '.wav'),
         shot : function (){
             var power = Math.floor(Fairy.chargeNum/50 +1);
@@ -268,41 +269,36 @@ $(document).ready(function(){
             chargeSound.load();
         },
         move : function(){
-            if(Fairy.hp > 0){
-                switch (Fairy.Move) {
-                    case 'LEFT':
-                        Fairy.dx = -Fairy.speed;
-                        Fairy.dir = 'l';
-                        break;
-                    case 'RIGHT':
-                        Fairy.dx = Fairy.speed;
-                        Fairy.dir = 'r';
-                        break;
-                    case 'UP':
-                        Fairy.dy = -Fairy.speed;  
-                        break;
-                    case 'DOWN':
-                        Fairy.dy = Fairy.speed; 
-                        break;
-                    case 'h-NONE':
-                        Fairy.dx = 0;
-                        break;
-                    case 'v-NONE':
-                        Fairy.dy = 0;
-                        break;
-                    default:
-                        Fairy.dx = 0;
-                        Fairy.dy = 0;
-                }
+            if(Fairy.hp > 0 && Fairy.inComing){
+                if (Fairy.Move == 'LEFT') {
+                    Fairy.dx = -Fairy.speed;
+                    Fairy.dir = 'l';
+                };
+                if (Fairy.Move == 'RIGHT') {
+                    Fairy.dx = Fairy.speed;
+                    Fairy.dir = 'r';
+                };
+                if (Fairy.Move == 'UP') { Fairy.dy = -Fairy.speed;};
+                if (Fairy.Move == 'DOWN') {Fairy.dy = Fairy.speed;};
+                if (Fairy.Move == 'h-NONE') {Fairy.dx = 0;};
+                if (Fairy.Move == 'v-NONE') {Fairy.dy = 0;};
+
                 if (Fairy.X + Fairy.dx < 0 || Fairy.X + Fairy.dx + Fairy.width >= canvas.width){
                     Fairy.dx = 0; 
                 }
                 if (Fairy.Y + Fairy.dy < 0 || Fairy.Y + Fairy.dy +Fairy.height > canvas.height){
                     Fairy.dy = 0; 
                 }
-                Fairy.X = Fairy.X + Fairy.dx;
-                Fairy.Y = Fairy.Y + Fairy.dy;
             }
+            Fairy.X = Fairy.X + Fairy.dx;
+            Fairy.Y = Fairy.Y + Fairy.dy;
+
+            if(Fairy.X >= 90 && !Fairy.inComing) {
+                // alert("ok");
+                Fairy.inComing = true; 
+                Fairy.dx = 0;   
+            }
+
             if(Fairy.isCharging){
                 Fairy.chargeNum++;
                 if(Fairy.chargeNum >= 150) {
@@ -492,7 +488,7 @@ $(document).ready(function(){
             }
         }
         //火球飛超過銀幕 就從陣列中移除火球
-        if (ball.X + ball.deltaX  > canvas.width || ball.X - ball.deltaX  < 0){
+        if (ball.X + ball.deltaX  > canvas.width || ball.X - ball.deltaX  < -50){
             //alert("ok");
             balls.splice(balls.indexOf(ball), 1);
         }
@@ -1070,7 +1066,7 @@ $(document).ready(function(){
         ctx.fillStyle = "yellow";
         ctx.fillText(hp,90,62);
         ctx.fillStyle = "#EA0000";
-        ctx.strokeRect(120,42, bar + 4, 28);
+        ctx.strokeRect(121,43, bar + 2, 26);
         ctx.fillStyle = "#00AD00";
         ctx.fillRect(122,44, hpLength > bar ? bar : hpLength, 24);
         
@@ -1080,7 +1076,7 @@ $(document).ready(function(){
         ctx.fillStyle = "yellow";
         ctx.fillText(exp,90,85);
         ctx.fillStyle = "#1B1F3A";
-        ctx.strokeRect(120,78, bar + 4, 12);
+        ctx.strokeRect(121,79, bar + 2, 10);
         ctx.fillStyle = "#4781E7";
         ctx.fillRect(122,80, expBar > bar ? bar : expBar, 8);
         ctx.restore();
@@ -1288,15 +1284,8 @@ $(document).ready(function(){
         myBackground = new component(2062, 600, "images/BG003.jpg", 0, 0, "background");
         if(isGaming){
             $(document).keydown(function(evt) {
-                // alert(evt.keyCode);
                 switch (evt.keyCode) {
-                    case 13:
-                        enermys.push(new enermy("knight"));   
-                        break;
-                    case 32:
-                        Fairy.charge();
-                        break;
-                     case 37:
+                    case 37:
                         Fairy.Move = 'LEFT';  
                         break;
                     case 38:
@@ -1307,7 +1296,20 @@ $(document).ready(function(){
                         break;
                     case 40:
                         Fairy.Move = 'DOWN';
-                        break;    
+                        break;          
+                }
+            });
+
+            $(document).keydown(function(evt) {
+                // alert(evt.keyCode);
+                switch (evt.keyCode) {
+                    case 13:
+                        enermys.push(new enermy("knight"));   
+                        break;
+                    case 32:
+                        Fairy.charge();
+                        break;
+                  
                     case 65:
                         Fairy.hp = Fairy.maxHp;
                         break;
