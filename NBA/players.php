@@ -14,7 +14,9 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$sql = "SELECT * FROM players where teamID = $id";
+$sql = "SELECT playerID, firstname, lastname, number, pos, picture, name
+		FROM player as p JOIN team as t on p.teamID = t.teamID
+		where p.teamID = $id";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -24,6 +26,7 @@ if ($result->num_rows > 0) {
 } else {
     echo "0 results";
 }
+$row = $result->fetch_assoc();
 ?>
 
 <!DOCTYPE html>
@@ -40,14 +43,14 @@ if ($result->num_rows > 0) {
 <body>
 <div data-role="page" data-add-back-btn="true" data-theme="c">
 	<div data-role="header">
-		<h1>Players</h1>
+		<h1><?php echo $row["name"] ?></h1>
 	</div>
 	<div data-role="content">
 		<ul data-role="listview" data-filter="true">
-	    <?php while ($row = $result->fetch_assoc()) : ?>
+	    <?php $result = $conn->query($sql); while ($row = $result->fetch_assoc()) : ?>
 			<li>
-			<a href="./playerDetails.php?id=<?php echo $row["playerID"]?>"> 
-				<img src="images/<?php echo $row["picture"]?>">
+			<a href="./playerDetails.php?id=<?php echo $row["playerID"]?>" > 
+				<img src="http://<?php echo $row["picture"]?>" onerror="myFunction(this)">
 				<h2><?php echo $row["firstname"] . " " . $row["lastname"] ?></h2>
 				<h4><?php echo "#".$row["number"]." , ".$row["pos"] ?> </h4>
 			</a>
@@ -55,10 +58,19 @@ if ($result->num_rows > 0) {
 	    <?php endwhile ?>
 		</ul>
 	</div>
+	<div data-role="footer" data-position="fixed" style="text-align:center;">
+	    <a href="index.php" data-icon="home">Home</a>
+    </div>
 </div>
 <?php
 mysql_free_result ( $result );
 mysql_close ( $link );
 ?>
+<script>
+	var myFunction = function (e) {
+		this.onerror=null;
+		e.src = "http://i.cdn.turner.com/nba/nba/.element/img/2.0/sect/statscube/players/large/default_nba_headshot_v2.png";
+	}
+</script>
 </body>
 </html>

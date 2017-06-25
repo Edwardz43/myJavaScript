@@ -1,0 +1,37 @@
+drop table teams;
+CREATE TABLE teams ( 
+	`teamID` INT UNSIGNED NOT NULL AUTO_INCREMENT , 
+	`name` VARCHAR(250) NOT NULL , 
+	`win` INT UNSIGNED NOT NULL , 
+	`loss` INT UNSIGNED NOT NULL ,
+	`players` INT UNSIGNED NOT NULL , 
+	`url` VARCHAR(250) NOT NULL ,
+	`logo` VARCHAR(250) NOT NULL , 
+	PRIMARY KEY (`teamID`)) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+drop table players;
+
+CREATE TABLE players ( 
+	`playerID` INT UNSIGNED NOT NULL AUTO_INCREMENT , 
+	`firstname` VARCHAR(250) NOT NULL , 
+	`lastname` VARCHAR(250) NOT NULL , 
+	`pos` VARCHAR(250) NOT NULL , 
+	`number` VARCHAR(250) , 
+	`weight` INT UNSIGNED NOT NULL , 
+	`height` VARCHAR(250) NOT NULL , 
+	`born` VARCHAR(250) NOT NULL , 
+	`age` INT UNSIGNED NOT NULL , 
+	`debut` INT UNSIGNED , 
+	`picture` VARCHAR(250) , 
+	`website` VARCHAR(250) NOT NULL , 
+	`[from]` VARCHAR(250) , 
+	`teamID` INT UNSIGNED NOT NULL , 
+	`mpg` DECIMAL(4,1) UNSIGNED , 
+	`fg%` DECIMAL(4,1) UNSIGNED , 
+	`3p%` DECIMAL(4,1) UNSIGNED , 
+	`ft%` DECIMAL(4,1) UNSIGNED , 
+	`ppg` DECIMAL(4,1) UNSIGNED , 
+	`rpg` DECIMAL(4,1) UNSIGNED , 
+	`apg` DECIMAL(4,1) UNSIGNED , 
+	`bpg` DECIMAL(4,1) UNSIGNED , 
+	PRIMARY KEY (`playerID`)) ENGINE = InnoDB;

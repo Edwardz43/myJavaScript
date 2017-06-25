@@ -8,7 +8,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$sql = "SELECT * FROM teams";
+$sql = "SELECT * FROM team";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -43,9 +43,9 @@ if ($result->num_rows > 0) {
    	<?php while ($row = $result->fetch_assoc()) : ?>
 		<li>
 		<a href="players.php?teamID=<?php echo $row["teamID"]?>"> 
-			<img src="images/<?php echo $row["picture"]?>">
+			<img src="http://<?php echo $row["logo"]?>">
 			<h2><?php echo $row["name"] ?></h2>
-            <h4><?php echo $row["win"]." wins ".$row["lose"]." loses" ?> </h4>
+            <h4><?php echo $row["win"]." win ".$row["loss"]." loss" ?> </h4>
 		</a>
 		</li>
 	<?php endwhile ?>	
