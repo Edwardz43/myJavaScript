@@ -13,7 +13,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
 
-$sql = "SELECT * FROM player where playerID = $id";
+$sql = "SELECT * FROM players where playerID = $id";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -61,8 +61,11 @@ $row = $result->fetch_assoc();
 				<li><h4>Birth Day</h4><p><?php echo $row["born"] ?></p></li>
 				<li><h4>Age</h4><p><?php echo $row["age"] ?></p></li>
 				<li>
+					<a href="<?php echo $row["website"] ?>" target="_blank">Website</a>
+				</li>
+				<li>
 					<a href="https://www.youtube.com/results?search_query=<?php echo $row["firstname"] .
-					 "+" . $row["lastname"] ?>" target="_blank">Link
+					 "+" . $row["lastname"] ?>" target="_blank">Vedio Link
 					</a>
 				</li>
 

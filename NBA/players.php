@@ -15,7 +15,7 @@ if ($conn->connect_error) {
 } 
 
 $sql = "SELECT playerID, firstname, lastname, number, pos, picture, name
-		FROM player as p JOIN team as t on p.teamID = t.teamID
+		FROM players as p JOIN teams as t on p.teamID = t.teamID
 		where p.teamID = $id";
 $result = $conn->query($sql);
 

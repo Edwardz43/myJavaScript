@@ -1,31 +1,30 @@
-drop table teams;
+drop table if EXISTS teams;
 CREATE TABLE teams ( 
 	`teamID` INT UNSIGNED NOT NULL AUTO_INCREMENT , 
-	`name` VARCHAR(250) NOT NULL , 
-	`win` INT UNSIGNED NOT NULL , 
-	`loss` INT UNSIGNED NOT NULL ,
-	`players` INT UNSIGNED NOT NULL , 
-	`url` VARCHAR(250) NOT NULL ,
-	`logo` VARCHAR(250) NOT NULL , 
+	`name` VARCHAR(250) , 
+	`win` INT UNSIGNED , 
+	`loss` INT UNSIGNED ,
+	`players` INT UNSIGNED , 
+	`url` VARCHAR(250) ,
+	`logo` VARCHAR(250) , 
 	PRIMARY KEY (`teamID`)) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-drop table players;
-
+drop table if EXISTS players;
 CREATE TABLE players ( 
 	`playerID` INT UNSIGNED NOT NULL AUTO_INCREMENT , 
-	`firstname` VARCHAR(250) NOT NULL , 
-	`lastname` VARCHAR(250) NOT NULL , 
-	`pos` VARCHAR(250) NOT NULL , 
+	`firstname` VARCHAR(250) , 
+	`lastname` VARCHAR(250) , 
+	`pos` VARCHAR(250) , 
 	`number` VARCHAR(250) , 
-	`weight` INT UNSIGNED NOT NULL , 
-	`height` VARCHAR(250) NOT NULL , 
-	`born` VARCHAR(250) NOT NULL , 
-	`age` INT UNSIGNED NOT NULL , 
+	`weight` INT UNSIGNED , 
+	`height` VARCHAR(250) , 
+	`born` VARCHAR(250) , 
+	`age` INT UNSIGNED , 
 	`debut` INT UNSIGNED , 
 	`picture` VARCHAR(250) , 
-	`website` VARCHAR(250) NOT NULL , 
+	`website` VARCHAR(250) , 
 	`[from]` VARCHAR(250) , 
-	`teamID` INT UNSIGNED NOT NULL , 
+	`teamID` INT UNSIGNED , 
 	`mpg` DECIMAL(4,1) UNSIGNED , 
 	`fg%` DECIMAL(4,1) UNSIGNED , 
 	`3p%` DECIMAL(4,1) UNSIGNED , 
@@ -35,3 +34,33 @@ CREATE TABLE players (
 	`apg` DECIMAL(4,1) UNSIGNED , 
 	`bpg` DECIMAL(4,1) UNSIGNED , 
 	PRIMARY KEY (`playerID`)) ENGINE = InnoDB;
+
+drop table if EXISTS career;
+CREATE TABLE career (
+ 	`cID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+	`year` INT UNSIGNED , 
+	`team` VARCHAR(250) , 
+	`gp` INT UNSIGNED ,
+	`gs` INT UNSIGNED , 
+	`min` INT UNSIGNED , 
+	`pts` INT UNSIGNED ,  
+	`fgm` INT UNSIGNED ,
+	`fga` INT UNSIGNED ,
+	`fg%` DECIMAL(4,1) UNSIGNED , 
+	`3pm` INT UNSIGNED ,
+	`3pa` INT UNSIGNED ,
+	`3p%` DECIMAL(4,1) UNSIGNED , 
+	`ftm` INT UNSIGNED ,
+	`fta` INT UNSIGNED ,
+	`ft%` DECIMAL(4,1) UNSIGNED ,
+	`oreb` INT UNSIGNED ,
+	`dreb` INT UNSIGNED ,
+	`reb` INT UNSIGNED ,
+	`ast` INT UNSIGNED ,
+	`stl` INT UNSIGNED ,
+	`blk` INT UNSIGNED ,
+	`tov` INT UNSIGNED ,
+	`pf` INT UNSIGNED ,
+	`+/-` INT ,
+	`playerID` INT UNSIGNED NOT NULL ,
+	PRIMARY KEY (`cID`)) ENGINE = InnoDB;
