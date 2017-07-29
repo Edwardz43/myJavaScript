@@ -1,0 +1,76 @@
+CREATE DATABASE NBA DEFAULT CHARACTER SET utf8;
+USE NBA;
+
+CREATE TABLE `Teams` (
+	`teamID` int(11) NOT NULL,
+	`name` varchar(50) NOT NULL,
+	`win` int(10) NOT NULL,
+	`lose` int(10) NOT NULL,
+	`website` varchar(250) NOT NULL,
+	`picture` varchar(250) NOT NULL,
+	PRIMARY KEY(`teamID`)
+);
+
+INSERT INTO `Teams` VALUES 
+
+(1,'Brooklyn Nets',20,62,'http://www.nba.com/teams/nets','BKN.svg'),
+(2,'Cleveland Cavaliers',51,31,'http://www.nba.com/teams/cavaliers','CLE.svg'),
+(3,'Golden State Warriors',67,15,'http://www.nba.com/teams/warriors','GSW.svg'),
+(4,'Houston Rockets',55,27,'http://www.nba.com/teams/rockets','HOU.svg'),
+(5,'Los Angeles Lakers',26,56,'http://www.nba.com/teams/lakers','LAL.svg'),
+(6,'Oklahoma City Thunder',47,35,'http://www.nba.com/teams/thunder','OKC.svg');
+
+
+CREATE TABLE `Players` (
+	`playerID` int(11) NOT NULL,
+	`firstname` varchar(20) NOT NULL,
+	`lastname` varchar(20) NOT NULL,
+	`pos` varchar(10) NOT NULL,
+	`number` int(11) NOT NULL,
+	`weight` varchar(20) NOT NULL,
+	`height` varchar(20) NOT NULL,
+	`born` date NOT NULL,
+	`age` int(11) NOT NULL,
+	`debut` int(11) NOT NULL,
+	`picture` varchar(250) NULL,
+	`website` varchar(250) NULL,
+	`[from]` varchar(250) NOT NULL,
+	`teamID` int(11) NULL,
+	PRIMARY KEY(`playerID` )
+);
+
+INSERT INTO `Players` VALUES 
+
+
+(1,'Jeremy','Lin','G',7,200,'6''3''''','1988-08-23',28,2010,'jeremy_lin.png','http://www.nba.com/players/jeremy/lin/202391','Harvard',1),
+(2,'Brook','Lopez','C',11,268,'7''0''''','1988-04-01',29,2008,'brook_lopez.png','http://www.nba.com/players/brook/lopez/201572','Stanford',1),
+(3,'Archie','Goodwin','G',10,205,'6''5''''','1994-08-17',22,2013,'archie_goodwin.png','http://www.nba.com/players/archie/goodwin/203462','Kentucky',1),
+(4,'Rondae','Hollis-Jefferson','F',24,214,'6''7''''','1995-01-03',22,2015,'rondae _hollis_Jefferson.png','http://www.nba.com/players/rondae/hollis-jefferson/1626178','Arizona',1),
+(5,'Caris','LeVert','G-F',22,203,'6''7''''','1994-08-25',22,2016,'caris_levert.png','http://www.nba.com/players/caris/levert/1627747','Michigan',1),
+(6,'LeBron','James','F',23,250,'6''8''''','1984-12-30',32,2003,'lebron_james.png','http://www.nba.com/players/lebron/james/2544','St. Vincent-St. Mary HS (OH)',2),
+(7,'Kyrie','Irving','G',2,193,'6''3''''','1992-03-23',25,2011,'kyrie_irving.png','http://www.nba.com/players/kyrie/irving/202681','Duke',2),
+(8,'Kevin','Love','F',0,251,'6''10''''','1988-09-07',28,2008,'kevin_love.png','http://www.nba.com/players/kevin/love/201567','UCLA',2),
+(9,'JR','Smith','G',5,225,'6''6''''','1985-09-09',31,2004,'jr_smith.png','http://www.nba.com/players/jr/smith/2747','St. Benedict''s Prep (NJ)',2),
+(10,'Tristan','Thompson','C',13,238,'6''9''''','1991-03-13',26,2011,'tristan_thompson.png','http://www.nba.com/players/tristan/thompson/202684','Texas',2),
+(11,'Stephen','Curry','G',30,190,'6''3''''','1988-03-14',29,2009,'stephen_curry.png','http://www.nba.com/players/stephen/curry/201939','Davidson',3),
+(12,'Kevin','Durant','F',35,240,'6''9''''','1988-09-29',28,2007,'kevin_durant.png','http://www.nba.com/players/kevin/durant/201142','Texas',3),
+(13,'Draymond','Green','F',23,230,'6''7''''','1990-03-04',27,2012,'draynond_green.png','http://www.nba.com/players/draymond/green/203110','Michigan State',3),
+(14,'Klay','Thompson','G',11,215,'6''7''''','1990-02-08',27,2011,'klay_thompson.png','http://www.nba.com/players/klay/thompson/202691','Washington State',3),
+(15,'Andre','Iguodala','G-F',9,215,'6''6''''','1984-01-28',33,2004,'andre_iguodala.png','http://www.nba.com/players/andre/iguodala/2738','Arizona',3),
+(16,'James','Harden','G',13,220,'6''5''''','1989-08-26',27,2009,'james_harden.png','http://www.nba.com/players/james/harden/201935','Arizona State',4),
+(17,'Patrick','Beverley','G',2,185,'6''1''''','1988-07-12',28,2012,'patrick_beverley.png','http://www.nba.com/players/patrick/beverley/201976','Arkansas',4),
+(18,'Trevor','Ariza','F',21,215,'6''8''''','1985-06-30',31,2004,'trevor_ariza.png','http://www.nba.com/players/trevor/ariza/2772','UCLA',4),
+(19,'Ryan','Anderson','F',3,240,'6''10''''','1988-05-06',29,2008,'ryan_anderson.png','http://www.nba.com/players/ryan/anderson/201583','California',4),
+(20,'Eric','Gordon','G',10,215,'6''4''''','1988-12-25',28,2008,'eric_gordan.png','http://www.nba.com/players/eric/gordon/201569','Indiana',4),
+(21,'D''Angelo','Russell','G',1,195,'6''5''''','1996-02-23',21,2015,'d''angelo_russell.png','http://www.nba.com/players/d''angelo/russell/1626156','Ohio State',5),
+(22,'Julius','Randle','F',30,250,'6''9''''','1994-11-29',22,2014,'julius_randle.png','http://www.nba.com/players/julius/randle/203944','Kentucky',5),
+(23,'Nick','Young','G-F',0,210,'6''7''''','1985-06-01',32,2007,'nick_young.png','http://www.nba.com/players/nick/young/201156','Southern California',5),
+(24,'Brandon','Ingram','F',14,190,'6''9''''','1997-09-02',19,2016,'brandon_ingram.png','http://www.nba.com/players/brandon/ingram/1627742','Duke',5),
+(25,'Jordan','Clarkson','G',6,194,'6''5''''','1992-06-07',25,2014,'jordan_clarkson.png','http://www.nba.com/players/jordan/clarkson/203903','Missouri',5),
+(26,'Russell','Westbrook','G',0,200,'6''3''''','1988-11-12',28,2008,'russell_westbrook.png','http://www.nba.com/players/russell/westbrook/201566','UCLA',6),
+(27,'Steven','Adams','C',12,255,'7''0''''','1993-07-20',23,2013,'steve_adams.png','http://www.nba.com/players/steven/adams/203500','Pittsburgh',6),
+(28,'Victor','Oladipo','G',5,210,'6''4''''','1992-05-04',25,2013,'victor_oladipo.png','http://www.nba.com/players/victor/oladipo/203506','Indiana',6),
+(29,'Andre','Roberson','F',21,210,'6''7''''','1991-12-04',25,2013,'andre_roberson.png','http://www.nba.com/players/andre/roberson/203460','Colorado',6),
+(30,'Enes','Kanter','C',11,245,'6''11''''','1992-05-20',25,2011,'enes_kanter.png','http://www.nba.com/players/enes/kanter/202683','Kentucky',6);
+
+

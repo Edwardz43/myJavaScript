@@ -1,0 +1,37 @@
+<script>
+    var xmlhttp = false;
+    if(window.XMLHttpRequest){
+        xmlhttp = new XMLHttpRequest();
+        console.log(xmlhttp.readyState);
+
+    }else if (window.ActiveXObject){
+        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange = callback;
+
+    function test() {
+        if(!xmlhttp) return;
+        xmlhttp.open("GET", "test.php", true);
+        xmlhttp.setRequestHeader("USER_AGENT", "Ed");
+        xmlhttp.send();
+    }
+
+    function callback() {
+        console.log(xmlhttp.readyState);
+        var target = document.getElementById("state" + xmlhttp.readyState);
+        target.innerHTML = xmlhttp.readyState;
+
+        if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
+            document.getElementById("test").innerHTML = xmlhttp.responseText;
+        }
+    }
+</script>
+
+<input type="button" onclick="test()" value="Click" />
+<div id="state0"></div>
+<div id="state1"></div>
+<div id="state2"></div>
+<div id="state3"></div>
+<div id="state4"></div>
+
+<div id="test"></div>
